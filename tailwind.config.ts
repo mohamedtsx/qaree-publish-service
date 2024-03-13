@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import { shadcnPlugin } from "./src/lib/shadcn-plugin";
+
 const config = {
 	darkMode: ["class"],
 	content: [
