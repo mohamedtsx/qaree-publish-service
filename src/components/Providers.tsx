@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { SessionProvider } from "next-auth/react";
 import type { ReactNode } from "react";
 
 function Providers({ children }: { children: ReactNode }) {
@@ -9,7 +10,7 @@ function Providers({ children }: { children: ReactNode }) {
 			enableSystem
 			disableTransitionOnChange
 		>
-			{children}
+			<SessionProvider>{children}</SessionProvider>
 		</ThemeProvider>
 	);
 }
