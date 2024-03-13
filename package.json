@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "biome:check": "biome check ./src",
+    "biome:apply": "biome check --apply ./src",
     "biome:write": "biome format --write ./src"
   },
   "dependencies": {
