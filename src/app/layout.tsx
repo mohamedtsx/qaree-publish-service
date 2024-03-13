@@ -1,7 +1,7 @@
+import Providers from "@/components/Providers";
 import { inter } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import Providers from "@/components/Providers";
 import "../styles/globals.css";
 
 export const metadata: Metadata = {
