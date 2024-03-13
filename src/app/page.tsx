@@ -1,5 +1,5 @@
 import Hello from "@/components/Hello";
-import ThemeToggle from "@/components/themeToggle";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Home() {
 	return (
