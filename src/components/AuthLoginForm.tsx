@@ -1,27 +1,14 @@
 "use client";
 
-import React from "react";
+import { Form } from "./ui/form";
 
-import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "./ui/form";
-
-import { loginFormSchema } from "@/schema";
+import { type LoginSchemaType, loginFormSchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
 import { FormInput, SubmitButton } from "./SmartForm";
 
-// todo create smart react hook form
-
 function AuthLoginForm() {
-	const form = useForm<z.infer<typeof loginFormSchema>>({
+	const form = useForm<LoginSchemaType>({
 		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
 			email: "",
