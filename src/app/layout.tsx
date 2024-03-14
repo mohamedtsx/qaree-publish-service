@@ -5,8 +5,11 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 
 export const metadata: Metadata = {
-	title: "Qaree Web App",
-	description: "Qaree - e-book reading app",
+	title: {
+		template: "%s | Qaree",
+		default: "Qaree",
+	},
+	description: "Qaree publish service",
 };
 
 export default function RootLayout({
