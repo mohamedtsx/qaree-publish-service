@@ -155,11 +155,13 @@ export const SubmitButton = <T extends FieldValues>({
 	children,
 }: {
 	children: React.ReactNode;
+	icons?: React.ReactNode;
 }) => {
 	const formState = useFormState<T>();
 	return (
 		<Button
 			type="submit"
+			className="w-40"
 			isLoading={
 				formState.isSubmitting || formState.isLoading || formState.isValidating
 			}
