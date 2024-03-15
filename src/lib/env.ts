@@ -8,9 +8,9 @@ export const env = createEnv({
 		GITHUB_ID: z.string().min(1),
 	},
 	client: {
-		// no client env yet
+		NEXT_PUBLIC_BACKEND_URL: z.string().min(1),
 	},
 	experimental__runtimeEnv: {
-		// destructure client variables here ...
+		NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
 	},
 });
