@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "biome:check": "biome check ./src",
-    "biome:apply": "biome check --apply ./src",
-    "biome:write": "biome format --write ./src"
+    "biome:apply": "biome check --apply ./src"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
