@@ -18,7 +18,7 @@ export const Icons = {
 			/>
 		</svg>
 	),
-	gitHub: (props: LucideProps) => (
+	gitHub: (props) => (
 		<svg viewBox="0 0 438.549 438.549" {...props}>
 			<title>github</title>
 			<path
@@ -27,7 +27,7 @@ export const Icons = {
 			/>
 		</svg>
 	),
-	logo: (props: LucideProps) => (
+	logo: (props) => (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
@@ -44,7 +44,7 @@ export const Icons = {
 			/>
 		</svg>
 	),
-	google: (props: LucideProps) => (
+	google: (props) => (
 		<svg role="img" viewBox="0 0 24 24" {...props}>
 			<title>google</title>
 			<path
