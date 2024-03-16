@@ -22,9 +22,7 @@ export default function RootLayout({
 		<html lang="en" className="h-full" suppressHydrationWarning>
 			<body className={cn("flex h-full antialiased", inter.className)}>
 				<Providers>
-					<Suspense>
-						<main className="flex-1">{children}</main>
-					</Suspense>
+					<main className="flex-1">{children}</main>
 				</Providers>
 			</body>
 		</html>
