@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 
 import { env } from "./env";
+import { signIn } from "./graphql";
+import type { AuthUser, LoginData } from "./graphql/types";
 
 export const authOptions: NextAuthOptions = {
 	providers: [
@@ -19,14 +21,19 @@ export const authOptions: NextAuthOptions = {
 				},
 			},
 			async authorize(credentials) {
-				const res = await fetch("/your/endpoint", {
-					method: "POST",
-					body: JSON.stringify(credentials),
-					headers: { "Content-Type": "application/json" },
-				});
-				const user = await res.json();
+				const email = credentials?.email as string;
+				const password = credentials?.password as string;
 
-				if (res.ok && user) {
+				if (!email || !password) return null;
+
+				const res = await signIn({ email, password });
+
+				if (res.status === 200 && res.data.signin) {
+					const user = {
+						id: "no-user-id!",
+						access_token: res.data.signin?.access_token as string,
+					};
+
 					return user;
 				}
 
@@ -42,3 +49,13 @@ export const authOptions: NextAuthOptions = {
 		signIn: "/login",
 	},
 };
+
+declare module "next-auth" {
+	interface User extends AuthUser {}
+	interface Session {
+		user: AuthUser;
+	}
+}
+declare module "next-auth/jwt" {
+	interface JWT extends AuthUser {}
+}

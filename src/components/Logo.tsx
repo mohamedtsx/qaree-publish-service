@@ -1,6 +1,6 @@
+import { lusitana } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { Icons } from "./Icons";
-import { lusitana } from "@/lib/fonts";
 
 function Logo() {
 	return (

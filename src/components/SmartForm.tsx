@@ -80,7 +80,7 @@ export function FormInput<T extends FieldValues>({
 			form={form}
 			name={name}
 			render={({ value, ...field }) => (
-				<div>
+				<div className="flex flex-col gap-2">
 					<FormLabel>{props.label}</FormLabel>
 					<Input {...props} id={id} value={value ?? ""} {...field} />
 				</div>
@@ -161,7 +161,7 @@ export const SubmitButton = <T extends FieldValues>({
 	return (
 		<Button
 			type="submit"
-			className="w-40"
+			className="w-full"
 			isLoading={
 				formState.isSubmitting || formState.isLoading || formState.isValidating
 			}

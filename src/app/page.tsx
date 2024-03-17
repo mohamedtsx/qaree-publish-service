@@ -1,10 +1,10 @@
-import Link from "next/link";
 import Logo from "@/components/Logo";
-import { ArrowRightIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { lusitana } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
+import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Page() {
 	return (

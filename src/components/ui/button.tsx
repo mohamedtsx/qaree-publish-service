@@ -61,14 +61,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				ref={ref}
 				{...props}
 			>
-				{!isLoading ? (
-					children
-				) : (
-					<>
-						<Loader />
-						{typeof children === "string" ? <span>{children}</span> : children}
-					</>
-				)}
+				{!isLoading ? children : <Loader />}
 			</Comp>
 		);
 	},
