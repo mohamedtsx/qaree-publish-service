@@ -11,7 +11,7 @@ type RegisterState = {
 	error?: string;
 };
 
-export const register = async (
+export const registerAction = async (
 	userData: RegisterData,
 ): Promise<RegisterState> => {
 	const result = registerFormSchema.safeParse(userData);
@@ -26,7 +26,6 @@ export const register = async (
 	}
 
 	try {
-		// 1. Sign Up
 		const signupRes = await signUp(userData);
 		if (signupRes.status !== 200 || !signupRes.data.signup) {
 			return {
@@ -34,9 +33,6 @@ export const register = async (
 				message: "Failed to sign up",
 			};
 		}
-
-		// 2. Verfiy Email
-
 		return {
 			success: true,
 			message: signupRes.data.signup?.message as string,

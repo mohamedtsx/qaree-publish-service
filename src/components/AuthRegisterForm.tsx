@@ -21,7 +21,8 @@ import {
 	CardTitle,
 } from "./ui/card";
 import Link from "next/link";
-import { register } from "@/app/actions";
+import { registerAction } from "@/app/actions";
+import { redirect } from "next/navigation";
 
 function AuthRegisterForm() {
 	const form = useForm<RegisterSchemaType>({
@@ -39,15 +40,13 @@ function AuthRegisterForm() {
 			return toast.error("Form data is not valid");
 		}
 
-		const state = await register(values);
+		const state = await registerAction(values);
 
 		if (!state.success) {
 			return toast.error(state.message);
 		}
 
-		return toast.success(state.message);
-
-		// router.push("/dashboard");
+		redirect("/email-verification");
 	};
 
 	return (
