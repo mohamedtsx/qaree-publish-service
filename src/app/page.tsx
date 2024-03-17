@@ -33,11 +33,11 @@ export default function Page() {
 				<div className="flex items-center justify-center  md:w-3/5 relative ">
 					{/* todo: replace this image with happy author illusteration */}
 					<Image
-						src={"https://picsum.photos/id/85/1000/760?grayscale"}
-						width={1000}
-						height={760}
-						alt="Qaree hero"
-						className="h-min"
+						src={"/writer.avif"}
+						width={626}
+						height={417}
+						alt="Author"
+						className="h-full w-auto"
 					/>
 				</div>
 			</div>
