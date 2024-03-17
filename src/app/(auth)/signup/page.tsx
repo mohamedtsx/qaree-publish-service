@@ -1,5 +1,6 @@
 import AuthLoginForm from "@/components/AuthLoginForm";
 import AuthRegisterForm from "@/components/AuthRegisterForm";
+import CenteredWrapper from "@/components/CenteredWrapper";
 import ThemeToggle from "@/components/ThemeToggle";
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
@@ -19,11 +20,9 @@ async function SignUp() {
 	}
 
 	return (
-		<div className="container h-full flex">
-			<div className="flex-1 flex items-center justify-center">
-				<AuthRegisterForm />
-			</div>
-		</div>
+		<CenteredWrapper>
+			<AuthRegisterForm />
+		</CenteredWrapper>
 	);
 }
 
