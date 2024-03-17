@@ -10,6 +10,7 @@ export const signUp = async (userData: RegisterData) => {
 	>({
 		query: signUpMutation,
 		variables: { ...userData },
+		cache: "default",
 	});
 };
 

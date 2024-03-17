@@ -2,13 +2,12 @@
 
 import { Form } from "./ui/form";
 
-import { type LoginSchemaType, loginFormSchema } from "@/schema";
+import { type RegisterSchemaType, registerFormSchema } from "@/schema";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { FormInput, SubmitButton } from "./SmartForm";
 
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Icons } from "./Icons";
 import { Button } from "./ui/button";
@@ -22,47 +21,41 @@ import {
 	CardTitle,
 } from "./ui/card";
 import Link from "next/link";
+import { register } from "@/app/actions";
 
-function AuthLoginForm() {
-	const form = useForm<LoginSchemaType>({
-		resolver: zodResolver(loginFormSchema),
+function AuthRegisterForm() {
+	const form = useForm<RegisterSchemaType>({
+		resolver: zodResolver(registerFormSchema),
 		defaultValues: {
 			email: "",
 		},
 	});
 
-	const router = useRouter();
+	const onSubmit = async (values: RegisterSchemaType) => {
+		const { email, name, password } = values;
 
-	const onSubmit = async (values: LoginSchemaType) => {
-		const { email, password } = values;
-
-		if (!email || !password) {
-			if (!email) {
-				toast.error("Please enter your email address.");
-			} else {
-				toast.error("Please enter password.");
-			}
-			return;
+		if (!email || !password || !name) {
+			// general toast message as we have a good client side validation (zod)
+			return toast.error("Form data is not valid");
 		}
 
-		const res = await signIn("credentials", {
-			redirect: false,
-			...values,
-		});
+		const state = await register(values);
 
-		if (res?.error) {
-			return toast.error(res.error);
+		if (!state.success) {
+			return toast.error(state.message);
 		}
 
-		router.push("/dashboard");
+		return toast.success(state.message);
+
+		// router.push("/dashboard");
 	};
 
 	return (
 		<Card className="w-full max-w-lg">
-			<CardHeader className="space-y-2">
-				<CardTitle className="text-2xl">Sign In</CardTitle>
+			<CardHeader className="space-y-3">
+				<CardTitle className="text-2xl">Create an account</CardTitle>
 				<CardDescription>
-					Welcome back! Sign in to your Qaree account.
+					Enter your email below to create your account
 				</CardDescription>
 			</CardHeader>
 
@@ -73,7 +66,7 @@ function AuthLoginForm() {
 							type="button"
 							variant="outline"
 							onClick={() => {
-								toast.error("Sign in with google is not avilable yet");
+								toast.error("feature is not ready yet");
 							}}
 						>
 							<Icons.google className="mr-2 h-4 w-4" />
@@ -91,6 +84,14 @@ function AuthLoginForm() {
 						</div>
 						<FormInput
 							form={form}
+							name="name"
+							type="text"
+							label="Name"
+							placeholder="Enter your name"
+						/>
+
+						<FormInput
+							form={form}
 							name="email"
 							label="Email"
 							type="email"
@@ -105,11 +106,11 @@ function AuthLoginForm() {
 						/>
 					</CardContent>
 					<CardFooter className="flex flex-col">
-						<SubmitButton>Login</SubmitButton>
+						<SubmitButton>Create account</SubmitButton>
 						<p className="text-sm text-muted-foreground w-full mt-5">
-							Don't have account?{" "}
-							<Link href={"/signup"} className="hover:underline">
-								Sign up
+							Already have account?{" "}
+							<Link href={"/login"} className="hover:underline">
+								Sign in
 							</Link>
 						</p>
 					</CardFooter>
@@ -119,4 +120,4 @@ function AuthLoginForm() {
 	);
 }
 
-export default AuthLoginForm;
+export default AuthRegisterForm;
