@@ -8,8 +8,8 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next/types";
 
 export const metadata: Metadata = {
-	title: "Sign In",
-	description: "Sign in to Qaree publish service",
+	title: "Sign Up",
+	description: "Sign up to Qaree publish service",
 };
 
 async function SignUp() {

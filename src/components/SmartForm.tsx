@@ -27,6 +27,8 @@ import {
 } from "./ui/select";
 
 import { Button } from "./ui/button";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 
 interface SharedProps<T extends FieldValues> {
 	form?: UseFormReturn<T>;
@@ -65,7 +67,7 @@ interface FormElementInputProps<T extends FieldValues>
 			ComponentProps<typeof Input>,
 			"form" | "name" | "id" | keyof ControllerRenderProps<T, FieldPath<T>>
 		> {
-	label: string;
+	label?: string;
 }
 
 export function FormInput<T extends FieldValues>({
@@ -84,6 +86,35 @@ export function FormInput<T extends FieldValues>({
 					<FormLabel>{props.label}</FormLabel>
 					<Input {...props} id={id} value={value ?? ""} {...field} />
 				</div>
+			)}
+		/>
+	);
+}
+
+export function FormInputOTP<T extends FieldValues>({
+	name,
+	form,
+}: FormElementInputProps<T>) {
+	const id = useId();
+
+	return (
+		<FormElement
+			form={form}
+			name={name}
+			render={({ value, ...field }) => (
+				<InputOTP
+					maxLength={6}
+					pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+					render={({ slots }) => (
+						<InputOTPGroup>
+							{slots.map((slot, index) => (
+								<InputOTPSlot key={index} {...slot} />
+							))}{" "}
+						</InputOTPGroup>
+					)}
+					id={id}
+					{...field}
+				/>
 			)}
 		/>
 	);

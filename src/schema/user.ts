@@ -7,7 +7,6 @@ export const registerFormSchema = z.object({
 });
 
 export const verifyAccountFormSchema = z.object({
-	email: z.string().email(),
 	otp: z.string().length(6),
 });
 

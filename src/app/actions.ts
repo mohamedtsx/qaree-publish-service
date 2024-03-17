@@ -3,7 +3,6 @@
 import { signUp } from "@/lib/graphql";
 import type { RegisterData } from "@/lib/graphql/types";
 import { registerFormSchema } from "@/schema";
-import { signIn } from "next-auth/react";
 
 type RegisterState = {
 	success: boolean;
@@ -33,6 +32,7 @@ export const registerAction = async (
 				message: "Failed to sign up",
 			};
 		}
+
 		return {
 			success: true,
 			message: signupRes.data.signup?.message as string,

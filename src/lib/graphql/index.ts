@@ -24,7 +24,10 @@ export const signUp = async (userData: RegisterSchemaType) =>
 		cache: "default",
 	});
 
-export const verifyAccount = async (accountData: VerifyAccountSchemaType) =>
+export const verifyAccount = async (accountData: {
+	otp: string;
+	email: string;
+}) =>
 	await fetcher<
 		ResultOf<typeof verifyAccountMutation>,
 		VariablesOf<typeof verifyAccountMutation>
