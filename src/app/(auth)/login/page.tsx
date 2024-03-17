@@ -18,10 +18,7 @@ async function Login() {
 	}
 
 	return (
-		<div className="container h-full flex flex-col">
-			<div className="w-full flex justify-end py-5">
-				<ThemeToggle />
-			</div>
+		<div className="container flex h-full">
 			<div className="flex-1 flex items-center justify-center">
 				<AuthLoginForm />
 			</div>
