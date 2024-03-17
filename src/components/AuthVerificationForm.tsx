@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import type { LoginData } from "@/lib/graphql/types";
 import { useRouter } from "next/navigation";
+import { resendValidatingOTPAction } from "@/app/actions";
 
 function AuthVerificationForm({ userData }: { userData: LoginData }) {
 	const { email } = userData;
@@ -55,6 +56,25 @@ function AuthVerificationForm({ userData }: { userData: LoginData }) {
 		}
 	};
 
+	const resendHandler = async () => {
+		try {
+			const res = await resendValidatingOTPAction({
+				userData: {
+					email,
+				},
+			});
+			if (!res.success) {
+				throw Error(res.message);
+			}
+			toast.success("An OTP code has been sent.");
+		} catch (error) {
+			if (error instanceof Error) {
+				toast.error(error.name);
+			}
+			toast.error("Unexpected Error");
+		}
+	};
+
 	return (
 		<>
 			<CardHeader className="space-y-3">
@@ -78,6 +98,7 @@ function AuthVerificationForm({ userData }: { userData: LoginData }) {
 							<button
 								type="button"
 								className="hover:text-secondary-foreground transition"
+								onClick={resendHandler}
 							>
 								Send again
 							</button>

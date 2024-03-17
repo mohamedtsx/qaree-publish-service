@@ -17,6 +17,15 @@ export const verifyAccountMutation = graphql(`
   }
 `);
 
+export const resendValidatingOTPMutation = graphql(`
+  mutation resendValidatingOTP($email:String!){
+    resendValidatingOTP(email: $email) {
+      message,
+      success
+    }
+  }
+`);
+
 export const signInMutation = graphql(`
   mutation signin($email: String!, $password: String!){
     signin(email: $email, password: $password) {

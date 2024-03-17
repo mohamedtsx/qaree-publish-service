@@ -1,10 +1,10 @@
 "use server";
 
-import { signUp } from "@/lib/graphql";
+import { resendValidatingOTP, signUp } from "@/lib/graphql";
 import type { RegisterData } from "@/lib/graphql/types";
 import { registerFormSchema } from "@/schema";
 
-type RegisterState = {
+type ActionState = {
 	success: boolean;
 	message: string;
 	error?: string;
@@ -12,7 +12,7 @@ type RegisterState = {
 
 export const registerAction = async (
 	userData: RegisterData,
-): Promise<RegisterState> => {
+): Promise<ActionState> => {
 	const result = registerFormSchema.safeParse(userData);
 
 	if (!result.success) {
@@ -51,19 +51,32 @@ export const registerAction = async (
 	}
 };
 
-// 2. Verfiy Email
-// const { email, password } = userData;
+export const resendValidatingOTPAction = async ({
+	userData,
+}: {
+	userData: { email: string };
+}): Promise<ActionState> => {
+	try {
+		const res = await resendValidatingOTP(userData);
+		if (!res.data.resendValidatingOTP?.success) {
+			return {
+				success: false,
+				message: "Failed to resend the OTP code please tray again.",
+			};
+		}
+		return {
+			success: true,
+			message: res.data.resendValidatingOTP.message as string,
+		};
+	} catch (error) {
+		let message = "RESEND_OTP_ERROR: Unexpected Error";
+		if (error instanceof Error) {
+			message = error.message;
+		}
 
-// 3. Login
-// await signIn("credentials", {
-// 	redirect: false,
-// 	email,
-// 	password,
-// });
-
-// if (!res.data.signup) {
-//   return {
-//     success: false,
-//     message: "Failed to register",
-//   };
-// }
+		return {
+			success: false,
+			message,
+		};
+	}
+};

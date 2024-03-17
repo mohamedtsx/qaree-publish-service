@@ -3,16 +3,13 @@ import type { ResultOf, VariablesOf } from "gql.tada";
 import { fetcher } from "./fetcher";
 
 import {
+	resendValidatingOTPMutation,
 	signInMutation,
 	signUpMutation,
 	verifyAccountMutation,
 } from "./mutations";
 
-import type {
-	LoginSchemaType,
-	RegisterSchemaType,
-	VerifyAccountSchemaType,
-} from "@/schema";
+import type { LoginSchemaType, RegisterSchemaType } from "@/schema";
 
 export const signUp = async (userData: RegisterSchemaType) =>
 	await fetcher<
@@ -34,6 +31,15 @@ export const verifyAccount = async (accountData: {
 	>({
 		query: verifyAccountMutation,
 		variables: accountData,
+	});
+
+export const resendValidatingOTP = async (data: { email: string }) =>
+	await fetcher<
+		ResultOf<typeof resendValidatingOTPMutation>,
+		VariablesOf<typeof resendValidatingOTPMutation>
+	>({
+		query: resendValidatingOTPMutation,
+		variables: data,
 	});
 
 export const signIn = async (userData: LoginSchemaType) =>
