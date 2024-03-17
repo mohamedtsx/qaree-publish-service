@@ -8,6 +8,15 @@ export const signUpMutation = graphql(`
   }
 `);
 
+export const verifyAccountMutation = graphql(`
+  mutation verifyAccount($otp: String!, $email: String!){
+    verifyAccount(otp: $otp, email: $email) {
+      message,
+      success
+    }
+  }
+`);
+
 export const signInMutation = graphql(`
   mutation signin($email: String!, $password: String!){
     signin(email: $email, password: $password) {
