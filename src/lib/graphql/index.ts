@@ -10,6 +10,8 @@ import {
 } from "./mutations";
 
 import type { LoginSchemaType, RegisterSchemaType } from "@/schema";
+import type { AuthUser } from "./types";
+import { userInfoQuery } from "./queries";
 
 export const signUp = async (userData: RegisterSchemaType) =>
 	await fetcher<
@@ -49,4 +51,15 @@ export const signIn = async (userData: LoginSchemaType) =>
 	>({
 		query: signInMutation,
 		variables: userData,
+	});
+
+export const getUserInfo = async (token: string) =>
+	await fetcher<
+		ResultOf<typeof userInfoQuery>,
+		VariablesOf<typeof userInfoQuery>
+	>({
+		query: userInfoQuery,
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
 	});

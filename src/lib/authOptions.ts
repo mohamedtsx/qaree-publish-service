@@ -4,7 +4,7 @@ import GitHubProvider from "next-auth/providers/github";
 
 import { env } from "./env";
 import { signIn } from "./graphql";
-import type { AuthUser, LoginData } from "./graphql/types";
+import type { AuthUser } from "./graphql/types";
 
 export const authOptions: NextAuthOptions = {
 	providers: [
@@ -40,11 +40,21 @@ export const authOptions: NextAuthOptions = {
 				return null;
 			},
 		}),
+
 		GitHubProvider({
 			clientId: env.GITHUB_ID,
 			clientSecret: env.GITHUB_SECRET,
 		}),
 	],
+	callbacks: {
+		async jwt({ token, user }) {
+			return { ...token, ...user };
+		},
+		async session({ session, token, user }) {
+			session.user = token;
+			return session;
+		},
+	},
 	pages: {
 		signIn: "/login",
 	},

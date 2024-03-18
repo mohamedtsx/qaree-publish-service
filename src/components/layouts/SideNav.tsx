@@ -39,7 +39,7 @@ const navItems: NavItemType[] = [
 
 function SideNav() {
 	return (
-		<div className="border-r">
+		<div className="border-r max-lg:hidden">
 			<div className="flex h-full max-h-screen flex-col gap-2">
 				<div className="flex h-[60px] items-center border-b px-6 gap-12">
 					<Link

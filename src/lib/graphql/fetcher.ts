@@ -54,7 +54,7 @@ export async function fetcher<Result, Variables>({
 			);
 		}
 
-		throw new Error(
+		throw Error(
 			error instanceof Error
 				? error.message
 				: typeof error === "string"
