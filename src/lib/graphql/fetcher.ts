@@ -1,7 +1,7 @@
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { print } from "graphql";
 
-import { env } from "../env";
+import { env } from "../../env";
 import { FetcherError, createCustomError } from "./errors";
 import type { ApiResponse, GraphQLError } from "./types";
 

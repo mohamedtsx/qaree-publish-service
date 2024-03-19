@@ -2,7 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 
-import { env } from "./env";
+import { env } from "../env";
 import { signIn } from "./graphql";
 import type { AuthUser } from "./graphql/types";
 
