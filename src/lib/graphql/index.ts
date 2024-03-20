@@ -1,4 +1,4 @@
-import type { ResultOf, VariablesOf } from "gql.tada";
+import type { ResultOf, TadaDocumentNode, VariablesOf } from "gql.tada";
 
 import { fetcher } from "./fetcher";
 
@@ -10,7 +10,6 @@ import {
 } from "./mutations";
 
 import type { LoginSchemaType, RegisterSchemaType } from "@/schema";
-import type { AuthUser } from "./types";
 import { userInfoQuery } from "./queries";
 
 export const signUp = async (userData: RegisterSchemaType) =>

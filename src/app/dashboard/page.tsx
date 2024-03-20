@@ -11,6 +11,7 @@ async function Dashboard() {
 		redirect("/login");
 	}
 
+	// todo remove this data is not required in this page
 	const res = await getUserInfo(session.user.access_token);
 	const user = res.data.userInfo;
 
