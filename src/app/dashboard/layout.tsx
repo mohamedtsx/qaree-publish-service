@@ -1,6 +1,13 @@
 import Header from "@/components/layouts/Header";
 import SideNav from "@/components/layouts/SideNav";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
+
+import type { Metadata } from "next";
+import { Loader2 } from "@/components/Loader2";
+
+export const metadata: Metadata = {
+	title: "Publish Service",
+};
 
 function Layout({ children }: { children: ReactNode }) {
 	return (
@@ -9,7 +16,9 @@ function Layout({ children }: { children: ReactNode }) {
 
 			<div className="flex-1 flex flex-col">
 				<Header />
-				<div className="flex-1">{children}</div>
+				<Suspense fallback={<Loader2 />}>
+					<div className="flex-1">{children}</div>
+				</Suspense>
 			</div>
 		</div>
 	);

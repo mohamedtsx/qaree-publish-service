@@ -108,7 +108,7 @@ export function FormInputOTP<T extends FieldValues>({
 					render={({ slots }) => (
 						<InputOTPGroup>
 							{slots.map((slot, index) => (
-								<InputOTPSlot key={index} {...slot} />
+								<InputOTPSlot index={index} key={index} {...slot} />
 							))}{" "}
 						</InputOTPGroup>
 					)}
