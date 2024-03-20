@@ -1,59 +1,19 @@
-"use client";
+import { authOptions } from "@/lib/authOptions";
+import { getUserInfo } from "@/lib/graphql";
+import { getServerSession } from "next-auth";
+import UserDropdown from "./UserDropdown";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuGroup,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuShortcut,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+export async function UserNav() {
+	const session = await getServerSession(authOptions);
 
-import { signOut } from "next-auth/react";
+	if (!session) return null;
 
-export function UserNav() {
-	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" className="relative h-8 w-8 rounded-full">
-					<Avatar className="h-8 w-8">
-						<AvatarImage src="/avatars/01.png" alt="@shadcn" />
-						<AvatarFallback>SC</AvatarFallback>
-					</Avatar>
-				</Button>
-			</DropdownMenuTrigger>
+	const {
+		data: { userInfo },
+	} = await getUserInfo(session.user.access_token);
 
-			<DropdownMenuContent className="w-56" align="end" forceMount>
-				<DropdownMenuLabel className="font-normal">
-					<div className="flex flex-col space-y-1">
-						<p className="text-sm font-medium leading-none">shadcn</p>
-						<p className="text-xs leading-none text-muted-foreground">
-							m@example.com
-						</p>
-					</div>
-				</DropdownMenuLabel>
-				<DropdownMenuSeparator />
-				<DropdownMenuGroup>
-					<DropdownMenuItem>
-						Profile
-						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-					</DropdownMenuItem>
+	if (!userInfo) return;
 
-					<DropdownMenuItem>
-						Account Settings
-						<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-					</DropdownMenuItem>
-				</DropdownMenuGroup>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={() => signOut()}>
-					Log out
-					<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
-	);
+	//@ts-ignore //Todo: Remove this comment once the backend updates the nullable values.
+	return <UserDropdown userInfo={userInfo} />;
 }
