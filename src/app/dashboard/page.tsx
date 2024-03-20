@@ -8,7 +8,7 @@ async function Dashboard() {
 	const session = await getServerSession(authOptions);
 
 	if (!session?.user) {
-		redirect("/login");
+		redirect("/signin");
 	}
 
 	// todo remove this data is not required in this page

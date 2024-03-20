@@ -96,13 +96,21 @@ function AuthLoginForm() {
 							type="email"
 							placeholder="Enter your email address"
 						/>
-						<FormInput
-							form={form}
-							name="password"
-							type="password"
-							label="Password"
-							placeholder="Enter password"
-						/>
+						<div>
+							<FormInput
+								form={form}
+								name="password"
+								type="password"
+								label="Password"
+								placeholder="Enter password"
+							/>
+							<Link
+								className="text-sm hover:underline text-muted-foreground text-end block mt-2"
+								href={""}
+							>
+								Forgot password?
+							</Link>
+						</div>
 					</CardContent>
 					<CardFooter className="flex flex-col">
 						<SubmitButton>Login</SubmitButton>

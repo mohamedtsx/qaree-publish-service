@@ -119,7 +119,7 @@ function AuthRegisterForm() {
 							<SubmitButton>Create account</SubmitButton>
 							<p className="text-sm text-muted-foreground w-full mt-5">
 								Already have account?{" "}
-								<Link href={"/login"} className="hover:underline">
+								<Link href={"/signin"} className="hover:underline">
 									Sign in
 								</Link>
 							</p>

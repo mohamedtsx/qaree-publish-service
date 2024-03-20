@@ -186,7 +186,7 @@ export const SubmitButton = <T extends FieldValues>({
 	children,
 }: {
 	children: React.ReactNode;
-	props: React.ComponentPropsWithRef<typeof Button>;
+	props?: React.ComponentPropsWithRef<typeof Button>;
 }) => {
 	const formState = useFormState<T>();
 	return (

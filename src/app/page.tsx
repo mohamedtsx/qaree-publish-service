@@ -24,7 +24,7 @@ export default function Page() {
 						with <strong>Qaree</strong>.
 					</p>
 					<Link
-						href="/login"
+						href="/signin"
 						className={buttonVariants({ className: "w-fit" })}
 					>
 						<span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
