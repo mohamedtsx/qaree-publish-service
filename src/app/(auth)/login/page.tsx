@@ -1,5 +1,6 @@
 import AuthLoginForm from "@/components/AuthLoginForm";
 import CenteredWrapper from "@/components/CenteredWrapper";
+import { Loader2 } from "@/components/Loader2";
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
