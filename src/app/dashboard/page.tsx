@@ -12,13 +12,13 @@ async function Dashboard() {
 	}
 
 	const res = await getUserInfo(session.user.access_token);
-	const userInfo = res.data.userInfo;
+	const user = res.data.userInfo;
 
-	if (!userInfo) {
+	if (!user) {
 		return <h1 className="text-4xl">Something went wrong!</h1>;
 	}
 
-	const { name } = userInfo;
+	const { name } = user;
 
 	return (
 		<div className="px-24">
