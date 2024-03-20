@@ -31,13 +31,14 @@ export default function Page() {
 					</Link>
 				</div>
 				<div className="flex items-center justify-center  md:w-3/5 relative ">
-					{/* todo: replace this image with happy author illusteration */}
+					{/* todo: replace this image with happy author illusteration to fit in the dark mode */}
 					<Image
 						src={"/writer.avif"}
 						width={626}
 						height={417}
 						alt="Author"
 						className="h-full w-auto"
+						priority
 					/>
 				</div>
 			</div>
