@@ -1,16 +1,21 @@
 import { authOptions } from "@/lib/authOptions";
-import { getUserInfo } from "@/lib/graphql";
 import { getServerSession } from "next-auth";
 import UserDropdown from "./UserDropdown";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { userInfoQuery } from "@/lib/graphql/queries";
 
 export async function UserNav() {
 	const session = await getServerSession(authOptions);
 
 	if (!session) return null;
 
-	const {
-		data: { userInfo },
-	} = await getUserInfo(session.user.access_token);
+	const { userInfo } = await fetcher({
+		query: userInfoQuery,
+		headers: {
+			Authorization: `Bearer ${session.user.access_token}`,
+		},
+		server: true,
+	});
 
 	if (!userInfo) return;
 

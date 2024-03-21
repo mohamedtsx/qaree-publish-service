@@ -1,8 +1,8 @@
 import { authOptions } from "@/lib/authOptions";
-import { getUserInfo } from "@/lib/graphql";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { userInfoQuery } from "@/lib/graphql/queries";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import React from "react";
 
 async function Dashboard() {
 	const session = await getServerSession(authOptions);
@@ -11,15 +11,19 @@ async function Dashboard() {
 		redirect("/signin");
 	}
 
-	// todo remove this data is not required in this page
-	const data = await getUserInfo(session.user.access_token);
-	const user = data.userInfo;
+	const { userInfo } = await fetcher({
+		query: userInfoQuery,
+		headers: {
+			Authorization: `Bearer ${session.user.access_token}`,
+		},
+		server: true,
+	});
 
-	if (!user) {
+	if (!userInfo) {
 		return <h1 className="text-4xl">Something went wrong!</h1>;
 	}
 
-	const { name } = user;
+	const { name } = userInfo;
 
 	return (
 		<div className="px-24">

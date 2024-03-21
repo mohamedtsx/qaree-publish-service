@@ -1,6 +1,11 @@
 "use server";
 
-import { forgotPassword, resendValidatingOTP, signUp } from "@/lib/graphql";
+import { fetcher } from "@/lib/graphql/fetcher";
+import {
+	forgetPasswordMutation,
+	resendValidatingOTPMutation,
+	signUpMutation,
+} from "@/lib/graphql/mutations";
 import type { RegisterData } from "@/lib/graphql/types";
 import { registerFormSchema } from "@/schema";
 
@@ -23,8 +28,14 @@ export const registerAction = async (
 	}
 
 	try {
-		const { signup } = await signUp(userData);
-		if (!signUp) {
+		const { signup } = await fetcher({
+			query: signUpMutation,
+			variables: userData,
+			cache: "default",
+			server: true,
+		});
+
+		if (!signup) {
 			return {
 				success: false,
 				message: "Failed to sign up",
@@ -55,9 +66,13 @@ export const resendValidatingOTPAction = async ({
 	userData: { email: string };
 }): Promise<ActionState> => {
 	try {
-		const data = await resendValidatingOTP(userData);
+		const { resendValidatingOTP } = await fetcher({
+			query: resendValidatingOTPMutation,
+			variables: userData,
+			server: true,
+		});
 
-		if (!data.resendValidatingOTP?.success) {
+		if (!resendValidatingOTP?.success) {
 			return {
 				success: false,
 				message: "Failed to resend the OTP code please tray again.",
@@ -65,7 +80,7 @@ export const resendValidatingOTPAction = async ({
 		}
 		return {
 			success: true,
-			message: data.resendValidatingOTP.message as string,
+			message: resendValidatingOTP.message as string,
 		};
 	} catch (error) {
 		let message = "RESEND_OTP_ERROR: Unexpected Error";
@@ -88,15 +103,21 @@ export const forgotPasswordAction = async (
 	}
 
 	try {
-		const data = await forgotPassword(email);
+		const { forgetPassword } = await fetcher({
+			query: forgetPasswordMutation,
+			variables: {
+				email,
+			},
+			server: true,
+		});
 
-		if (!data.forgetPassword?.success) {
-			throw Error(data.forgetPassword?.message || "Something went wrong");
+		if (!forgetPassword?.success) {
+			throw Error(forgetPassword?.message || "Something went wrong");
 		}
 
 		return {
 			success: true,
-			message: data.forgetPassword.message || "success",
+			message: forgetPassword.message || "success",
 		};
 	} catch (error) {
 		let message = "Unexpected Error";

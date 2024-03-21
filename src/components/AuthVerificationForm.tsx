@@ -15,12 +15,13 @@ import {
 } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInputOTP, SubmitButton } from "./SmartForm";
-import { verifyAccount } from "@/lib/graphql";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import type { LoginData } from "@/lib/graphql/types";
 import { useRouter } from "next/navigation";
 import { resendValidatingOTPAction } from "@/app/actions";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { verifyAccountMutation } from "@/lib/graphql/mutations";
 
 function AuthVerificationForm({ userData }: { userData: LoginData }) {
 	const { email } = userData;
@@ -35,12 +36,16 @@ function AuthVerificationForm({ userData }: { userData: LoginData }) {
 
 	const onSubmit = async (values: { otp: string }) => {
 		try {
-			const data = await verifyAccount({
-				email,
-				otp: values.otp,
+			const { verifyAccount } = await fetcher({
+				query: verifyAccountMutation,
+				variables: {
+					email,
+					otp: values.otp,
+				},
+				server: false,
 			});
 
-			toast.success(data.verifyAccount?.message);
+			toast.success(verifyAccount?.message);
 
 			await signIn("credentials", {
 				redirect: false,

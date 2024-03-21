@@ -14,6 +14,8 @@ const endpoint = env.NEXT_PUBLIC_BACKEND_URL;
  * we catch the error and throw error if env === 'development'
  * if not 'development' & not client we do nothing
  */
+
+// todo handel server false case
 export async function fetcher<
 	T extends TadaDocumentNode<ResultOf<T>, VariablesOf<T>>,
 >({
@@ -21,11 +23,13 @@ export async function fetcher<
 	headers,
 	query,
 	variables,
+	server,
 }: {
 	cache?: RequestCache;
 	headers?: HeadersInit;
 	query: T;
 	variables?: VariablesOf<T>;
+	server: boolean;
 }): Promise<ResultOf<T>> {
 	try {
 		const res = await fetch(endpoint, {

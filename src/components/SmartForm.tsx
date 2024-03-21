@@ -104,16 +104,16 @@ export function FormInputOTP<T extends FieldValues>({
 			render={({ value, ...field }) => (
 				<InputOTP
 					maxLength={6}
+					{...field}
+					id={id}
 					pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
 					render={({ slots }) => (
 						<InputOTPGroup>
-							{slots.map((slot, index) => (
-								<InputOTPSlot index={index} key={index} {...slot} />
-							))}{" "}
+							{/* {slots.map((slot, index) => ( */}
+							<InputOTPSlot index={0} />
+							{/* ))}{" "} */}
 						</InputOTPGroup>
 					)}
-					id={id}
-					{...field}
 				/>
 			)}
 		/>

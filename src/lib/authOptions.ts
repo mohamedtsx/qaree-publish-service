@@ -3,8 +3,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 
 import { env } from "../env";
-import { signIn } from "./graphql";
 import type { AuthUser } from "./graphql/types";
+import { signInMutation } from "./graphql/mutations";
+import { fetcher } from "./graphql/fetcher";
 
 export const authOptions: NextAuthOptions = {
 	providers: [
@@ -26,7 +27,15 @@ export const authOptions: NextAuthOptions = {
 
 				if (!email || !password) return null;
 
-				const { signin } = await signIn({ email, password });
+				const { signin } = await fetcher({
+					query: signInMutation,
+					variables: {
+						email,
+						password,
+					},
+					server: true,
+				});
+
 				if (!signin?.access_token) return null;
 
 				const user = {
