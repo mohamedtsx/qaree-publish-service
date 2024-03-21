@@ -3,6 +3,7 @@ import type { ResultOf, TadaDocumentNode, VariablesOf } from "gql.tada";
 import { fetcher } from "./fetcher";
 
 import {
+	forgetPasswordMutation,
 	resendValidatingOTPMutation,
 	signInMutation,
 	signUpMutation,
@@ -50,6 +51,17 @@ export const signIn = async (userData: LoginSchemaType) =>
 	>({
 		query: signInMutation,
 		variables: userData,
+	});
+
+export const forgotPassword = async (email: string) =>
+	await fetcher<
+		ResultOf<typeof forgetPasswordMutation>,
+		VariablesOf<typeof forgetPasswordMutation>
+	>({
+		query: forgetPasswordMutation,
+		variables: {
+			email,
+		},
 	});
 
 export const getUserInfo = async (token: string) =>

@@ -1,13 +1,12 @@
 "use server";
 
-import { resendValidatingOTP, signUp } from "@/lib/graphql";
+import { forgotPassword, resendValidatingOTP, signUp } from "@/lib/graphql";
 import type { RegisterData } from "@/lib/graphql/types";
 import { registerFormSchema } from "@/schema";
 
 type ActionState = {
 	success: boolean;
 	message: string;
-	error?: string;
 };
 
 export const registerAction = async (
@@ -19,8 +18,7 @@ export const registerAction = async (
 		const errorMessage = result.error.message;
 		return {
 			success: false,
-			message: "Form data is not valid",
-			error: errorMessage,
+			message: errorMessage,
 		};
 	}
 
@@ -78,5 +76,34 @@ export const resendValidatingOTPAction = async ({
 			success: false,
 			message,
 		};
+	}
+};
+
+export const forgotPasswordAction = async (
+	email: string,
+): Promise<ActionState> => {
+	if (!email) {
+		return { success: false, message: "Invalid email" };
+	}
+
+	try {
+		const {
+			data: { forgetPassword },
+		} = await forgotPassword(email);
+
+		if (!forgetPassword?.success) {
+			throw Error(forgetPassword?.message || "Something went wrong");
+		}
+
+		return {
+			success: true,
+			message: forgetPassword.message || "success",
+		};
+	} catch (error) {
+		let message = "Unexpected Error";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+		return { success: false, message };
 	}
 };

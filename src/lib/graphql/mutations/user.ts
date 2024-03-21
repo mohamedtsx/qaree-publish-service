@@ -35,6 +35,15 @@ export const signInMutation = graphql(`
   }
 `);
 
+export const forgetPasswordMutation = graphql(`
+  mutation forgetPassword($email: String!){
+    forgetPassword(email: $email) {
+      message,
+      success
+    }
+  }
+`);
+
 export const loginWithGoogleMutation = graphql(`
   mutation googleLogin($token: String!){
     googleLogin(google_token: $token)

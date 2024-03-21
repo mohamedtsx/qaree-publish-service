@@ -106,7 +106,7 @@ function AuthLoginForm() {
 							/>
 							<Link
 								className="text-sm hover:underline text-muted-foreground text-end block mt-2"
-								href={""}
+								href={"/signin/identify"}
 							>
 								Forgot password?
 							</Link>
