@@ -104,12 +104,14 @@ function AuthLoginForm() {
 								label="Password"
 								placeholder="Enter password"
 							/>
-							<Link
-								className="text-sm hover:underline text-muted-foreground text-end block mt-2"
-								href={"/signin/identify"}
-							>
-								Forgot password?
-							</Link>
+							<div className="mt-2 flex justify-end">
+								<Link
+									className="text-sm hover:underline text-muted-foreground"
+									href={"/signin/identify"}
+								>
+									Forgot password?
+								</Link>
+							</div>
 						</div>
 					</CardContent>
 					<CardFooter className="flex flex-col">
