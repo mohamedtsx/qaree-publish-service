@@ -1,11 +1,13 @@
 import { print } from "graphql";
 
-import { env } from "../../env";
 import { FetcherError, createCustomError } from "./errors";
 import type { ResultOf, TadaDocumentNode, VariablesOf } from "gql.tada";
 import type { ApiResponse } from "./types";
 
-const endpoint = env.NEXT_PUBLIC_BACKEND_URL;
+import { BACKEND_URL } from ".";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../authOptions";
+import { redirect } from "next/navigation";
 
 /**
  * This function will return the data from the API
@@ -14,8 +16,6 @@ const endpoint = env.NEXT_PUBLIC_BACKEND_URL;
  * we catch the error and throw error if env === 'development'
  * if not 'development' & not client we do nothing
  */
-
-// todo handel server false case
 export async function fetcher<
 	T extends TadaDocumentNode<ResultOf<T>, VariablesOf<T>>,
 >({
@@ -23,19 +23,27 @@ export async function fetcher<
 	headers,
 	query,
 	variables,
-	server,
+	server = false,
+	protectid = true,
 }: {
 	cache?: RequestCache;
 	headers?: HeadersInit;
 	query: T;
 	variables?: VariablesOf<T>;
-	server: boolean;
+	server?: boolean;
+	protectid?: boolean;
 }): Promise<ResultOf<T>> {
 	try {
-		const res = await fetch(endpoint, {
+		const session = await getServerSession(authOptions);
+		if (!session && protectid) {
+			redirect(authOptions.pages?.signIn || "/signin");
+		}
+
+		const res = await fetch(BACKEND_URL, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				Authorization: `Bearer ${session?.user.access_token}`,
 				...headers,
 			},
 			body: JSON.stringify({
