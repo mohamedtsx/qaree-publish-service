@@ -1,21 +1,16 @@
-export type ApiResponse<T> = {
-	status: number;
+type ApiResponseSuccess<T> = {
 	data: T;
 };
 
-export type GraphQLError<T> = {
+type ApiErrorResponse = {
 	errors: {
 		message: string;
-		location: {
-			line: number;
-			column: number;
-		}[];
+		locations: { line: number; column: number }[];
 		path: string[];
 	}[];
-	data: {
-		[P in keyof T]: null;
-	};
 };
+
+export type ApiResponse<T> = ApiResponseSuccess<T> | ApiErrorResponse;
 
 export type AuthUser = {
 	access_token: string;

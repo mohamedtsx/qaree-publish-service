@@ -3,11 +3,21 @@ import { print } from "graphql";
 
 import { env } from "../../env";
 import { FetcherError, createCustomError } from "./errors";
-import type { ApiResponse, GraphQLError } from "./types";
+import type { ResultOf, TadaDocumentNode, VariablesOf } from "gql.tada";
+import type { ApiResponse } from "./types";
 
 const endpoint = env.NEXT_PUBLIC_BACKEND_URL;
 
-export async function fetcher<Result, Variables>({
+/**
+ * This function will return the data from the API
+ * or throw either Error or FetcherError
+ * we catch the error and show a toaster in the client
+ * we catch the error and throw error if env === 'development'
+ * if not 'development' & not client we do nothing
+ */
+export async function fetcher<
+	T extends TadaDocumentNode<ResultOf<T>, VariablesOf<T>>,
+>({
 	cache = "force-cache",
 	headers,
 	query,
@@ -15,9 +25,9 @@ export async function fetcher<Result, Variables>({
 }: {
 	cache?: RequestCache;
 	headers?: HeadersInit;
-	query: TypedDocumentNode<Result, Variables>;
-	variables?: Variables;
-}): Promise<ApiResponse<Result>> {
+	query: T;
+	variables?: VariablesOf<T>;
+}): Promise<ResultOf<T>> {
 	try {
 		const res = await fetch(endpoint, {
 			method: "POST",
@@ -32,20 +42,13 @@ export async function fetcher<Result, Variables>({
 			cache,
 		});
 
-		const resData = (await res.json()) as
-			| ApiResponse<Result>
-			| GraphQLError<Result>;
+		const resData = (await res.json()) as ApiResponse<ResultOf<T>>;
 
 		if ("errors" in resData) {
 			throw new FetcherError(resData.errors[0].message);
 		}
 
-		const result = resData.data;
-
-		return {
-			status: res.status,
-			data: result,
-		};
+		return resData.data;
 	} catch (error) {
 		if (error instanceof SyntaxError) {
 			// The backend returned an invalid JSON <!doctype...>
