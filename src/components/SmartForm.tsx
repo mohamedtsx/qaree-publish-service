@@ -109,9 +109,9 @@ export function FormInputOTP<T extends FieldValues>({
 					pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
 					render={({ slots }) => (
 						<InputOTPGroup>
-							{/* {slots.map((slot, index) => ( */}
-							<InputOTPSlot index={0} />
-							{/* ))}{" "} */}
+							{slots.map((slot, index) => (
+								<InputOTPSlot key={index} {...slot} />
+							))}{" "}
 						</InputOTPGroup>
 					)}
 				/>
