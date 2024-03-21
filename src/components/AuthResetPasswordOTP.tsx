@@ -34,12 +34,12 @@ function AuthResetPasswordOTP({ userData }: { userData: LoginData }) {
 
 	const onSubmit = async (values: { otp: string }) => {
 		try {
-			const res = await verifyAccount({
+			const data = await verifyAccount({
 				email,
 				otp: values.otp,
 			});
 
-			toast.success(res.data.verifyAccount?.message);
+			toast.success(data.verifyAccount?.message);
 
 			// router.push("/dashboard");
 		} catch (error) {

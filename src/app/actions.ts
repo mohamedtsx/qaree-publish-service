@@ -23,8 +23,8 @@ export const registerAction = async (
 	}
 
 	try {
-		const signupRes = await signUp(userData);
-		if (signupRes.status !== 200 || !signupRes.data.signup) {
+		const { signup } = await signUp(userData);
+		if (!signUp) {
 			return {
 				success: false,
 				message: "Failed to sign up",
@@ -33,7 +33,7 @@ export const registerAction = async (
 
 		return {
 			success: true,
-			message: signupRes.data.signup?.message as string,
+			message: signup?.message as string,
 		};
 	} catch (error) {
 		let errorMessage = "Register Unexpected Error!";
@@ -55,8 +55,9 @@ export const resendValidatingOTPAction = async ({
 	userData: { email: string };
 }): Promise<ActionState> => {
 	try {
-		const res = await resendValidatingOTP(userData);
-		if (!res.data.resendValidatingOTP?.success) {
+		const data = await resendValidatingOTP(userData);
+
+		if (!data.resendValidatingOTP?.success) {
 			return {
 				success: false,
 				message: "Failed to resend the OTP code please tray again.",
@@ -64,7 +65,7 @@ export const resendValidatingOTPAction = async ({
 		}
 		return {
 			success: true,
-			message: res.data.resendValidatingOTP.message as string,
+			message: data.resendValidatingOTP.message as string,
 		};
 	} catch (error) {
 		let message = "RESEND_OTP_ERROR: Unexpected Error";
@@ -87,17 +88,15 @@ export const forgotPasswordAction = async (
 	}
 
 	try {
-		const {
-			data: { forgetPassword },
-		} = await forgotPassword(email);
+		const data = await forgotPassword(email);
 
-		if (!forgetPassword?.success) {
-			throw Error(forgetPassword?.message || "Something went wrong");
+		if (!data.forgetPassword?.success) {
+			throw Error(data.forgetPassword?.message || "Something went wrong");
 		}
 
 		return {
 			success: true,
-			message: forgetPassword.message || "success",
+			message: data.forgetPassword.message || "success",
 		};
 	} catch (error) {
 		let message = "Unexpected Error";

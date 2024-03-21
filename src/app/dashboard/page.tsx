@@ -12,8 +12,8 @@ async function Dashboard() {
 	}
 
 	// todo remove this data is not required in this page
-	const res = await getUserInfo(session.user.access_token);
-	const user = res.data.userInfo;
+	const data = await getUserInfo(session.user.access_token);
+	const user = data.userInfo;
 
 	if (!user) {
 		return <h1 className="text-4xl">Something went wrong!</h1>;

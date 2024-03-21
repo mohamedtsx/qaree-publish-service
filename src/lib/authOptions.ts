@@ -26,18 +26,14 @@ export const authOptions: NextAuthOptions = {
 
 				if (!email || !password) return null;
 
-				const res = await signIn({ email, password });
+				const { signin } = await signIn({ email, password });
+				if (!signin?.access_token) return null;
 
-				if (res.status === 200 && res.data.signin) {
-					const user = {
-						id: "no-user-id!",
-						access_token: res.data.signin?.access_token as string,
-					};
+				const user = {
+					access_token: signin.access_token,
+				};
 
-					return user;
-				}
-
-				return null;
+				return user;
 			},
 		}),
 
@@ -50,7 +46,7 @@ export const authOptions: NextAuthOptions = {
 		async jwt({ token, user }) {
 			return { ...token, ...user };
 		},
-		async session({ session, token, user }) {
+		async session({ session, token }) {
 			session.user = token;
 			return session;
 		},
@@ -61,7 +57,9 @@ export const authOptions: NextAuthOptions = {
 };
 
 declare module "next-auth" {
-	interface User extends AuthUser {}
+	interface User extends AuthUser {
+		id?: string;
+	}
 	interface Session {
 		user: AuthUser;
 	}
