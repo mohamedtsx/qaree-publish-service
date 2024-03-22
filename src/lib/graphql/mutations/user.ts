@@ -71,6 +71,14 @@ export const forgetPasswordMutation = graphql(`
   }
 `);
 
+export const resetPasswordMutation = graphql(`
+  mutation resetPassword($newPassword: String!){
+    resetPassword(newPassword: $newPassword) {
+        message
+    }
+  }
+`);
+
 export const loginWithGoogleMutation = graphql(`
   mutation googleLogin($token: String!){
     googleLogin(google_token: $token)
