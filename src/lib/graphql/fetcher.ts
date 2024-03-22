@@ -16,6 +16,16 @@ import { redirect } from "next/navigation";
  * we catch the error and throw error if env === 'development'
  * if not 'development' & not client we do nothing
  */
+
+interface TypeOptions<T> {
+	cache?: RequestCache;
+	headers?: HeadersInit;
+	query: T;
+	variables?: VariablesOf<T>;
+	server?: boolean;
+	protectid?: boolean;
+}
+
 export async function fetcher<
 	T extends TadaDocumentNode<ResultOf<T>, VariablesOf<T>>,
 >({
@@ -25,41 +35,42 @@ export async function fetcher<
 	variables,
 	server = false,
 	protectid = true,
-}: {
-	cache?: RequestCache;
-	headers?: HeadersInit;
-	query: T;
-	variables?: VariablesOf<T>;
-	server?: boolean;
-	protectid?: boolean;
-}): Promise<ResultOf<T>> {
+}: TypeOptions<T>): Promise<ResultOf<T>> {
+	let res: Response;
+
 	try {
-		const session = await getServerSession(authOptions);
-		if (!session && protectid) {
-			redirect(authOptions.pages?.signIn || "/signin");
+		if (server) {
+			const session = await getServerSession(authOptions);
+			if (!session && protectid) {
+				redirect(authOptions.pages?.signIn || "/signin");
+			}
+
+			res = await fetch(BACKEND_URL, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					accept: "application/json",
+					Authorization: `Bearer ${session?.user.access_token}`,
+					...headers,
+				},
+				body: JSON.stringify({
+					query: print(query),
+					variables,
+				}),
+				cache,
+			});
+		} else {
+			res = await fetch("/api", {
+				method: "POST",
+				body: JSON.stringify({
+					body: JSON.stringify({
+						query: print(query),
+						variables,
+					}),
+					protectid,
+				}),
+			});
 		}
-
-		const res = await fetch(BACKEND_URL, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${session?.user.access_token}`,
-				...headers,
-			},
-			body: JSON.stringify({
-				query: print(query),
-				variables,
-			}),
-			cache,
-		});
-
-		const resData = (await res.json()) as ApiResponse<ResultOf<T>>;
-
-		if ("errors" in resData) {
-			throw new FetcherError(resData.errors[0].message);
-		}
-
-		return resData.data;
 	} catch (error) {
 		if (error instanceof SyntaxError) {
 			// The backend returned an invalid JSON <!doctype...>
@@ -76,4 +87,12 @@ export async function fetcher<
 				  : "Unknown error",
 		);
 	}
+
+	const resData = (await res.json()) as ApiResponse<ResultOf<T>>;
+
+	if ("errors" in resData) {
+		throw new FetcherError(resData.errors[0].message);
+	}
+
+	return resData.data;
 }

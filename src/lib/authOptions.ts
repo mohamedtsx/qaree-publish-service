@@ -1,8 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GitHubProvider from "next-auth/providers/github";
 
-import { env } from "../env";
 import type { AuthUser } from "./graphql/types";
 import { signInMutation } from "./graphql/mutations";
 import { fetcher } from "./graphql/fetcher";
@@ -34,6 +32,7 @@ export const authOptions: NextAuthOptions = {
 						password,
 					},
 					server: true,
+					protectid: false,
 				});
 
 				if (!signin?.access_token) return null;
@@ -44,11 +43,6 @@ export const authOptions: NextAuthOptions = {
 
 				return user;
 			},
-		}),
-
-		GitHubProvider({
-			clientId: env.GITHUB_ID,
-			clientSecret: env.GITHUB_SECRET,
 		}),
 	],
 	callbacks: {

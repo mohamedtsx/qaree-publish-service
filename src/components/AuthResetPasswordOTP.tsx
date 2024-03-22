@@ -42,6 +42,7 @@ function AuthResetPasswordOTP({ userData }: { userData: LoginData }) {
 					otp: values.otp,
 				},
 				server: false,
+				protectid: false,
 			});
 
 			toast.success(verifyAccount?.message);

@@ -1,22 +1,11 @@
-import { authOptions } from "@/lib/authOptions";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { userInfoQuery } from "@/lib/graphql/queries";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 
 async function Dashboard() {
-	const session = await getServerSession(authOptions);
-
-	if (!session?.user) {
-		redirect("/signin");
-	}
-
 	const { userInfo } = await fetcher({
 		query: userInfoQuery,
-		headers: {
-			Authorization: `Bearer ${session.user.access_token}`,
-		},
 		server: true,
+		protectid: true,
 	});
 
 	if (!userInfo) {

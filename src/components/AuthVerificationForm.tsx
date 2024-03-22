@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import type { LoginData } from "@/lib/graphql/types";
 import { useRouter } from "next/navigation";
-import { resendValidatingOTPAction } from "@/app/actions";
+import { resendValidatingOTPAction, verifyAccountAction } from "@/app/actions";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { verifyAccountMutation } from "@/lib/graphql/mutations";
 
@@ -36,16 +36,14 @@ function AuthVerificationForm({ userData }: { userData: LoginData }) {
 
 	const onSubmit = async (values: { otp: string }) => {
 		try {
-			const { verifyAccount } = await fetcher({
-				query: verifyAccountMutation,
-				variables: {
-					email,
-					otp: values.otp,
-				},
-				server: false,
+			const { success, message } = await verifyAccountAction({
+				email,
+				otp: values.otp,
 			});
 
-			toast.success(verifyAccount?.message);
+			if (!success) {
+				throw Error(message);
+			}
 
 			await signIn("credentials", {
 				redirect: false,

@@ -34,6 +34,7 @@ function AuthRegisterForm() {
 	});
 
 	const [currentStep, setCurrentStep] = useState(0);
+
 	const [loginData, setLoginData] = useState({
 		email: "",
 		password: "",

@@ -5,6 +5,7 @@ import {
 	forgetPasswordMutation,
 	resendValidatingOTPMutation,
 	signUpMutation,
+	verifyAccountMutation,
 } from "@/lib/graphql/mutations";
 import type { RegisterData } from "@/lib/graphql/types";
 import { registerFormSchema } from "@/schema";
@@ -33,6 +34,7 @@ export const registerAction = async (
 			variables: userData,
 			cache: "default",
 			server: true,
+			protectid: false,
 		});
 
 		if (!signup) {
@@ -70,6 +72,7 @@ export const resendValidatingOTPAction = async ({
 			query: resendValidatingOTPMutation,
 			variables: userData,
 			server: true,
+			protectid: false,
 		});
 
 		if (!resendValidatingOTP?.success) {
@@ -125,5 +128,40 @@ export const forgotPasswordAction = async (
 			message = error.message;
 		}
 		return { success: false, message };
+	}
+};
+
+export const verifyAccountAction = async (variables: {
+	email: string;
+	otp: string;
+}): Promise<ActionState> => {
+	try {
+		const { verifyAccount } = await fetcher({
+			query: verifyAccountMutation,
+			variables,
+			server: true,
+			protectid: false,
+		});
+
+		if (!verifyAccount?.success) {
+			return {
+				success: false,
+				message: verifyAccount?.message || "Unexpected Error",
+			};
+		}
+
+		return {
+			success: true,
+			message: verifyAccount.message as string,
+		};
+	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+		return {
+			success: false,
+			message,
+		};
 	}
 };
