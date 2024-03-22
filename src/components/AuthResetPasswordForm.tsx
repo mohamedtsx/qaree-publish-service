@@ -1,6 +1,6 @@
 import React from "react";
 
-function AuthResetPasswordForm(token: string) {
+function AuthResetPasswordForm({ token }: { token: string }) {
 	// reset password action
 	return <div>AuthResetPasswordForm</div>;
 }
