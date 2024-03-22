@@ -37,7 +37,7 @@ function AuthResetPasswordOTP({ email }: { email: string }) {
 			otp: values.otp,
 		});
 
-		if (!state?.success) {
+		if (state && !state?.success) {
 			return toast.error(state.message);
 		}
 
