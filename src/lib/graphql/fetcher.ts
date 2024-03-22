@@ -68,6 +68,7 @@ export async function fetcher<
 						variables,
 					}),
 					protectid,
+					...headers,
 				}),
 			});
 		}

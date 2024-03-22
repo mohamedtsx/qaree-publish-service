@@ -5,6 +5,7 @@ import {
 	forgetPasswordMutation,
 	resendResetPasswordOTPMutation,
 	resendValidatingOTPMutation,
+	resetPasswordMutation,
 	signUpMutation,
 	validateResetPasswordOTPMutation,
 	verifyAccountMutation,
@@ -76,6 +77,7 @@ export const resendValidatingOTPAction = async ({
 			variables: userData,
 			server: true,
 			protectid: false,
+			cache: "default",
 		});
 
 		if (!resendValidatingOTP?.success) {
@@ -148,6 +150,7 @@ export const verifyAccountAction = async (variables: {
 			variables,
 			server: true,
 			protectid: false,
+			cache: "default",
 		});
 
 		if (!verifyAccount?.success) {
@@ -206,7 +209,7 @@ export const validateResetPasswordOTPAction = async (variables: {
 		};
 	}
 
-	redirect(`/signin/reset-password/${token}`);
+	redirect(`/signin/reset-password/${token}?email=${variables.email}`);
 };
 
 export const resendResetPasswordOTPAction = async (variables: {
@@ -246,8 +249,40 @@ export const resendResetPasswordOTPAction = async (variables: {
 	}
 };
 
-export const resetPasswordAction = async (variables: {
+export const resetPasswordAction = async (payload: {
 	newPassword: string;
-}) => {
-	// rest actionf
+	token: string;
+}): Promise<ActionState> => {
+	try {
+		// todo send token validation request!
+		const { resetPassword } = await fetcher({
+			query: resetPasswordMutation,
+			variables: { newPassword: payload.newPassword },
+			cache: "default",
+			protectid: false,
+			server: true,
+			headers: {
+				Authorization: `Bearer ${payload.token}`,
+			},
+		});
+
+		if (!resetPassword?.message) {
+			throw Error("Failed to Reset Password");
+		}
+
+		// no success state in the backend schema!
+		return {
+			success: true,
+			message: resetPassword.message || "Success",
+		};
+	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+		return {
+			success: false,
+			message,
+		};
+	}
 };

@@ -16,11 +16,48 @@ import {
 	CardHeader,
 	CardTitle,
 } from "./ui/card";
+import { resetPasswordAction } from "@/app/actions";
+import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-function AuthResetPasswordForm({ token }: { token: string }) {
-	// todo send token validation request
+function AuthResetPasswordForm({
+	token,
+}: {
+	token: string;
+}) {
+	const email = useSearchParams().get("email");
+	const router = useRouter();
 
-	const onSubmit = async (values: ResetPasswordSchemaType) => {};
+	const onSubmit = async (values: ResetPasswordSchemaType) => {
+		if (!values.password) {
+			return toast.error("Invalid Value");
+		}
+
+		const { success, message } = await resetPasswordAction({
+			newPassword: values.password,
+			token,
+		});
+
+		if (!success) {
+			return toast.error(message);
+		}
+
+		toast.success(message);
+
+		const res = await signIn("credentials", {
+			redirect: false,
+			email,
+			password: values.password,
+		});
+
+		if (res?.error) {
+			return toast.error(`${res.error} Please try to login`);
+		}
+
+		router.push("/dashboard");
+	};
 
 	const form = useForm<ResetPasswordSchemaType>({
 		resolver: zodResolver(resetPasswordFormSchema),
