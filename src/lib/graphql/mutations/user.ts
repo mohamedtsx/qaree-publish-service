@@ -26,6 +26,33 @@ export const resendValidatingOTPMutation = graphql(`
   }
 `);
 
+export const resendResetPasswordOTPMutation = graphql(`
+  mutation resendResetPasswordOTP($email: String!){
+    resendResetPasswordOTP(email: $email) {
+      message,
+      success
+    }
+  }
+`);
+
+export const validateResetPasswordOTPMutation = graphql(`
+  mutation validateResetPasswordOTP($email: String!, $otp: String!){
+    validateResetPasswordOTP(email: $email, otp: $otp) {
+      message,
+      success,
+      reset_token
+    }
+  }
+`);
+
+export const resetPassword = graphql(`
+  mutation resetPassword($newPassword: String!){
+    resetPassword(newPassword: $newPassword) {
+        message
+    }
+  }
+`);
+
 export const signInMutation = graphql(`
   mutation signin($email: String!, $password: String!){
     signin(email: $email, password: $password) {

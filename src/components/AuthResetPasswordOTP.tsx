@@ -16,16 +16,13 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInputOTP, SubmitButton } from "./SmartForm";
 import { toast } from "sonner";
-import type { LoginData } from "@/lib/graphql/types";
-import { useRouter } from "next/navigation";
-import { resendValidatingOTPAction } from "@/app/actions";
-import { fetcher } from "@/lib/graphql/fetcher";
-import { verifyAccountMutation } from "@/lib/graphql/mutations";
+import {
+	resendResetPasswordOTPAction,
+	validateResetPasswordOTPAction,
+} from "@/app/actions";
+import { useSession } from "next-auth/react";
 
-function AuthResetPasswordOTP({ userData }: { userData: LoginData }) {
-	const { email } = userData;
-	const router = useRouter();
-
+function AuthResetPasswordOTP({ email }: { email: string }) {
 	const form = useForm<VerifyAccountSchemaType>({
 		resolver: zodResolver(verifyAccountFormSchema),
 		defaultValues: {
@@ -33,43 +30,37 @@ function AuthResetPasswordOTP({ userData }: { userData: LoginData }) {
 		},
 	});
 
+	const { data: session } = useSession();
+
 	const onSubmit = async (values: { otp: string }) => {
-		try {
-			const { verifyAccount } = await fetcher({
-				query: verifyAccountMutation,
-				variables: {
-					email,
-					otp: values.otp,
-				},
-				server: false,
-				protectid: false,
-			});
+		const { success, message } = await validateResetPasswordOTPAction({
+			email,
+			otp: values.otp,
+		});
 
-			toast.success(verifyAccount?.message);
-
-			// router.push("/dashboard");
-		} catch (error) {
-			if (error instanceof Error) {
-				return toast.error(error.message);
-			}
-			toast.error("Unexpected Error");
+		if (!success) {
+			return toast.error(message);
 		}
+
+		console.log(session);
+
+		toast.success(message);
 	};
 
 	const resendHandler = async () => {
 		try {
-			const res = await resendValidatingOTPAction({
-				userData: {
-					email,
-				},
+			const res = await resendResetPasswordOTPAction({
+				email,
 			});
+
 			if (!res.success) {
 				throw Error(res.message);
 			}
-			toast.success("An OTP code has been sent.");
+
+			toast.success(res.message);
 		} catch (error) {
 			if (error instanceof Error) {
-				toast.error(error.name);
+				return toast.error(error.message);
 			}
 			toast.error("Unexpected Error");
 		}

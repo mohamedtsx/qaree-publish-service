@@ -1,14 +1,19 @@
 "use server";
 
+import { authOptions } from "@/lib/authOptions";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	forgetPasswordMutation,
+	resendResetPasswordOTPMutation,
 	resendValidatingOTPMutation,
 	signUpMutation,
+	validateResetPasswordOTPMutation,
 	verifyAccountMutation,
 } from "@/lib/graphql/mutations";
 import type { RegisterData } from "@/lib/graphql/types";
 import { registerFormSchema } from "@/schema";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 type ActionState = {
 	success: boolean;
@@ -78,7 +83,9 @@ export const resendValidatingOTPAction = async ({
 		if (!resendValidatingOTP?.success) {
 			return {
 				success: false,
-				message: "Failed to resend the OTP code please tray again.",
+				message:
+					resendValidatingOTP?.message ||
+					"Failed to resend the OTP code please tray again.",
 			};
 		}
 		return {
@@ -86,7 +93,7 @@ export const resendValidatingOTPAction = async ({
 			message: resendValidatingOTP.message as string,
 		};
 	} catch (error) {
-		let message = "RESEND_OTP_ERROR: Unexpected Error";
+		let message = "Something went wrong!";
 		if (error instanceof Error) {
 			message = error.message;
 		}
@@ -112,6 +119,7 @@ export const forgotPasswordAction = async (
 				email,
 			},
 			server: true,
+			protectid: false,
 		});
 
 		if (!forgetPassword?.success) {
@@ -164,4 +172,86 @@ export const verifyAccountAction = async (variables: {
 			message,
 		};
 	}
+};
+
+export const validateResetPasswordOTPAction = async (variables: {
+	email: string;
+	otp: string;
+}): Promise<ActionState> => {
+	try {
+		const { validateResetPasswordOTP } = await fetcher({
+			query: validateResetPasswordOTPMutation,
+			variables,
+			server: true,
+			protectid: false,
+		});
+
+		if (!validateResetPasswordOTP?.success) {
+			return {
+				success: false,
+				message: validateResetPasswordOTP?.message || "Invalid Server Response",
+			};
+		}
+
+		// todo append the token to the user session so i can use in rset pass act
+		const session = await getServerSession(authOptions);
+		const token = validateResetPasswordOTP.reset_token as string;
+
+		return {
+			success: true,
+			message: validateResetPasswordOTP.message as string,
+		};
+	} catch (error) {
+		let message = "Somethign went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const resendResetPasswordOTPAction = async (variables: {
+	email: string;
+}): Promise<ActionState> => {
+	try {
+		const { resendResetPasswordOTP } = await fetcher({
+			query: resendResetPasswordOTPMutation,
+			variables,
+			server: true,
+			protectid: false,
+		});
+
+		if (!resendResetPasswordOTP?.success) {
+			return {
+				success: false,
+				message:
+					resendResetPasswordOTP?.message ||
+					"Failed to send the code. Please try again later",
+			};
+		}
+
+		return {
+			success: true,
+			message: resendResetPasswordOTP.message || "Code sent successfully",
+		};
+	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const resetPasswordAction = async (variables: {
+	newPassword: string;
+}) => {
+	// rest actionf
 };

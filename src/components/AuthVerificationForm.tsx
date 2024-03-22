@@ -61,18 +61,18 @@ function AuthVerificationForm({ userData }: { userData: LoginData }) {
 
 	const resendHandler = async () => {
 		try {
-			const res = await resendValidatingOTPAction({
+			const { success, message } = await resendValidatingOTPAction({
 				userData: {
 					email,
 				},
 			});
-			if (!res.success) {
-				throw Error(res.message);
+			if (!success) {
+				throw Error(message);
 			}
-			toast.success("An OTP code has been sent.");
+			toast.success(message);
 		} catch (error) {
 			if (error instanceof Error) {
-				toast.error(error.name);
+				return toast.error(error.message);
 			}
 			toast.error("Unexpected Error");
 		}

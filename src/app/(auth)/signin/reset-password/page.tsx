@@ -1,6 +1,4 @@
-"use client";
-
-function RestPassword() {
+function RestPassword({ searchParams }: { searchParams: { email: string } }) {
 	return <div>RestPassword</div>;
 }
 
