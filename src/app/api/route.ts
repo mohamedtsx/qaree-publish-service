@@ -1,8 +1,8 @@
-import { type NextRequest, NextResponse } from "next/server";
 import { BACKEND_URL } from "@/lib/graphql";
+import { type NextRequest, NextResponse } from "next/server";
 
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import { getServerSession } from "next-auth";
 
 export async function POST(req: NextRequest) {
 	const reqBody = (await req.json()) as {

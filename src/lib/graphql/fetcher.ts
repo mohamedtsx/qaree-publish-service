@@ -1,13 +1,13 @@
 import { print } from "graphql";
 
-import { FetcherError, createCustomError } from "./errors";
 import type { ResultOf, TadaDocumentNode, VariablesOf } from "gql.tada";
+import { FetcherError, createCustomError } from "./errors";
 import type { ApiResponse } from "./types";
 
-import { BACKEND_URL } from ".";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../authOptions";
 import { redirect } from "next/navigation";
+import { BACKEND_URL } from ".";
+import { authOptions } from "../authOptions";
 
 /**
  * This function will return the data from the API

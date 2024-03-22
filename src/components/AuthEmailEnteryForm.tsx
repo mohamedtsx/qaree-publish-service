@@ -1,23 +1,23 @@
 "use client";
 
+import { forgotPasswordAction } from "@/app/actions";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { SubmitButton, FormInput } from "./SmartForm";
+import { z } from "zod";
+import AuthResetPasswordOTP from "./AuthResetPasswordOTP";
+import { FormInput, SubmitButton } from "./SmartForm";
 import {
 	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
-	CardDescription,
-	CardContent,
-	CardFooter,
 } from "./ui/card";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { forgotPasswordAction } from "@/app/actions";
 import { Form } from "./ui/form";
-import { useState } from "react";
-import AuthResetPasswordOTP from "./AuthResetPasswordOTP";
 
 const emailEnterySchema = z.object({
 	email: z.string().email(),

@@ -1,9 +1,9 @@
 import Header from "@/components/layouts/Header";
 import SideNav from "@/components/layouts/SideNav";
-import { Suspense, type ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 
-import type { Metadata } from "next";
 import { Loader2 } from "@/components/Loader2";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Publish Service",

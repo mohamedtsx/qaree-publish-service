@@ -26,9 +26,9 @@ import {
 	SelectValue,
 } from "./ui/select";
 
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Button } from "./ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 
 interface SharedProps<T extends FieldValues> {
 	form?: UseFormReturn<T>;

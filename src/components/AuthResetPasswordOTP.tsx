@@ -7,19 +7,21 @@ import {
 	CardHeader,
 	CardTitle,
 } from "./ui/card";
+
 import { Form } from "./ui/form";
-import { useForm } from "react-hook-form";
-import {
-	verifyAccountFormSchema,
-	type VerifyAccountSchemaType,
-} from "@/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormInputOTP, SubmitButton } from "./SmartForm";
-import { toast } from "sonner";
+
 import {
 	resendResetPasswordOTPAction,
 	validateResetPasswordOTPAction,
 } from "@/app/actions";
+import {
+	type VerifyAccountSchemaType,
+	verifyAccountFormSchema,
+} from "@/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { FormInputOTP, SubmitButton } from "./SmartForm";
 
 function AuthResetPasswordOTP({ email }: { email: string }) {
 	const form = useForm<VerifyAccountSchemaType>({

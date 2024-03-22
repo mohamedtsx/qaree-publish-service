@@ -1,10 +1,10 @@
-import { getServerSession, type NextAuthOptions } from "next-auth";
+import { type NextAuthOptions, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import type { AuthUser } from "./graphql/types";
-import { signInMutation } from "./graphql/mutations";
-import { fetcher } from "./graphql/fetcher";
 import { redirect } from "next/navigation";
+import { fetcher } from "./graphql/fetcher";
+import { signInMutation } from "./graphql/mutations";
+import type { AuthUser } from "./graphql/types";
 
 export const authOptions: NextAuthOptions = {
 	providers: [

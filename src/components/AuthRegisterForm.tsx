@@ -12,6 +12,10 @@ import { toast } from "sonner";
 import { Icons } from "./Icons";
 import { Button } from "./ui/button";
 
+import { registerAction } from "@/app/actions";
+import Link from "next/link";
+import { useState } from "react";
+import AuthVerificationForm from "./AuthVerificationForm";
 import {
 	Card,
 	CardContent,
@@ -20,10 +24,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "./ui/card";
-import Link from "next/link";
-import { registerAction } from "@/app/actions";
-import { useState } from "react";
-import AuthVerificationForm from "./AuthVerificationForm";
 
 function AuthRegisterForm() {
 	const form = useForm<RegisterSchemaType>({

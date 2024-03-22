@@ -1,6 +1,6 @@
-import SearchForm from "./SearchForm";
 import ThemeToggle from "../ThemeToggle";
 import { UserNav } from "../UserNav";
+import SearchForm from "./SearchForm";
 
 function Header() {
 	return (

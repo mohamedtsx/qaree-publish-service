@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Icons } from "./Icons";
 import { Button } from "./ui/button";
 
+import Link from "next/link";
 import {
 	Card,
 	CardContent,
@@ -21,7 +22,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "./ui/card";
-import Link from "next/link";
 
 function AuthLoginForm() {
 	const form = useForm<LoginSchemaType>({

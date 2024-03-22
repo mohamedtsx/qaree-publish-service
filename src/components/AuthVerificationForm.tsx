@@ -1,5 +1,19 @@
 "use client";
 
+import { resendValidatingOTPAction, verifyAccountAction } from "@/app/actions";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { verifyAccountMutation } from "@/lib/graphql/mutations";
+import type { LoginData } from "@/lib/graphql/types";
+import {
+	type VerifyAccountSchemaType,
+	verifyAccountFormSchema,
+} from "@/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { FormInputOTP, SubmitButton } from "./SmartForm";
 import {
 	CardContent,
 	CardDescription,
@@ -8,20 +22,6 @@ import {
 	CardTitle,
 } from "./ui/card";
 import { Form } from "./ui/form";
-import { useForm } from "react-hook-form";
-import {
-	verifyAccountFormSchema,
-	type VerifyAccountSchemaType,
-} from "@/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormInputOTP, SubmitButton } from "./SmartForm";
-import { toast } from "sonner";
-import { signIn } from "next-auth/react";
-import type { LoginData } from "@/lib/graphql/types";
-import { useRouter } from "next/navigation";
-import { resendValidatingOTPAction, verifyAccountAction } from "@/app/actions";
-import { fetcher } from "@/lib/graphql/fetcher";
-import { verifyAccountMutation } from "@/lib/graphql/mutations";
 
 function AuthVerificationForm({ userData }: { userData: LoginData }) {
 	const { email } = userData;

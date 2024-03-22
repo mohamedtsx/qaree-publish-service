@@ -1,8 +1,8 @@
 "use client";
 
+import * as SelectPrimitive from "@radix-ui/react-select";
 import * as React from "react";
 import { RadixIcons } from "./ReduxIcons";
-import * as SelectPrimitive from "@radix-ui/react-select";
 
 import { cn } from "@/lib/utils";
 

@@ -1,6 +1,6 @@
-import UserDropdown from "./UserDropdown";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { userInfoQuery } from "@/lib/graphql/queries";
+import UserDropdown from "./UserDropdown";
 
 export async function UserNav() {
 	const { userInfo } = await fetcher({
