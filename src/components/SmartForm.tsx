@@ -185,7 +185,7 @@ export function FormSelect<T extends FieldValues>({
 export const SubmitButton = <T extends FieldValues>({
 	children,
 }: {
-	children: React.ReactNode;
+	children?: React.ReactNode;
 	props?: React.ComponentPropsWithRef<typeof Button>;
 }) => {
 	const formState = useFormState<T>();
@@ -197,7 +197,7 @@ export const SubmitButton = <T extends FieldValues>({
 				formState.isSubmitting || formState.isLoading || formState.isValidating
 			}
 		>
-			{children}
+			{children ? children : "Submit"}
 		</Button>
 	);
 };
