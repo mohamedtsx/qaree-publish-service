@@ -20,7 +20,6 @@ import {
 	resendResetPasswordOTPAction,
 	validateResetPasswordOTPAction,
 } from "@/app/actions";
-import { useSession } from "next-auth/react";
 
 function AuthResetPasswordOTP({ email }: { email: string }) {
 	const form = useForm<VerifyAccountSchemaType>({
@@ -30,21 +29,18 @@ function AuthResetPasswordOTP({ email }: { email: string }) {
 		},
 	});
 
-	const { data: session } = useSession();
-
 	const onSubmit = async (values: { otp: string }) => {
-		const { success, message } = await validateResetPasswordOTPAction({
+		const state = await validateResetPasswordOTPAction({
 			email,
 			otp: values.otp,
 		});
 
-		if (!success) {
-			return toast.error(message);
+		if (!state?.success) {
+			return toast.error(state.message);
 		}
 
-		console.log(session);
-
-		toast.success(message);
+		// Redirect to password reset form upon successful validation
+		// along with the reset token for authorizatiosn
 	};
 
 	const resendHandler = async () => {

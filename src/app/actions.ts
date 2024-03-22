@@ -1,6 +1,5 @@
 "use server";
 
-import { authOptions } from "@/lib/authOptions";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	forgetPasswordMutation,
@@ -12,7 +11,6 @@ import {
 } from "@/lib/graphql/mutations";
 import type { RegisterData } from "@/lib/graphql/types";
 import { registerFormSchema } from "@/schema";
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
 type ActionState = {
@@ -120,6 +118,7 @@ export const forgotPasswordAction = async (
 			},
 			server: true,
 			protectid: false,
+			cache: "default",
 		});
 
 		if (!forgetPassword?.success) {
@@ -178,29 +177,23 @@ export const validateResetPasswordOTPAction = async (variables: {
 	email: string;
 	otp: string;
 }): Promise<ActionState> => {
+	let token: string;
+
 	try {
 		const { validateResetPasswordOTP } = await fetcher({
 			query: validateResetPasswordOTPMutation,
 			variables,
 			server: true,
 			protectid: false,
+			cache: "default",
 		});
-
 		if (!validateResetPasswordOTP?.success) {
 			return {
 				success: false,
 				message: validateResetPasswordOTP?.message || "Invalid Server Response",
 			};
 		}
-
-		// todo append the token to the user session so i can use in rset pass act
-		const session = await getServerSession(authOptions);
-		const token = validateResetPasswordOTP.reset_token as string;
-
-		return {
-			success: true,
-			message: validateResetPasswordOTP.message as string,
-		};
+		token = validateResetPasswordOTP.reset_token as string;
 	} catch (error) {
 		let message = "Somethign went wrong!";
 		if (error instanceof Error) {
@@ -212,6 +205,8 @@ export const validateResetPasswordOTPAction = async (variables: {
 			message,
 		};
 	}
+
+	redirect(`/signin/reset-password/${token}`);
 };
 
 export const resendResetPasswordOTPAction = async (variables: {
@@ -223,6 +218,7 @@ export const resendResetPasswordOTPAction = async (variables: {
 			variables,
 			server: true,
 			protectid: false,
+			cache: "default",
 		});
 
 		if (!resendResetPasswordOTP?.success) {

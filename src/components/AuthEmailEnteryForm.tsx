@@ -66,7 +66,7 @@ function AuthEmailEnteryForm() {
 			{!showNext ? (
 				<>
 					<CardHeader className="space-y-2">
-						<CardTitle className="text-2xl">Sign In</CardTitle>
+						<CardTitle className="text-2xl">Forgot Password</CardTitle>
 						<CardDescription>
 							Please provide your email address. If your account is valid, an
 							OTP will be sent to reset your password.

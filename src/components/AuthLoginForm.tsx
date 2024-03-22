@@ -107,7 +107,7 @@ function AuthLoginForm() {
 							<div className="mt-2 flex justify-end">
 								<Link
 									className="text-sm hover:underline text-muted-foreground"
-									href={"/signin/identify"}
+									href={"/signin/reset-password"}
 								>
 									Forgot password?
 								</Link>
