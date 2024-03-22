@@ -11,5 +11,8 @@
 				"noArrayIndexKey": "off"
 			}
 		}
+	},
+	"files": {
+		"ignore": ["graphql-env.d.ts"]
 	}
 }
