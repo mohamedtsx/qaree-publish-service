@@ -201,3 +201,23 @@ export const SubmitButton = <T extends FieldValues>({
 		</Button>
 	);
 };
+
+export function FormErrors<T extends FieldValues>() {
+	const form = useFormContext<T>();
+
+	return (
+		Object.values(form.formState.errors).length > 0 && (
+			<div className="py-2 text-sm">
+				<h3 className="text-lg font-semibold">There are some errors</h3>
+				<ul>
+					{Object.values(form.formState.errors).map((error, idx) => {
+						const errorMessage =
+							typeof error?.message === "string" ? error?.message : "";
+
+						return <li key={`${idx}-${error?.message}`}>{errorMessage}</li>;
+					})}
+				</ul>
+			</div>
+		)
+	);
+}
