@@ -42,6 +42,7 @@ function PublishBookForm() {
 							onDone={() => {
 								// use it for steps animation for now just keep it update the current step
 								setCurrentStep(2);
+								console.log(form.getValues());
 							}}
 						/>
 					) : currentStep === 2 ? (
@@ -68,7 +69,14 @@ interface StepProps {
 
 function StepFirst({ form, onDone }: StepProps) {
 	const goNext = async () => {
-		const isValid = await form.trigger(["name"]);
+		const isValid = await form.trigger([
+			"name",
+			"categories",
+			"language",
+			"description",
+			"publishingRights",
+		]);
+
 		if (isValid) {
 			onDone();
 		}
@@ -78,17 +86,27 @@ function StepFirst({ form, onDone }: StepProps) {
 		<>
 			<FormInput form={form} name="name" placeholder="name" label="name" />
 			<FormTextare form={form} name="description" label="description" />
+
+			{/* todo fix hidden placeholder when using the filed multi time */}
 			<FormSelect
 				form={form}
 				name="language"
-				items={[{ id: 1, name: "item one" }]}
+				items={[{ id: "1", name: "item one" }]}
 				label="select lang"
 			/>
+
 			<FormSelect
 				form={form}
 				name="publishingRights"
-				items={[{ id: 1, name: "no" }]}
-				label="select lang"
+				items={[{ id: "3", name: "item one" }]}
+				label="select rights"
+			/>
+
+			<FormSelect
+				form={form}
+				name="categories"
+				items={[{ id: "1", name: "item one" }]}
+				label="select categories"
 			/>
 
 			{/* <FormInput form={form} name="categories" placeholder="categories" /> */}

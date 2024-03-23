@@ -27,9 +27,11 @@ const bookDetailesSchema = z.object({
 		message: errors.name,
 	}),
 	description: z.string().min(10, { message: errors.description }),
-	categories: z.array(z.string()),
+	// todo should be z.array(z.string()) but keep it string for know
+	categories: z.string(),
 	language: z.string().min(1, { message: errors.language }),
-	publishingRights: z.boolean({
+	// todo should be boolean but keep it string for know
+	publishingRights: z.string({
 		required_error: errors.publishingRights,
 	}),
 });
@@ -41,7 +43,7 @@ export const publishDefaultValues: Omit<PublishSchemaType, keyof MediaType> = {
 	categories: [""],
 	description: "",
 	language: "",
-	publishingRights: false,
+	publishingRights: "false",
 };
 
 export const publishSchema = bookDetailesSchema.and(filesSchema);

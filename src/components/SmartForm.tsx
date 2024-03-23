@@ -142,6 +142,7 @@ export function FormSelect<T extends FieldValues>({
 	items,
 	...props
 }: FormElementSelectProps<T>) {
+	const id = useId();
 	return (
 		<FormElement
 			form={form}
@@ -157,12 +158,14 @@ export function FormSelect<T extends FieldValues>({
 						<SelectTrigger ref={ref}>
 							<SelectValue placeholder={label} />
 						</SelectTrigger>
+
 						<SelectContent>
 							{items?.map((item) => (
 								<SelectItem
 									key={item.id + item.name}
 									value={item.id}
 									className="capitalize"
+									id={id}
 								>
 									{item?.name}
 								</SelectItem>
