@@ -286,3 +286,9 @@ export const resetPasswordAction = async (payload: {
 		};
 	}
 };
+
+// todo distribute action fiel
+
+export const uploadCover = (bookId: string) => {
+	// const FULL_URL =
+};
