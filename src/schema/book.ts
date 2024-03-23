@@ -11,3 +11,11 @@ const filesSchema = z.object({
 		message: "A sample file is required",
 	}),
 });
+
+const bookDetailesSchema = z.object({
+	name: z.string().min(2),
+	description: z.string().min(10),
+	categories: z.array(z.string()),
+	language: z.string(),
+	publishingRights: z.boolean(),
+});
