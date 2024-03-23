@@ -10,11 +10,12 @@ import { BACKEND_URL } from ".";
 import { authOptions } from "../authOptions";
 
 /**
- * This function will return the data from the API
- * or throw either Error or FetcherError
+ * This function will return the data from the API,
+ * throw either Error or FetcherError or undefined (when redirect)
  * we catch the error and show a toaster in the client
  * we catch the error and throw error if env === 'development'
  * if not 'development' & not client we do nothing
+ * we have unhandled type error when redirect
  */
 
 interface TypeOptions<T> {
@@ -37,12 +38,14 @@ export async function fetcher<
 	protectid = true,
 }: TypeOptions<T>): Promise<ResultOf<T>> {
 	let res: Response;
-
+	let processRedirect = false;
 	try {
 		if (server) {
 			const session = await getServerSession(authOptions);
 			if (!session && protectid) {
-				redirect(authOptions.pages?.signIn || "/signin");
+				processRedirect = true;
+				//@ts-ignore this will case type error when redirect
+				return;
 			}
 
 			res = await fetch(BACKEND_URL, {
@@ -87,6 +90,10 @@ export async function fetcher<
 				  ? error
 				  : "Unknown error",
 		);
+	}
+
+	if (processRedirect) {
+		redirect(authOptions.pages?.signIn || "/signin");
 	}
 
 	const resData = (await res.json()) as ApiResponse<ResultOf<T>>;
