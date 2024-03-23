@@ -11,6 +11,7 @@ import { type UseFormReturn, useForm } from "react-hook-form";
 import { Form } from "./ui/form";
 import { FormInput, FormSelect, FormTextare, SubmitButton } from "./SmartForm";
 import { Button } from "./ui/button";
+import { FormImage } from "./FormImage";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -21,7 +22,7 @@ const steps = [
 // todo(bug) fix form submit when user click entr inside an input
 
 function PublishBookForm() {
-	const [currentStep, setCurrentStep] = useState(1);
+	const [currentStep, setCurrentStep] = useState(2);
 
 	const form = useForm<PublishSchemaType>({
 		mode: "onBlur",
@@ -34,7 +35,9 @@ function PublishBookForm() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-				<header>steps</header>
+				<header>
+					Step {currentStep} {steps[currentStep - 1].name}
+				</header>
 				<div className="grid gap-4 py-4">
 					{currentStep === 1 ? (
 						<StepFirst
@@ -110,7 +113,7 @@ function StepFirst({ form, onDone }: StepProps) {
 			/>
 
 			{/* <FormInput form={form} name="categories" placeholder="categories" /> */}
-			<Button type="button" onClick={goNext}>
+			<Button type="button" className="w-64 ms-auto" onClick={goNext}>
 				done
 			</Button>
 		</>
@@ -128,6 +131,7 @@ function StepSecond({ form, onDone }: StepProps) {
 	return (
 		<>
 			<FormInput form={form} name="description" placeholder="description" />
+			<FormImage form={form} name="cover" label="cover" />
 			<Button type="button" onClick={goNext} className="w-64 ml-auto">
 				done
 			</Button>

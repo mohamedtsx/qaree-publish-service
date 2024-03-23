@@ -33,7 +33,7 @@ import { Textarea } from "./ui/textarea";
 
 // todo distribute the file and refactore this logic for more efficent way
 
-interface SharedProps<T extends FieldValues> {
+export interface SharedProps<T extends FieldValues> {
 	form?: UseFormReturn<T>;
 	name: FieldPath<T>;
 }
