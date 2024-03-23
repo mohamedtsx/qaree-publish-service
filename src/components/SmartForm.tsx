@@ -29,6 +29,9 @@ import {
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Button } from "./ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
+import { Textarea } from "./ui/textarea";
+
+// todo distribute the file and refactore this logic for more efficent way
 
 interface SharedProps<T extends FieldValues> {
 	form?: UseFormReturn<T>;
@@ -219,5 +222,35 @@ export function FormErrors<T extends FieldValues>() {
 				</ul>
 			</div>
 		)
+	);
+}
+
+interface FormElementTextareaProps<T extends FieldValues>
+	extends SharedProps<T>,
+		Omit<
+			ComponentProps<typeof Textarea>,
+			"form" | "name" | "id" | keyof ControllerRenderProps<T, FieldPath<T>>
+		> {
+	label: string;
+}
+
+export function FormTextare<T extends FieldValues>({
+	name,
+	form,
+	label,
+	...props
+}: FormElementTextareaProps<T>) {
+	const id = useId();
+	return (
+		<FormElement
+			form={form}
+			name={name}
+			render={({ value, ...field }) => (
+				<div>
+					<FormLabel>{label}</FormLabel>
+					<Textarea {...props} id={id} value={value ?? ""} {...field} />
+				</div>
+			)}
+		/>
 	);
 }

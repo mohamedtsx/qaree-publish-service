@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { Form } from "./ui/form";
-import { FormInput, SubmitButton } from "./SmartForm";
+import { FormInput, FormTextare, SubmitButton } from "./SmartForm";
 import { Button } from "./ui/button";
 
 const steps = [
@@ -76,7 +76,8 @@ function StepFirst({ form, onDone }: StepProps) {
 
 	return (
 		<>
-			<FormInput form={form} name="name" placeholder="name" />
+			<FormInput form={form} name="name" placeholder="name" label="name" />
+			<FormTextare form={form} name="description" label="description" />
 			{/* <FormInput form={form} name="categories" placeholder="categories" /> */}
 			<Button type="button" onClick={goNext}>
 				done
