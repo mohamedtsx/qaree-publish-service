@@ -123,7 +123,7 @@ export function FormInputOTP<T extends FieldValues>({
 	);
 }
 
-type Item = { id: number; name: string };
+type Item = { id: string; name: string };
 
 interface FormElementSelectProps<T extends FieldValues>
 	extends SharedProps<T>,
@@ -133,7 +133,6 @@ interface FormElementSelectProps<T extends FieldValues>
 		> {
 	label: string;
 	items: Item[];
-	onChange?: (value: number) => void | Promise<void>;
 }
 
 export function FormSelect<T extends FieldValues>({
@@ -141,7 +140,6 @@ export function FormSelect<T extends FieldValues>({
 	form,
 	label,
 	items,
-	onChange: customOnChange,
 	...props
 }: FormElementSelectProps<T>) {
 	return (
@@ -150,29 +148,21 @@ export function FormSelect<T extends FieldValues>({
 			name={name}
 			render={({ value, onChange, ref, ...field }) => (
 				<Select
-					{...props}
-					value={`${value}`}
-					onValueChange={async (val) => {
-						onChange(Number(val));
-						field.onBlur();
-						await customOnChange?.(val ? Number(val) : value);
-					}}
+					onValueChange={onChange}
+					defaultValue={value}
 					{...field}
+					{...props}
 				>
 					<div className="group">
 						<SelectTrigger ref={ref}>
-							<SelectValue
-								value={items?.find((el) => el.id === value)?.name || null}
-								placeholder={label}
-							/>
+							<SelectValue placeholder={label} />
 						</SelectTrigger>
 						<SelectContent>
 							{items?.map((item) => (
 								<SelectItem
 									key={item.id + item.name}
-									value={`${item.id}`}
+									value={item.id}
 									className="capitalize"
-									disabled={item.id === -1}
 								>
 									{item?.name}
 								</SelectItem>

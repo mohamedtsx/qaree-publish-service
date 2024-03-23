@@ -9,27 +9,7 @@ import { cn } from "@/lib/utils";
 const Select = SelectPrimitive.Root;
 
 const SelectGroup = SelectPrimitive.Group;
-
-const SelectValue = ({
-	value,
-	placeholder,
-}: {
-	value: string | null;
-	placeholder: string;
-}) => (
-	<>
-		<p
-			className={cn(
-				"absolute start-0 top-5 z-20 origin-[0] -translate-y-7 font-medium text-black transition duration-300",
-				!value && "start-2 translate-y-0 scale-100 font-medium text-gray-500",
-			)}
-		>
-			{placeholder}
-		</p>
-
-		<p>{value}</p>
-	</>
-);
+const SelectValue = SelectPrimitive.Value;
 
 const SelectTrigger = React.forwardRef<
 	React.ElementRef<typeof SelectPrimitive.Trigger>,
