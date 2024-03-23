@@ -1,24 +1,37 @@
 import { z } from "zod";
 
-// todo add better validation
+const errors = {
+	name: "Book name should be at least 2 characters",
+	cover: "Please select a book cover image.",
+	book: "Please upload a valid EPUB file",
+	sample: "A sample file is required",
+	description: "Description should be at least 10 characters",
+	language: "Please select book language",
+	publishingRights: "Please confirm publishing rights",
+};
+
 const filesSchema = z.object({
 	cover: z.instanceof(File, {
-		message: "Please select a book cover image.",
+		message: errors.cover,
 	}),
 	book: z.instanceof(File, {
-		message: "Please upload a valid EPUB file",
+		message: errors.book,
 	}),
 	sample: z.instanceof(File, {
-		message: "A sample file is required",
+		message: errors.sample,
 	}),
 });
 
 const bookDetailesSchema = z.object({
-	name: z.string().min(2),
-	description: z.string().min(10),
+	name: z.string().min(2, {
+		message: errors.name,
+	}),
+	description: z.string().min(10, { message: errors.description }),
 	categories: z.array(z.string()),
-	language: z.string(),
-	publishingRights: z.boolean(),
+	language: z.string().min(1, { message: errors.language }),
+	publishingRights: z.boolean({
+		required_error: errors.publishingRights,
+	}),
 });
 
 type MediaType = z.infer<typeof filesSchema>;
