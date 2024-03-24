@@ -9,9 +9,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { Form } from "./ui/form";
-import { FormInput, FormSelect, FormTextare, SubmitButton } from "./SmartForm";
+import { FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Button } from "./ui/button";
 import { FormImage } from "./FormImage";
+import { FormFile } from "./FormFile";
+import { ArrowRightIcon } from "lucide-react";
+import { addBookDetailsAction } from "@/app/actions";
+import { toast } from "sonner";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -22,7 +26,7 @@ const steps = [
 // todo(bug) fix form submit when user click entr inside an input
 
 function PublishBookForm() {
-	const [currentStep, setCurrentStep] = useState(2);
+	const [currentStep, setCurrentStep] = useState(1);
 
 	const form = useForm<PublishSchemaType>({
 		mode: "onBlur",
@@ -30,7 +34,24 @@ function PublishBookForm() {
 		defaultValues: publishDefaultValues,
 	});
 
-	const onSubmit = () => {};
+	const onSubmit = async (values: PublishSchemaType) => {
+		const { book, cover, sample, ...rest } = values;
+
+		// 1. send book detailes request
+		const state = await addBookDetailsAction(rest);
+		if (!state.success) {
+			return toast.error(state.message);
+		}
+
+		const bookId = state.data?.addBookDetails?._id;
+		if (!bookId) {
+			return toast.error("Development Error");
+		}
+
+		// 2. upload files
+
+		//...
+	};
 
 	return (
 		<Form {...form}>
@@ -114,7 +135,7 @@ function StepFirst({ form, onDone }: StepProps) {
 
 			{/* <FormInput form={form} name="categories" placeholder="categories" /> */}
 			<Button type="button" className="w-64 ms-auto" onClick={goNext}>
-				done
+				<span>Upload Files</span> <ArrowRightIcon className="w-4 ml-2" />
 			</Button>
 		</>
 	);
@@ -122,7 +143,7 @@ function StepFirst({ form, onDone }: StepProps) {
 
 function StepSecond({ form, onDone }: StepProps) {
 	const goNext = async () => {
-		const isValid = await form.trigger(["description"]);
+		const isValid = await form.trigger(["cover", "book", "sample"]);
 		if (isValid) {
 			onDone();
 		}
@@ -130,19 +151,20 @@ function StepSecond({ form, onDone }: StepProps) {
 
 	return (
 		<>
-			<FormInput form={form} name="description" placeholder="description" />
 			<FormImage form={form} name="cover" label="cover" />
+			<FormFile form={form} name="book" label="book" />
+			<FormFile form={form} name="sample" label="sample" />
 			<Button type="button" onClick={goNext} className="w-64 ml-auto">
-				done
+				<span>Review</span> <ArrowRightIcon className="w-4 ml-2 " />
 			</Button>
 		</>
 	);
 }
 
-function StepThird({ form, onDone }: StepProps) {
+function StepThird({ form }: StepProps) {
 	return (
 		<>
-			<FormInput form={form} name="language" />
+			<div>Your book is good hit the publish button</div>
 			<Button
 				type="submit"
 				className="w-64 ms-auto"

@@ -40,11 +40,13 @@ type MediaType = z.infer<typeof filesSchema>;
 
 export const publishDefaultValues: Omit<PublishSchemaType, keyof MediaType> = {
 	name: "",
-	categories: [""],
+	categories: "",
 	description: "",
 	language: "",
 	publishingRights: "false",
 };
+
+export type AddBookDetailsSchemaType = z.infer<typeof bookDetailesSchema>;
 
 export const publishSchema = bookDetailesSchema.and(filesSchema);
 export type PublishSchemaType = z.infer<typeof publishSchema>;

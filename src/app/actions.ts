@@ -10,8 +10,10 @@ import {
 	validateResetPasswordOTPMutation,
 	verifyAccountMutation,
 } from "@/lib/graphql/mutations";
+import { addBookDetailsMutation } from "@/lib/graphql/mutations";
 import type { RegisterData } from "@/lib/graphql/types";
-import { registerFormSchema } from "@/schema";
+import { type AddBookDetailsSchemaType, registerFormSchema } from "@/schema";
+import type { ResultOf } from "gql.tada";
 import { redirect } from "next/navigation";
 
 type ActionState = {
@@ -291,4 +293,52 @@ export const resetPasswordAction = async (payload: {
 
 export const uploadCover = (bookId: string) => {
 	// const FULL_URL =
+};
+
+type StateWithData<T> = ActionState & {
+	data?: T;
+};
+
+export const addBookDetailsAction = async (
+	bookDetailes: AddBookDetailsSchemaType,
+): Promise<StateWithData<ResultOf<typeof addBookDetailsMutation>>> => {
+	// todo publishingRights should be boolean & categories should be array of string
+	// todo no provided queries to get the categories lsit
+	/**
+	 * I just keep it as a string until fix controlled selection issue so
+	 * lets fix this with hard coded solution for now
+	 */
+	const variables = {
+		...bookDetailes,
+		categories: ["65b375864cdfe73b3d5a1922"],
+		publishingRights: false,
+	};
+
+	try {
+		const data = await fetcher({
+			query: addBookDetailsMutation,
+			variables,
+			server: true,
+			protectid: true,
+		});
+
+		if (!data.addBookDetails) {
+			throw Error("Fetcher Error");
+		}
+
+		return {
+			success: true,
+			message: "Success",
+			data,
+		};
+	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+		return {
+			success: false,
+			message,
+		};
+	}
 };

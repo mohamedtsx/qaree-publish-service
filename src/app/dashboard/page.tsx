@@ -15,7 +15,7 @@ async function Dashboard() {
 	const { name } = userInfo;
 
 	return (
-		<div className="px-24">
+		<div className="container py-14">
 			<h1 className="text-4xl">
 				Welcome, <span>{name}</span>
 			</h1>

@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
 import { FormElement, type SharedProps } from "./SmartForm";
-import Image from "next/image";
 import type { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import { type ComponentProps, useId } from "react";
 import { ImageIcon } from "lucide-react";
+import EbupIcon from "./EbupIcon";
 
 interface FormImageProps<T extends FieldValues>
 	extends SharedProps<T>,
@@ -14,7 +14,7 @@ interface FormImageProps<T extends FieldValues>
 	label: string;
 }
 
-export function FormImage<T extends FieldValues>({
+export function FormFile<T extends FieldValues>({
 	form,
 	name,
 	label,
@@ -36,23 +36,14 @@ export function FormImage<T extends FieldValues>({
 								value && "relative h-40",
 							)}
 						>
-							{!value ? (
-								<ImageIcon className="h-12 w-12" />
-							) : (
-								<Image
-									src={URL.createObjectURL(value as File)}
-									alt="Book cover"
-									className="h-full w-full object-contain object-center"
-									fill
-								/>
-							)}
+							{!value ? <EbupIcon /> : <div>I am book placeholder icon</div>}
 						</div>
 						<p>{label}</p>
 					</label>
 					<input
 						id={id}
 						type="file"
-						accept="image/*"
+						accept="application/epub+zip"
 						{...field}
 						onChange={(ev) => {
 							onChange(ev.target.files?.[0]);

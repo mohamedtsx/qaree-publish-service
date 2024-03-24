@@ -3,7 +3,7 @@ import React from "react";
 
 function Publish() {
 	return (
-		<div className="container">
+		<div className="container py-16">
 			<PublishBookForm />
 		</div>
 	);
