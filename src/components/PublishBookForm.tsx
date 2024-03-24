@@ -4,6 +4,7 @@ import {
 	type PublishSchemaType,
 	publishSchema,
 	publishDefaultValues,
+	MediaType,
 } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -49,6 +50,35 @@ function PublishBookForm() {
 		}
 
 		// 2. upload files
+		const media = new FormData();
+		media.append("cover", cover);
+
+		// todo process the requests
+
+		// const mediaObj: Record<keyof MediaType, File> = {
+		// 	book,
+		// 	cover,
+
+		// 	sample,
+		// };
+		// for (const [name, file] of Object.entries(mediaObj)) {
+		// 	media.append(name, file);
+		// }
+
+		const covexr = media.get("cover");
+		/**
+		 *      const media = new FormData();
+        const mediaObj: Record<keyof MediaType, File> = {
+          license,
+          approval,
+          delegate_card,
+          bank_account_certificate,
+        };
+        for (const [name, file] of Object.entries(mediaObj)) {
+          media.append(name, file);
+        }
+        
+		 */
 
 		//...
 	};

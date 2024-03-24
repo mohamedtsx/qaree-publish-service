@@ -36,7 +36,7 @@ const bookDetailesSchema = z.object({
 	}),
 });
 
-type MediaType = z.infer<typeof filesSchema>;
+export type MediaType = z.infer<typeof filesSchema>;
 
 export const publishDefaultValues: Omit<PublishSchemaType, keyof MediaType> = {
 	name: "",
