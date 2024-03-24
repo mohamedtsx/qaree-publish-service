@@ -1,5 +1,7 @@
 "use server";
 
+import { getCurrentUser } from "@/lib/authOptions";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	forgetPasswordMutation,
@@ -289,11 +291,7 @@ export const resetPasswordAction = async (payload: {
 	}
 };
 
-// todo distribute action fiel
-
-export const uploadCover = (bookId: string) => {
-	// const FULL_URL =
-};
+// todo distribute action file
 
 type StateWithData<T> = ActionState & {
 	data?: T;
@@ -336,6 +334,44 @@ export const addBookDetailsAction = async (
 		if (error instanceof Error) {
 			message = error.message;
 		}
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const uploadCover = async (
+	formData: FormData,
+	bookId: string,
+): Promise<ActionState> => {
+	const user = await getCurrentUser();
+
+	try {
+		const res = await fetch(UPLOAD_FULL_URL.cover(bookId), {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${user.access_token}`,
+				accept: "application/json",
+				"Content-Type": "multipart/form-data",
+			},
+			body: formData,
+		});
+
+		if (!res.ok) {
+			throw Error("Failed to upload the file");
+		}
+
+		return {
+			success: true,
+			message: "Book cover uploaded successfully",
+		};
+	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+
 		return {
 			success: false,
 			message,
