@@ -4,7 +4,7 @@ import {
 	type PublishSchemaType,
 	publishSchema,
 	publishDefaultValues,
-	MediaType,
+	type MediaType,
 } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -15,7 +15,7 @@ import { Button } from "./ui/button";
 import { FormImage } from "./FormImage";
 import { FormFile } from "./FormFile";
 import { ArrowRightIcon } from "lucide-react";
-import { addBookDetailsAction } from "@/app/actions";
+import { addBookDetailsAction, uploadFilesAction } from "@/app/actions";
 import { toast } from "sonner";
 
 const steps = [
@@ -45,42 +45,34 @@ function PublishBookForm() {
 		}
 
 		const bookId = state.data?.addBookDetails?._id;
+
 		if (!bookId) {
 			return toast.error("Development Error");
 		}
 
-		// 2. upload files
-		const media = new FormData();
-		media.append("cover", cover);
-
-		// todo process the requests
-
-		// const mediaObj: Record<keyof MediaType, File> = {
+		// 2. upload the files
+		// const files: Record<keyof MediaType, File> = {
 		// 	book,
 		// 	cover,
-
 		// 	sample,
 		// };
-		// for (const [name, file] of Object.entries(mediaObj)) {
-		// 	media.append(name, file);
+
+		// const formData = new FormData();
+
+		// for (const [name, file] of Object.entries(files)) {
+		// 	formData.append(name, file);
 		// }
 
-		const covexr = media.get("cover");
-		/**
-		 *      const media = new FormData();
-        const mediaObj: Record<keyof MediaType, File> = {
-          license,
-          approval,
-          delegate_card,
-          bank_account_certificate,
-        };
-        for (const [name, file] of Object.entries(mediaObj)) {
-          media.append(name, file);
-        }
-        
-		 */
+		const formData = new FormData();
+		formData.append("cover", cover);
 
-		//...
+		const { success, message } = await uploadFilesAction(formData, `${bookId}`);
+
+		if (!success) {
+			return toast.error(message);
+		}
+
+		toast.success(message);
 	};
 
 	return (

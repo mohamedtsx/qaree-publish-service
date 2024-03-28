@@ -341,11 +341,15 @@ export const addBookDetailsAction = async (
 	}
 };
 
-export const uploadCover = async (
+export const uploadFilesAction = async (
 	formData: FormData,
 	bookId: string,
 ): Promise<ActionState> => {
 	const user = await getCurrentUser();
+
+	// const coverFile = formData.get("cover") as File;
+	// const coverFormData = new FormData();
+	// coverFormData.append("cover", coverFile);
 
 	try {
 		const res = await fetch(UPLOAD_FULL_URL.cover(bookId), {
@@ -353,13 +357,14 @@ export const uploadCover = async (
 			headers: {
 				Authorization: `Bearer ${user.access_token}`,
 				accept: "application/json",
-				"Content-Type": "multipart/form-data",
+				contentType: "multipart/form-data",
 			},
 			body: formData,
 		});
 
 		if (!res.ok) {
-			throw Error("Failed to upload the file");
+			// todo write better message
+			throw new Error(`Upload failed with status code: ${res.status}`);
 		}
 
 		return {

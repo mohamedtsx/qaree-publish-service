@@ -42,6 +42,7 @@ export const authOptions: NextAuthOptions = {
 					},
 					server: true,
 					protectid: false,
+					cache: "default",
 				});
 
 				if (!signin?.access_token) return null;

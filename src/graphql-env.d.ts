@@ -2063,6 +2063,35 @@ export type introspection = {
                 }
               }
             ]
+          },
+          {
+            "name": "addBookSample",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AddBookSample",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "sample",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
+            ]
           }
         ],
         "interfaces": []
@@ -2384,6 +2413,31 @@ export type introspection = {
       {
         "kind": "OBJECT",
         "name": "PublishBook",
+        "fields": [
+          {
+            "name": "message",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "book",
+            "type": {
+              "kind": "OBJECT",
+              "name": "MyBook",
+              "ofType": null
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "AddBookSample",
         "fields": [
           {
             "name": "message",
