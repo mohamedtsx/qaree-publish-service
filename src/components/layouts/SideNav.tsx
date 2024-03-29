@@ -62,6 +62,7 @@ function SideNav() {
 								<Link
 									className="flex items-center gap-3  px-3 py-2  transition text-muted-foreground hover:text-primary "
 									href={el.href}
+									key={el.label}
 								>
 									<Icon className="h-4 w-4" />
 									{el.label}

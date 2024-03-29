@@ -83,7 +83,7 @@ function AuthResetPasswordOTP({ email }: { email: string }) {
 					<CardFooter className="flex flex-col gap-2">
 						<SubmitButton>Verify Code</SubmitButton>
 						<div className="text-sm text-muted-foreground w-full mt-5">
-							Didn't receive the code?{" "}
+							Didn`t receive the code?{" "}
 							<button
 								type="button"
 								className="hover:text-secondary-foreground transition"

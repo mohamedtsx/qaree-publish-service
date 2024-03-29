@@ -117,7 +117,7 @@ function AuthLoginForm() {
 					<CardFooter className="flex flex-col">
 						<SubmitButton>Login</SubmitButton>
 						<p className="text-sm text-muted-foreground w-full mt-5">
-							Don't have account?{" "}
+							Don`t have account?{" "}
 							<Link href={"/signup"} className="hover:underline">
 								Sign up
 							</Link>

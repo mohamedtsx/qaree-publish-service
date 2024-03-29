@@ -18,7 +18,7 @@ import type {
 	PureBookDetailesSchemaType,
 	RegisterData,
 } from "@/lib/graphql/types";
-import { registerFormSchema, type MediaType } from "@/schema";
+import { type MediaType, registerFormSchema } from "@/schema";
 import type { ResultOf } from "gql.tada";
 import { redirect } from "next/navigation";
 

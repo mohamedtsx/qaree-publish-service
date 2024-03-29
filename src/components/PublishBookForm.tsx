@@ -1,30 +1,30 @@
 "use client";
 
 import {
-	type PublishSchemaType,
-	publishSchema,
-	publishDefaultValues,
-	type MediaType,
-} from "@/schema";
-import { ArrowLeft } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { type UseFormReturn, useForm } from "react-hook-form";
-import { Form } from "./ui/form";
-import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
-import { Button } from "./ui/button";
-import { FormImage } from "./FormImage";
-import { FormFile } from "./FormFile";
-import { ArrowRightIcon } from "lucide-react";
-import { SelectCategories } from "./SelectCategories";
-import type { PureBookDetailesSchemaType } from "@/lib/graphql/types";
-import {
 	addBookDetailsAction,
 	publishBookAction,
 	uploadFilesAction,
 } from "@/app/actions";
+import type { PureBookDetailesSchemaType } from "@/lib/graphql/types";
+import {
+	type MediaType,
+	type PublishSchemaType,
+	publishDefaultValues,
+	publishSchema,
+} from "@/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
+import { useState } from "react";
+import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { FormFile } from "./FormFile";
+import { FormImage } from "./FormImage";
+import { SelectCategories } from "./SelectCategories";
+import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Spinner } from "./Spinner";
+import { Button } from "./ui/button";
+import { Form } from "./ui/form";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },

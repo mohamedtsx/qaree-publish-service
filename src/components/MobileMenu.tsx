@@ -12,10 +12,10 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
-import Logo from "./Logo";
-import { Icons } from "./Icons";
 import Link from "next/link";
+import { Icons } from "./Icons";
+import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 import { navItems } from "./layouts/SideNav";
 
 export function MobileMenu() {
@@ -33,7 +33,7 @@ export function MobileMenu() {
 							{navItems.map((el) => {
 								const Icon = Icons[el.icon];
 								return (
-									<SheetClose asChild>
+									<SheetClose asChild key={el.label}>
 										<Link
 											className="flex items-center gap-3  px-3 py-2  transition text-muted-foreground hover:text-primary "
 											href={el.href}

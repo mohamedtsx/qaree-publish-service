@@ -1,13 +1,17 @@
 "use client";
 
-import React from "react";
-import { Form } from "./ui/form";
-import { useForm } from "react-hook-form";
+import { resetPasswordAction } from "@/app/actions";
 import {
 	type ResetPasswordSchemaType,
 	resetPasswordFormSchema,
 } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { FormInput, SubmitButton } from "./SmartForm";
 import {
 	Card,
@@ -16,11 +20,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "./ui/card";
-import { resetPasswordAction } from "@/app/actions";
-import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { Form } from "./ui/form";
 
 function AuthResetPasswordForm({
 	token,
