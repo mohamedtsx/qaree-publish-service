@@ -51,7 +51,7 @@ export async function fetcher<
 			res = await fetch(BACKEND_URL, {
 				method: "POST",
 				headers: {
-					contentType: "application/json",
+					"Content-Type": "application/json",
 					accept: "application/json",
 					Authorization: `Bearer ${session?.user.access_token}`,
 					...headers,

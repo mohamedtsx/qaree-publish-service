@@ -12,7 +12,7 @@ async function Dashboard() {
 		return <h1 className="text-4xl">Something went wrong!</h1>;
 	}
 
-	const { name } = userInfo;
+	const { name } = { name: "mohamed" };
 
 	return (
 		<div className="container py-14">

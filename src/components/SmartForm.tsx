@@ -123,7 +123,7 @@ export function FormInputOTP<T extends FieldValues>({
 	);
 }
 
-type Item = { id: string; name: string };
+type Item = { label: string; value: string };
 
 interface FormElementSelectProps<T extends FieldValues>
 	extends SharedProps<T>,
@@ -142,7 +142,6 @@ export function FormSelect<T extends FieldValues>({
 	items,
 	...props
 }: FormElementSelectProps<T>) {
-	const id = useId();
 	return (
 		<FormElement
 			form={form}
@@ -162,12 +161,11 @@ export function FormSelect<T extends FieldValues>({
 						<SelectContent>
 							{items?.map((item) => (
 								<SelectItem
-									key={item.id + item.name}
-									value={item.id}
+									key={item.value}
+									value={item.value}
 									className="capitalize"
-									id={id}
 								>
-									{item?.name}
+									{item?.label}
 								</SelectItem>
 							))}
 						</SelectContent>

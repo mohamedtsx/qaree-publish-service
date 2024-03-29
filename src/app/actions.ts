@@ -5,6 +5,7 @@ import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	forgetPasswordMutation,
+	publishBookMutation,
 	resendResetPasswordOTPMutation,
 	resendValidatingOTPMutation,
 	resetPasswordMutation,
@@ -13,8 +14,11 @@ import {
 	verifyAccountMutation,
 } from "@/lib/graphql/mutations";
 import { addBookDetailsMutation } from "@/lib/graphql/mutations";
-import type { RegisterData } from "@/lib/graphql/types";
-import { type AddBookDetailsSchemaType, registerFormSchema } from "@/schema";
+import type {
+	PureBookDetailesSchemaType,
+	RegisterData,
+} from "@/lib/graphql/types";
+import { registerFormSchema, type MediaType } from "@/schema";
 import type { ResultOf } from "gql.tada";
 import { redirect } from "next/navigation";
 
@@ -298,24 +302,12 @@ type StateWithData<T> = ActionState & {
 };
 
 export const addBookDetailsAction = async (
-	bookDetailes: AddBookDetailsSchemaType,
+	bookDetailes: PureBookDetailesSchemaType,
 ): Promise<StateWithData<ResultOf<typeof addBookDetailsMutation>>> => {
-	// todo publishingRights should be boolean & categories should be array of string
-	// todo no provided queries to get the categories lsit
-	/**
-	 * I just keep it as a string until fix controlled selection issue so
-	 * lets fix this with hard coded solution for now
-	 */
-	const variables = {
-		...bookDetailes,
-		categories: ["65b375864cdfe73b3d5a1922"],
-		publishingRights: false,
-	};
-
 	try {
 		const data = await fetcher({
 			query: addBookDetailsMutation,
-			variables,
+			variables: bookDetailes,
 			server: true,
 			protectid: true,
 		});
@@ -342,34 +334,40 @@ export const addBookDetailsAction = async (
 };
 
 export const uploadFilesAction = async (
-	formData: FormData,
+	formDataMap: { [key in keyof MediaType]: FormData },
 	bookId: string,
 ): Promise<ActionState> => {
 	const user = await getCurrentUser();
 
-	// const coverFile = formData.get("cover") as File;
-	// const coverFormData = new FormData();
-	// coverFormData.append("cover", coverFile);
+	// todo first do it second do it better
+
+	const coverFormData = formDataMap.cover;
+	const fileFormData = formDataMap.book;
 
 	try {
-		const res = await fetch(UPLOAD_FULL_URL.cover(bookId), {
+		await fetch(UPLOAD_FULL_URL.cover(bookId), {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${user.access_token}`,
 				accept: "application/json",
 				contentType: "multipart/form-data",
 			},
-			body: formData,
+			body: coverFormData,
 		});
 
-		if (!res.ok) {
-			// todo write better message
-			throw new Error(`Upload failed with status code: ${res.status}`);
-		}
+		await fetch(UPLOAD_FULL_URL.file(bookId), {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${user.access_token}`,
+				accept: "application/json",
+				contentType: "multipart/form-data",
+			},
+			body: fileFormData,
+		});
 
 		return {
 			success: true,
-			message: "Book cover uploaded successfully",
+			message: "Success",
 		};
 	} catch (error) {
 		let message = "Something went wrong!";
@@ -377,6 +375,32 @@ export const uploadFilesAction = async (
 			message = error.message;
 		}
 
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const publishBookAction = async (bookId: string) => {
+	try {
+		await fetcher({
+			query: publishBookMutation,
+			server: true,
+			protectid: true,
+			variables: { bookId },
+			cache: "default",
+		});
+
+		return {
+			success: true,
+			message: "success",
+		};
+	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
 		return {
 			success: false,
 			message,

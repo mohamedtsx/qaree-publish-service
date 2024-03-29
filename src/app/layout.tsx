@@ -4,8 +4,6 @@ import { inter } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import "../styles/globals.css";
-import { Suspense } from "react";
-import Loading from "./loading";
 
 export const metadata: Metadata = {
 	title: {
@@ -24,9 +22,7 @@ export default function RootLayout({
 		<html lang="en" className="h-full" suppressHydrationWarning>
 			<body className={cn("flex h-full antialiased", inter.className)}>
 				<Providers>
-					<Suspense fallback={<Loading />}>
-						<div className="flex-1">{children}</div>
-					</Suspense>
+					<div className="flex-1">{children}</div>
 				</Providers>
 				<Toaster />
 			</body>

@@ -1,10 +1,10 @@
 import Header from "@/components/layouts/Header";
 import SideNav from "@/components/layouts/SideNav";
-import { type ReactNode, Suspense } from "react";
+import type { ReactNode } from "react";
 
-import { Loader2 } from "@/components/Loader2";
 import type { Metadata } from "next";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getCurrentUser } from "@/lib/authOptions";
 
 export const metadata: Metadata = {
 	title: "Publish Service",
@@ -17,11 +17,9 @@ function Layout({ children }: { children: ReactNode }) {
 
 			<div className="flex-1 flex flex-col">
 				<Header />
-				<Suspense fallback={<Loader2 />}>
-					<div className="flex-1 overflow-hidden">
-						<ScrollArea className="h-full">{children}</ScrollArea>
-					</div>
-				</Suspense>
+				<div className="flex-1 overflow-hidden">
+					<ScrollArea className="h-full">{children}</ScrollArea>
+				</div>
 			</div>
 		</div>
 	);

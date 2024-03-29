@@ -6,17 +6,25 @@ import {
 	publishDefaultValues,
 	type MediaType,
 } from "@/schema";
+import { ArrowLeft } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { Form } from "./ui/form";
-import { FormInput, FormSelect, FormTextare } from "./SmartForm";
+import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Button } from "./ui/button";
 import { FormImage } from "./FormImage";
 import { FormFile } from "./FormFile";
 import { ArrowRightIcon } from "lucide-react";
-import { addBookDetailsAction, uploadFilesAction } from "@/app/actions";
+import { SelectCategories } from "./SelectCategories";
+import type { PureBookDetailesSchemaType } from "@/lib/graphql/types";
+import {
+	addBookDetailsAction,
+	publishBookAction,
+	uploadFilesAction,
+} from "@/app/actions";
 import { toast } from "sonner";
+import { Spinner } from "./Spinner";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -24,10 +32,10 @@ const steps = [
 	{ id: "Step 3", name: "Publish" },
 ];
 
-// todo(bug) fix form submit when user click entr inside an input
-
 function PublishBookForm() {
 	const [currentStep, setCurrentStep] = useState(1);
+	const [categories, setCategories] = useState<string[]>([]);
+	const [currentProcessMessage, setCurrentProcessMessage] = useState("");
 
 	const form = useForm<PublishSchemaType>({
 		mode: "onBlur",
@@ -36,59 +44,88 @@ function PublishBookForm() {
 	});
 
 	const onSubmit = async (values: PublishSchemaType) => {
-		const { book, cover, sample, ...rest } = values;
+		const { book, cover, ...rest } = values;
+
+		const bookDetailes: PureBookDetailesSchemaType = {
+			...rest,
+			categories,
+			publishingRights: rest.publishingRights === "true",
+		};
 
 		// 1. send book detailes request
-		const state = await addBookDetailsAction(rest);
-		if (!state.success) {
-			return toast.error(state.message);
+		setCurrentProcessMessage("Sending detailes...");
+		const addBookDetailsState = await addBookDetailsAction(bookDetailes);
+		if (!addBookDetailsState.success) {
+			return toast.error(addBookDetailsState.message);
 		}
 
-		const bookId = state.data?.addBookDetails?._id;
+		const bookId = String(addBookDetailsState.data?.addBookDetails?._id);
 
 		if (!bookId) {
+			console.log(bookId);
 			return toast.error("Development Error");
 		}
 
 		// 2. upload the files
-		// const files: Record<keyof MediaType, File> = {
-		// 	book,
-		// 	cover,
-		// 	sample,
-		// };
+		setCurrentProcessMessage("Uploading files...");
+		const files: Record<keyof MediaType, File> = {
+			cover,
+			book,
+		};
 
-		// const formData = new FormData();
+		const formDataMap: { [key in keyof MediaType]: FormData } = {
+			cover: new FormData(),
+			book: new FormData(),
+		};
 
-		// for (const [name, file] of Object.entries(files)) {
-		// 	formData.append(name, file);
-		// }
-
-		const formData = new FormData();
-		formData.append("cover", cover);
-
-		const { success, message } = await uploadFilesAction(formData, `${bookId}`);
-
-		if (!success) {
-			return toast.error(message);
+		for (const [name, file] of Object.entries(files)) {
+			formDataMap[name as keyof MediaType].append(name, file);
 		}
 
-		toast.success(message);
+		const uploadFilesState = await uploadFilesAction(formDataMap, bookId);
+
+		if (!uploadFilesState.success) {
+			return toast.error(uploadFilesState.message);
+		}
+
+		// 3. publish the book
+		setCurrentProcessMessage("Publishing...");
+		const publishBookState = await publishBookAction(bookId);
+		if (!publishBookState.success) {
+			return toast.error(publishBookState.message);
+		}
+
+		toast.success(
+			"Congratulations! Your book has been uploaded successfully 📚🎉",
+		);
 	};
 
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
 				<header>
-					Step {currentStep} {steps[currentStep - 1].name}
+					<div className="flex gap-2 flex-col">
+						<Button
+							type="button"
+							onClick={() => setCurrentStep(currentStep - 1)}
+							disabled={currentStep === 1}
+							size={"icon"}
+							variant={"secondary"}
+						>
+							<ArrowLeft className="w-4 h-4" />
+						</Button>
+						<div>
+							Step {currentStep} {steps[currentStep - 1].name}
+						</div>
+					</div>
 				</header>
 				<div className="grid gap-4 py-4">
 					{currentStep === 1 ? (
 						<StepFirst
 							form={form}
-							onDone={() => {
-								// use it for steps animation for now just keep it update the current step
+							onDone={(selectedCategories) => {
+								setCategories(selectedCategories || []);
 								setCurrentStep(2);
-								console.log(form.getValues());
 							}}
 						/>
 					) : currentStep === 2 ? (
@@ -99,7 +136,11 @@ function PublishBookForm() {
 							}}
 						/>
 					) : currentStep === 3 ? (
-						<StepThird form={form} onDone={() => {}} />
+						<StepThird
+							form={form}
+							onDone={() => {}}
+							currentProcessMessage={currentProcessMessage}
+						/>
 					) : null}
 				</div>
 			</form>
@@ -110,21 +151,22 @@ function PublishBookForm() {
 interface StepProps {
 	form: UseFormReturn<PublishSchemaType>;
 	bookId?: string;
-	onDone: () => void;
+	onDone: (selectedCategories?: string[]) => void;
 }
 
 function StepFirst({ form, onDone }: StepProps) {
+	const [filterValues, setFilterValues] = useState<string[]>();
+
 	const goNext = async () => {
 		const isValid = await form.trigger([
 			"name",
-			"categories",
 			"language",
 			"description",
 			"publishingRights",
 		]);
 
 		if (isValid) {
-			onDone();
+			onDone(filterValues);
 		}
 	};
 
@@ -133,30 +175,33 @@ function StepFirst({ form, onDone }: StepProps) {
 			<FormInput form={form} name="name" placeholder="name" label="name" />
 			<FormTextare form={form} name="description" label="description" />
 
-			{/* todo fix hidden placeholder when using the filed multi time */}
-			<FormSelect
-				form={form}
-				name="language"
-				items={[{ id: "1", name: "item one" }]}
-				label="select lang"
-			/>
+			<div className="grid gap-4 grid-cols-3">
+				<FormSelect
+					form={form}
+					name="publishingRights"
+					items={[
+						{ label: "Yes", value: "true" },
+						{ label: "No", value: "false" },
+					]}
+					label="Rights"
+				/>
 
-			<FormSelect
-				form={form}
-				name="publishingRights"
-				items={[{ id: "3", name: "item one" }]}
-				label="select rights"
-			/>
+				<FormSelect
+					form={form}
+					name="language"
+					items={[
+						{ label: "English", value: "en" },
+						{ label: "Arabic", value: "ar" },
+					]}
+					label="Language"
+				/>
+				<SelectCategories
+					filterValues={filterValues}
+					setFilterValues={setFilterValues}
+				/>
+			</div>
 
-			<FormSelect
-				form={form}
-				name="categories"
-				items={[{ id: "1", name: "item one" }]}
-				label="select categories"
-			/>
-
-			{/* <FormInput form={form} name="categories" placeholder="categories" /> */}
-			<Button type="button" className="w-64 ms-auto" onClick={goNext}>
+			<Button type="button" className="w-64 ms-auto mt-8" onClick={goNext}>
 				<span>Upload Files</span> <ArrowRightIcon className="w-4 ml-2" />
 			</Button>
 		</>
@@ -165,7 +210,7 @@ function StepFirst({ form, onDone }: StepProps) {
 
 function StepSecond({ form, onDone }: StepProps) {
 	const goNext = async () => {
-		const isValid = await form.trigger(["cover", "book", "sample"]);
+		const isValid = await form.trigger(["cover", "book"]);
 		if (isValid) {
 			onDone();
 		}
@@ -173,9 +218,10 @@ function StepSecond({ form, onDone }: StepProps) {
 
 	return (
 		<>
-			<FormImage form={form} name="cover" label="cover" />
-			<FormFile form={form} name="book" label="book" />
-			<FormFile form={form} name="sample" label="sample" />
+			<div className="grid gap-4">
+				<FormImage form={form} name="cover" label="cover" />
+				<FormFile form={form} name="book" label="book" />
+			</div>
 			<Button type="button" onClick={goNext} className="w-64 ml-auto">
 				<span>Review</span> <ArrowRightIcon className="w-4 ml-2 " />
 			</Button>
@@ -183,10 +229,15 @@ function StepSecond({ form, onDone }: StepProps) {
 	);
 }
 
-function StepThird({ form }: StepProps) {
+type StepThirdProps = StepProps & {
+	currentProcessMessage: string;
+};
+
+function StepThird({ form, currentProcessMessage }: StepThirdProps) {
 	return (
 		<>
 			<div>Your book is good hit the publish button</div>
+			<FormErrors />
 			<Button
 				type="submit"
 				className="w-64 ms-auto"
@@ -195,9 +246,15 @@ function StepThird({ form }: StepProps) {
 					form.formState.isLoading ||
 					form.formState.isValidating
 				}
-				isLoading={form.formState.isSubmitting || form.formState.isLoading}
 			>
-				Publish
+				{form.formState.isLoading || form.formState.isSubmitting ? (
+					<div className="flex gap-2">
+						<Spinner />
+						<div>{currentProcessMessage}</div>
+					</div>
+				) : (
+					"Publish"
+				)}
 			</Button>
 		</>
 	);

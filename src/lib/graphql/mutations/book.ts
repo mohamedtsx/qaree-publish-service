@@ -31,3 +31,18 @@ mutation addBookDetails(
     status
   }
 }`);
+
+export const publishBookMutation = graphql(`
+  mutation publishBook($bookId: String!){
+    publishBook(bookId: $bookId) {
+      message,
+      book {
+          _id,
+          name,
+          description,
+          status,
+          price,
+      }
+    }
+  }
+`);

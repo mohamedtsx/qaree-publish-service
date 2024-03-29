@@ -26,3 +26,11 @@ export type LoginData = {
 	email: string;
 	password: string;
 };
+
+export type PureBookDetailesSchemaType = {
+	name: string;
+	description: string;
+	categories: string[];
+	language: string;
+	publishingRights: boolean;
+};

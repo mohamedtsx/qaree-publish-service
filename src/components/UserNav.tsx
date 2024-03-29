@@ -3,14 +3,14 @@ import { userInfoQuery } from "@/lib/graphql/queries";
 import UserDropdown from "./UserDropdown";
 
 export async function UserNav() {
-	const { userInfo } = await fetcher({
+	const state = await fetcher({
 		query: userInfoQuery,
 		server: true,
 		protectid: true,
 	});
 
-	if (!userInfo) return;
+	if (!state?.userInfo) return;
 
 	//@ts-ignore //Todo: Remove this comment once the backend updates the nullable values.
-	return <UserDropdown userInfo={userInfo} />;
+	return <UserDropdown userInfo={state.userInfo} />;
 }
