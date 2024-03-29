@@ -22,7 +22,7 @@ export function MobileMenu() {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
-				<Button variant="outline" size={"icon"}>
+				<Button variant="outline" size={"icon"} className="rounded-lg">
 					<Menu />
 				</Button>
 			</SheetTrigger>
