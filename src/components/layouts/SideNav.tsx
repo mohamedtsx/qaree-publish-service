@@ -9,7 +9,7 @@ interface NavItemType {
 	icon: IconKey;
 	href: string;
 }
-const navItems: NavItemType[] = [
+export const navItems: NavItemType[] = [
 	{
 		label: "Home",
 		href: "/dashboard",

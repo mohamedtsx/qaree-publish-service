@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 
 import type { Metadata } from "next";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getCurrentUser } from "@/lib/authOptions";
 
 export const metadata: Metadata = {
 	title: "Publish Service",

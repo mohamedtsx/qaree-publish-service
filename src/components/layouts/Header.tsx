@@ -1,3 +1,4 @@
+import { MobileMenu } from "../MobileMenu";
 import ThemeToggle from "../ThemeToggle";
 import { UserNav } from "../UserNav";
 import SearchForm from "./SearchForm";
@@ -6,9 +7,16 @@ function Header() {
 	return (
 		<header className="border-b">
 			<div className="container lg:h-[60px] flex justify-between h-14 items-center gap-4">
-				<SearchForm />
+				<div className="flex gap-2">
+					<div className="lg:hidden">
+						<MobileMenu />
+					</div>
+					<SearchForm />
+				</div>
 				<div className="flex items-center gap-4">
-					<ThemeToggle />
+					<div className="max-lg:hidden">
+						<ThemeToggle />
+					</div>
 					<UserNav />
 				</div>
 			</div>

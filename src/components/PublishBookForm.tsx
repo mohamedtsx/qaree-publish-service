@@ -175,7 +175,7 @@ function StepFirst({ form, onDone }: StepProps) {
 			<FormInput form={form} name="name" placeholder="name" label="name" />
 			<FormTextare form={form} name="description" label="description" />
 
-			<div className="grid gap-4 grid-cols-3">
+			<div className="grid gap-4 md:grid-cols-[0.5fr_0.5fr_1fr] xl:grid-cols-3">
 				<FormSelect
 					form={form}
 					name="publishingRights"
