@@ -18,10 +18,11 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { getAllCategoriesQuery } from "@/lib/graphql/queries/book";
+import { getAllCategoriesQuery } from "@/lib/graphql/queries";
 
 import { fetcher } from "@/lib/graphql/fetcher";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface TypeProps {
 	filterValues: string[] | undefined;
@@ -39,22 +40,30 @@ export function SelectCategories({ filterValues, setFilterValues }: TypeProps) {
 	useEffect(() => {
 		const getCategoriesOptions = async () => {
 			setLoading(true);
-			const { getAllCategories } = await fetcher({
-				query: getAllCategoriesQuery,
-				server: false,
-				protectid: true,
-				cache: "default",
-			});
 
-			const categoriesOptions = getAllCategories?.categories?.map((el) => ({
-				label: el?.name_en,
-				value: `${el?._id}`,
-			})) as {
-				label: string;
-				value: string;
-			}[];
+			try {
+				const { getAllCategories } = await fetcher({
+					query: getAllCategoriesQuery,
+					server: false,
+					protectid: true,
+					cache: "default",
+				});
+				const categoriesOptions = getAllCategories?.categories?.map((el) => ({
+					label: el?.name_en,
+					value: `${el?._id}`,
+				})) as {
+					label: string;
+					value: string;
+				}[];
 
-			setOptions(categoriesOptions);
+				setOptions(categoriesOptions);
+			} catch (error) {
+				if (error instanceof Error) {
+					setLoading(false);
+					return toast.error(error.message);
+				}
+				toast.error("Failed to get categories");
+			}
 			setLoading(false);
 		};
 		getCategoriesOptions();

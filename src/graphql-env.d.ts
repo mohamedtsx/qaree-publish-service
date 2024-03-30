@@ -68,15 +68,51 @@ export type introspection = {
             ]
           },
           {
+            "name": "getBookInfo",
+            "type": {
+              "kind": "OBJECT",
+              "name": "MyBook",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "getMyBooks",
+            "type": {
+              "kind": "OBJECT",
+              "name": "MyBook",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            ]
+          },
+          {
             "name": "getBooks",
             "type": {
               "kind": "OBJECT",
-              "name": "GetBooks",
+              "name": "GetMyBooks",
               "ofType": null
             },
             "args": [
               {
-                "name": "category",
+                "name": "sortBy",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
@@ -84,7 +120,7 @@ export type introspection = {
                 }
               },
               {
-                "name": "sort",
+                "name": "filterBy",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
@@ -105,105 +141,6 @@ export type introspection = {
                   "kind": "SCALAR",
                   "name": "Int",
                   "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "getBook",
-            "type": {
-              "kind": "OBJECT",
-              "name": "BookInfo",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "bookId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "getBookReviews",
-            "type": {
-              "kind": "OBJECT",
-              "name": "GetBookReviews",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "bookId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "sort",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "page",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "limit",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "getBookReview",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ReviewBook",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "reviewId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "search",
-            "type": {
-              "kind": "OBJECT",
-              "name": "SearchType",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "categories",
-                "type": {
-                  "kind": "LIST",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
                 }
               },
               {
@@ -213,9 +150,45 @@ export type introspection = {
                   "name": "String",
                   "ofType": null
                 }
+              }
+            ]
+          },
+          {
+            "name": "getBook",
+            "type": {
+              "kind": "OBJECT",
+              "name": "MyBook",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "getBooksFromRecycleBin",
+            "type": {
+              "kind": "OBJECT",
+              "name": "GetBooksFromRecyclePinType",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "sortBy",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               {
-                "name": "sort",
+                "name": "filterBy",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
@@ -237,11 +210,55 @@ export type introspection = {
                   "name": "Int",
                   "ofType": null
                 }
+              },
+              {
+                "name": "keyword",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               }
             ]
           },
           {
-            "name": "getBookContent",
+            "name": "getBookEPubMetadata",
+            "type": {
+              "kind": "OBJECT",
+              "name": "EPubFileMetadataType",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "getBookEPubManifest",
+            "type": {
+              "kind": "OBJECT",
+              "name": "EPubManifest",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "getBookEPubContent",
             "type": {
               "kind": "OBJECT",
               "name": "BookContent",
@@ -253,145 +270,6 @@ export type introspection = {
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "getLastActivity",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Activity",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "getBestSellerBooks",
-            "type": {
-              "kind": "OBJECT",
-              "name": "BestSeller",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "limit",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "getPaymentClientData",
-            "type": {
-              "kind": "OBJECT",
-              "name": "GetClientData",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "bookId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "getBookStatus",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Activity",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "bookId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "getShelf",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ShelfType",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "shelf",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "user",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "booksLimit",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "booksPage",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "getLibrary",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Library",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "user",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "limit",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "page",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
                   "ofType": null
                 }
               }
@@ -424,15 +302,24 @@ export type introspection = {
             ]
           },
           {
-            "name": "getOffer",
+            "name": "getSignupActionURL",
             "type": {
               "kind": "OBJECT",
-              "name": "OfferType",
+              "name": "GetSignupActionURL",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "getSellerOnboardingStatus",
+            "type": {
+              "kind": "OBJECT",
+              "name": "TrackOnboardingStatus",
               "ofType": null
             },
             "args": [
               {
-                "name": "id",
+                "name": "trackingId",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
@@ -442,38 +329,13 @@ export type introspection = {
             ]
           },
           {
-            "name": "getAllOffers",
+            "name": "getMerchantStatus",
             "type": {
               "kind": "OBJECT",
-              "name": "GetAllOffers",
+              "name": "GetMerchantStatus",
               "ofType": null
             },
-            "args": [
-              {
-                "name": "page",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "limit",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "sort",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
+            "args": []
           }
         ],
         "interfaces": []
@@ -680,53 +542,7 @@ export type introspection = {
       },
       {
         "kind": "OBJECT",
-        "name": "GetBooks",
-        "fields": [
-          {
-            "name": "books",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "BookInfo",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "currentPage",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "numberOfPages",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "total",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "BookInfo",
+        "name": "MyBook",
         "fields": [
           {
             "name": "_id",
@@ -833,12 +649,9 @@ export type introspection = {
           {
             "name": "sample",
             "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "File",
+              "ofType": null
             },
             "args": []
           },
@@ -847,6 +660,24 @@ export type introspection = {
             "type": {
               "kind": "OBJECT",
               "name": "File",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "file",
+            "type": {
+              "kind": "OBJECT",
+              "name": "File",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "status",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "args": []
@@ -880,6 +711,15 @@ export type introspection = {
           },
           {
             "name": "previousPublishingData",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "rejectionReasons",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1000,135 +840,7 @@ export type introspection = {
       },
       {
         "kind": "OBJECT",
-        "name": "GetBookReviews",
-        "fields": [
-          {
-            "name": "reviews",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ReviewBook",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "currentPage",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "numberOfPages",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "total",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ReviewBook",
-        "fields": [
-          {
-            "name": "_id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "rate",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "content",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "user",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Author",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "bookId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "likes",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "SearchType",
+        "name": "GetMyBooks",
         "fields": [
           {
             "name": "books",
@@ -1136,7 +848,7 @@ export type introspection = {
               "kind": "LIST",
               "ofType": {
                 "kind": "OBJECT",
-                "name": "BookInfo",
+                "name": "MyBook",
                 "ofType": null
               }
             },
@@ -1165,6 +877,247 @@ export type introspection = {
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GetBooksFromRecyclePinType",
+        "fields": [
+          {
+            "name": "books",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "MyBook",
+                "ofType": null
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "currentPage",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "numberOfPages",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "total",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "EPubFileMetadataType",
+        "fields": [
+          {
+            "name": "publisher",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "language",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "title",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "subject",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "creator",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "creatorFileAs",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "date",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "ISBN",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "UUID",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "generator",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "cover",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "specifiedFonts",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "modified",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "EPubManifest",
+        "fields": [
+          {
+            "name": "files",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "EPubFile",
+                "ofType": null
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "total",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "EPubFile",
+        "fields": [
+          {
+            "name": "href",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "mediaType",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "args": []
@@ -1182,7 +1135,7 @@ export type introspection = {
               "kind": "LIST",
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ContentRaw",
+                "name": "AdminContentRaw",
                 "ofType": null
               }
             },
@@ -1194,7 +1147,7 @@ export type introspection = {
               "kind": "LIST",
               "ofType": {
                 "kind": "OBJECT",
-                "name": "ContentRaw",
+                "name": "AdminContentRaw",
                 "ofType": null
               }
             },
@@ -1205,8 +1158,17 @@ export type introspection = {
       },
       {
         "kind": "OBJECT",
-        "name": "ContentRaw",
+        "name": "AdminContentRaw",
         "fields": [
+          {
+            "name": "href",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
           {
             "name": "id",
             "type": {
@@ -1245,264 +1207,6 @@ export type introspection = {
           },
           {
             "name": "level",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Activity",
-        "fields": [
-          {
-            "name": "book",
-            "type": {
-              "kind": "OBJECT",
-              "name": "BookInfo",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "status",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "readingProgress",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Float",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "BestSeller",
-        "fields": [
-          {
-            "name": "books",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "BookInfo",
-                "ofType": null
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "GetClientData",
-        "fields": [
-          {
-            "name": "clientId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "clientToken",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ShelfType",
-        "fields": [
-          {
-            "name": "_id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "name",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "books",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "BookShelf",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "totalBooks",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "numberOfBooksPages",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "currentBooksPage",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "BookShelf",
-        "fields": [
-          {
-            "name": "book",
-            "type": {
-              "kind": "OBJECT",
-              "name": "BookInfo",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "status",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "readingProgress",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Library",
-        "fields": [
-          {
-            "name": "shelves",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ShelfType",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "total",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "currentPage",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "numberOfPages",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -1561,55 +1265,10 @@ export type introspection = {
       },
       {
         "kind": "OBJECT",
-        "name": "OfferType",
+        "name": "GetSignupActionURL",
         "fields": [
           {
-            "name": "_id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "ID",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "percent",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "expireAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "book",
-            "type": {
-              "kind": "OBJECT",
-              "name": "BookInfo",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
+            "name": "actionURL",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1622,44 +1281,302 @@ export type introspection = {
       },
       {
         "kind": "OBJECT",
-        "name": "GetAllOffers",
+        "name": "TrackOnboardingStatus",
         "fields": [
           {
-            "name": "offers",
+            "name": "merchantId",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "trackingId",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "links",
             "type": {
               "kind": "LIST",
               "ofType": {
                 "kind": "OBJECT",
-                "name": "OfferType",
+                "name": "TrackingOnboardingStatusLink",
+                "ofType": null
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "TrackingOnboardingStatusLink",
+        "fields": [
+          {
+            "name": "href",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "rel",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "method",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GetMerchantStatus",
+        "fields": [
+          {
+            "name": "merchantId",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "trackingId",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "products",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "MerchantProduct",
                 "ofType": null
               }
             },
             "args": []
           },
           {
-            "name": "currentPage",
+            "name": "capabilities",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "MerchantCapability",
+                "ofType": null
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "payments_receivable",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "Boolean",
               "ofType": null
             },
             "args": []
           },
           {
-            "name": "numberOfPages",
+            "name": "legal_name",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
             },
             "args": []
           },
           {
-            "name": "total",
+            "name": "primary_email_confirmed",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "String",
               "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "oauth_integrations",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "OAuthIntergation",
+                "ofType": null
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MerchantProduct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "status",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "vetting_status",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "capabilities",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MerchantCapability",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "status",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "OAuthIntergation",
+        "fields": [
+          {
+            "name": "integration_type",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "integration_method",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "oauth_third_party",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "OAuthThirdParty",
+                "ofType": null
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "OAuthThirdParty",
+        "fields": [
+          {
+            "name": "partner_client_id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "merchant_client_id",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "scopes",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "args": []
           }
@@ -1724,6 +1641,14 @@ export type introspection = {
             "args": [
               {
                 "name": "email",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "lang",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
@@ -1908,106 +1833,10 @@ export type introspection = {
             ]
           },
           {
-            "name": "reviewBook",
+            "name": "addBookDetails",
             "type": {
               "kind": "OBJECT",
-              "name": "ReviewBookResponseType",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "bookId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "content",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "rate",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Float",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "likeReview",
-            "type": {
-              "kind": "OBJECT",
-              "name": "LikeReview",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "reviewId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "createPaymentOrder",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CreatePaymentOrder",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "bookId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "completePaymentOrder",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CompletePaymentOrder",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "bookId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              {
-                "name": "orderId",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "createShelf",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CreateShelfType",
+              "name": "MyBook",
               "ofType": null
             },
             "args": [
@@ -2018,14 +1847,81 @@ export type introspection = {
                   "name": "String",
                   "ofType": null
                 }
+              },
+              {
+                "name": "description",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "isbn",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "edition",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "language",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "publishingRights",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "previousPublishingData",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "categories",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "name": "price",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
               }
             ]
           },
           {
-            "name": "addBookToShelf",
+            "name": "editBookDetails",
             "type": {
               "kind": "OBJECT",
-              "name": "AddBookShelf",
+              "name": "MyBook",
               "ofType": null
             },
             "args": [
@@ -2038,7 +1934,92 @@ export type introspection = {
                 }
               },
               {
-                "name": "shelf",
+                "name": "name",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "description",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "isbn",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "edition",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "language",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "publishingRights",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "previousPublishingData",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              {
+                "name": "categories",
+                "type": {
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              {
+                "name": "price",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "moveBookToRecycleBin",
+            "type": {
+              "kind": "OBJECT",
+              "name": "MoveBookToRecycleType",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
@@ -2048,10 +2029,46 @@ export type introspection = {
             ]
           },
           {
-            "name": "removeBookFromShelf",
+            "name": "moveBookFromRecycleBin",
             "type": {
               "kind": "OBJECT",
-              "name": "RemoveBookFromShelf",
+              "name": "MoveBookToRecycleType",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "publishBook",
+            "type": {
+              "kind": "OBJECT",
+              "name": "PublishBook",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "bookId",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            ]
+          },
+          {
+            "name": "addBookSample",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AddBookSample",
               "ofType": null
             },
             "args": [
@@ -2064,29 +2081,14 @@ export type introspection = {
                 }
               },
               {
-                "name": "shelf",
+                "name": "sample",
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            ]
-          },
-          {
-            "name": "removeShelf",
-            "type": {
-              "kind": "OBJECT",
-              "name": "RemoveShelfType",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "shelf",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
+                  "kind": "LIST",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
                 }
               }
             ]
@@ -2376,7 +2378,7 @@ export type introspection = {
       },
       {
         "kind": "OBJECT",
-        "name": "ReviewBookResponseType",
+        "name": "MoveBookToRecycleType",
         "fields": [
           {
             "name": "message",
@@ -2388,132 +2390,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "review",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ReviewBook",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "LikeReview",
-        "fields": [
-          {
-            "name": "success",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "message",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "CreatePaymentOrder",
-        "fields": [
-          {
-            "name": "id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "status",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "CompletePaymentOrder",
-        "fields": [
-          {
-            "name": "capturedOrder",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CapaturedPaymentOrder",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "purchasedBook",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Activity",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "CapaturedPaymentOrder",
-        "fields": [
-          {
-            "name": "id",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "status",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "CreateShelfType",
-        "fields": [
-          {
-            "name": "shelf",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ShelfType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "message",
+            "name": "deleted_id",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -2535,7 +2412,7 @@ export type introspection = {
       },
       {
         "kind": "OBJECT",
-        "name": "AddBookShelf",
+        "name": "PublishBook",
         "fields": [
           {
             "name": "message",
@@ -2547,10 +2424,10 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "success",
+            "name": "book",
             "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
+              "kind": "OBJECT",
+              "name": "MyBook",
               "ofType": null
             },
             "args": []
@@ -2560,7 +2437,7 @@ export type introspection = {
       },
       {
         "kind": "OBJECT",
-        "name": "RemoveBookFromShelf",
+        "name": "AddBookSample",
         "fields": [
           {
             "name": "message",
@@ -2572,35 +2449,10 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "success",
+            "name": "book",
             "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "RemoveShelfType",
-        "fields": [
-          {
-            "name": "success",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "message",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "kind": "OBJECT",
+              "name": "MyBook",
               "ofType": null
             },
             "args": []

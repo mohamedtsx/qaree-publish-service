@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 	description: "Sign in to Qaree publish service",
 };
 
-async function Login() {
+function Login() {
 	return (
 		<CenteredWrapper>
 			<AuthLoginForm />

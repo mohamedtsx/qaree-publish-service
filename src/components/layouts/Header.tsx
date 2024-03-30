@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { MobileMenu } from "../MobileMenu";
 import ThemeToggle from "../ThemeToggle";
 import { UserNav } from "../UserNav";
 import SearchForm from "./SearchForm";
+import { Spinner } from "../Spinner";
 
 function Header() {
 	return (
@@ -17,7 +19,9 @@ function Header() {
 					<div className="max-lg:hidden">
 						<ThemeToggle />
 					</div>
-					<UserNav />
+					<Suspense fallback={<Spinner />}>
+						<UserNav />
+					</Suspense>
 				</div>
 			</div>
 		</header>
