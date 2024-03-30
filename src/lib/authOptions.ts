@@ -4,8 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { redirect } from "next/navigation";
 import { fetcher } from "./graphql/fetcher";
 import { signInMutation } from "./graphql/mutations";
-import type { AuthUser } from "./graphql/types";
 import { userInfoQuery } from "./graphql/queries";
+import type { AuthUser } from "./graphql/types";
 
 export const authOptions: NextAuthOptions = {
 	providers: [

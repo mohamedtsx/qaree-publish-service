@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
+	DropdownLogoutItem,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuGroup,
@@ -8,12 +9,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuShortcut,
 	DropdownMenuTrigger,
-	DropdownLogoutItem,
 } from "@/components/ui/dropdown-menu";
 
+import { getCurrentUser } from "@/lib/authOptions";
 import { signOut } from "next-auth/react";
 import { Button } from "./ui/button";
-import { getCurrentUser } from "@/lib/authOptions";
 
 async function UserNav() {
 	const user = await getCurrentUser();
