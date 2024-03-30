@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
 				const { userInfo } = await fetcher({
 					query: userInfoQuery,
 					server: true,
-					protectid: true,
+					protectid: false,
 					headers: {
 						Authorization: `Bearer ${signin.access_token}`,
 					},
