@@ -7,7 +7,9 @@ import type { ReactNode, Dispatch, SetStateAction } from "react";
 interface State {
 	bookId: string;
 	categories: string[];
-	chapters: string[];
+	sampleItems: { label: string; value: string }[];
+	sampleItemsIsLoading: boolean;
+	sampleSelectedValues: string[];
 }
 
 interface ContextProps {
@@ -18,7 +20,9 @@ interface ContextProps {
 const DEFAULT_STATE: State = {
 	bookId: "",
 	categories: [],
-	chapters: [],
+	sampleItems: [],
+	sampleSelectedValues: [],
+	sampleItemsIsLoading: false,
 };
 
 const PublishFormContext = createContext<ContextProps>({
