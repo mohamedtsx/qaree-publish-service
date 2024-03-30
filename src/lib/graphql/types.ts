@@ -13,7 +13,13 @@ type ApiErrorResponse = {
 export type ApiResponse<T> = ApiResponseSuccess<T> | ApiErrorResponse;
 
 export type AuthUser = {
+	name: string;
+	email: string;
 	access_token: string;
+	avatar: {
+		size: number;
+		path: string;
+	};
 };
 
 export type RegisterData = {

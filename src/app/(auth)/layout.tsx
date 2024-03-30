@@ -3,12 +3,12 @@ import { getCurrentUser } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
-function Layout({ children }: { children: ReactNode }) {
-	// const user = await getCurrentUser();
+async function Layout({ children }: { children: ReactNode }) {
+	const user = await getCurrentUser();
 
-	// if (user) {
-	// 	redirect("/dashboard");
-	// }
+	if (user) {
+		redirect("/dashboard");
+	}
 
 	return (
 		<div className="h-full flex flex-col">

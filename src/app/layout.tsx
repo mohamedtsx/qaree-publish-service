@@ -1,11 +1,11 @@
+import { Loader2 } from "@/components/Loader2";
 import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/sonner";
 import { inter } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import "../styles/globals.css";
 import { Suspense } from "react";
-import { Loader2 } from "@/components/Loader2";
+import "../styles/globals.css";
 
 export const metadata: Metadata = {
 	title: {
