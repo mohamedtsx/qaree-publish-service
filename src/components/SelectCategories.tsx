@@ -23,19 +23,16 @@ import { getAllCategoriesQuery } from "@/lib/graphql/queries";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { usePublishFormContext } from "@/context";
 
-interface TypeProps {
-	filterValues: string[] | undefined;
-	setFilterValues: (values: string[] | undefined) => void;
-}
-
-export function SelectCategories({ filterValues, setFilterValues }: TypeProps) {
+export function SelectCategories() {
 	const [options, setOptions] = useState<{ label: string; value: string }[]>(
 		[],
 	);
 	const [loading, setLoading] = useState(false);
+	const { publishState, setPublishState } = usePublishFormContext();
 
-	const selectedValues = new Set(filterValues);
+	const selectedValues = new Set(publishState.categories);
 
 	useEffect(() => {
 		const getCategoriesOptions = async () => {
@@ -45,8 +42,7 @@ export function SelectCategories({ filterValues, setFilterValues }: TypeProps) {
 				const { getAllCategories } = await fetcher({
 					query: getAllCategoriesQuery,
 					server: false,
-					protectid: true,
-					cache: "default",
+					protectid: false,
 				});
 				const categoriesOptions = getAllCategories?.categories?.map((el) => ({
 					label: el?.name_en,
@@ -131,7 +127,10 @@ export function SelectCategories({ filterValues, setFilterValues }: TypeProps) {
 												selectedValues.add(option.value);
 											}
 											const values = Array.from(selectedValues);
-											setFilterValues(values.length ? values : undefined);
+											setPublishState({
+												...publishState,
+												categories: Array.from(selectedValues),
+											});
 										}}
 									>
 										<div
@@ -158,7 +157,12 @@ export function SelectCategories({ filterValues, setFilterValues }: TypeProps) {
 								<CommandSeparator />
 								<CommandGroup>
 									<CommandItem
-										onSelect={() => setFilterValues(undefined)}
+										onSelect={() =>
+											setPublishState({
+												...publishState,
+												categories: [],
+											})
+										}
 										className="justify-center text-center"
 									>
 										Clear

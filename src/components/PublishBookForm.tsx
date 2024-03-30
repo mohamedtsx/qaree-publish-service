@@ -1,13 +1,7 @@
 "use client";
 
-import {
-	addBookDetailsAction,
-	publishBookAction,
-	uploadFilesAction,
-} from "@/app/actions";
 import type { PureBookDetailesSchemaType } from "@/lib/graphql/types";
 import {
-	type MediaType,
 	type PublishSchemaType,
 	publishDefaultValues,
 	publishSchema,
@@ -16,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
 import { Suspense, useState } from "react";
-import { type UseFormReturn, useForm } from "react-hook-form";
+import { type UseFormReturn, useForm, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
 import { FormImage } from "./FormImage";
@@ -25,6 +19,11 @@ import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Spinner } from "./Spinner";
 import { Button } from "./ui/button";
 import { Form } from "./ui/form";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
+import { useSession } from "next-auth/react";
+import { usePublishFormContext } from "@/context";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { addBookDetailsMutation } from "@/lib/graphql/mutations";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -34,8 +33,13 @@ const steps = [
 
 function PublishBookForm() {
 	const [currentStep, setCurrentStep] = useState(1);
-	const [categories, setCategories] = useState<string[]>([]);
 	const [currentProcessMessage, setCurrentProcessMessage] = useState("");
+
+	const { publishState } = usePublishFormContext();
+
+	// todo remove this after test
+	const session = useSession();
+	const token = session.data?.user.access_token;
 
 	const form = useForm<PublishSchemaType>({
 		mode: "onBlur",
@@ -46,57 +50,66 @@ function PublishBookForm() {
 	const onSubmit = async (values: PublishSchemaType) => {
 		const { book, cover, ...rest } = values;
 
-		const bookDetailes: PureBookDetailesSchemaType = {
-			...rest,
-			categories,
-			publishingRights: rest.publishingRights === "true",
-		};
+		const bookId = publishState.bookId;
 
-		// 1. send book detailes request
-		setCurrentProcessMessage("Sending detailes...");
-		const addBookDetailsState = await addBookDetailsAction(bookDetailes);
-		if (!addBookDetailsState.success) {
-			return toast.error(addBookDetailsState.message);
-		}
-
-		const bookId = String(addBookDetailsState.data?.addBookDetails?._id);
-
-		if (!bookId) {
-			return toast.error("Development Error");
-		}
-
-		// 2. upload the files
+		// todo test upload book file request
 		setCurrentProcessMessage("Uploading files...");
-		const files: Record<keyof MediaType, File> = {
-			cover,
-			book,
-		};
 
-		const formDataMap: { [key in keyof MediaType]: FormData } = {
-			cover: new FormData(),
-			book: new FormData(),
-		};
+		const formData = new FormData();
+		formData.append("file", book);
 
-		for (const [name, file] of Object.entries(files)) {
-			formDataMap[name as keyof MediaType].append(name, file);
+		try {
+			const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					accept: "application/json",
+					contentType: "multipart/form-data",
+				},
+				body: formData,
+			});
+
+			if (!res.ok) {
+				throw Error(res.statusText);
+			}
+
+			toast.success("Done");
+		} catch (error) {
+			console.log(error);
 		}
 
-		const uploadFilesState = await uploadFilesAction(formDataMap, bookId);
+		// // 2. upload the files
+		// setCurrentProcessMessage("Uploading files...");
+		// const files: Record<keyof MediaType, File> = {
+		// 	cover,
+		// 	book,
+		// };
 
-		if (!uploadFilesState.success) {
-			return toast.error(uploadFilesState.message);
-		}
+		// const formDataMap: { [key in keyof MediaType]: FormData } = {
+		// 	cover: new FormData(),
+		// 	book: new FormData(),
+		// };
 
-		// 3. publish the book
-		setCurrentProcessMessage("Publishing...");
-		const publishBookState = await publishBookAction(bookId);
-		if (!publishBookState.success) {
-			return toast.error(publishBookState.message);
-		}
+		// for (const [name, file] of Object.entries(files)) {
+		// 	formDataMap[name as keyof MediaType].append(name, file);
+		// }
 
-		toast.success(
-			"Congratulations! Your book has been uploaded successfully 📚🎉",
-		);
+		// const uploadFilesState = await uploadFilesAction(formDataMap, bookId);
+
+		// if (!uploadFilesState.success) {
+		// 	return toast.error(uploadFilesState.message);
+		// }
+
+		// // 3. publish the book
+		// setCurrentProcessMessage("Publishing...");
+		// const publishBookState = await publishBookAction(bookId);
+		// if (!publishBookState.success) {
+		// 	return toast.error(publishBookState.message);
+		// }
+
+		// toast.success(
+		// 	"Congratulations! Your book has been uploaded successfully 📚🎉",
+		// );
 	};
 
 	return (
@@ -122,8 +135,7 @@ function PublishBookForm() {
 					{currentStep === 1 ? (
 						<StepFirst
 							form={form}
-							onDone={(selectedCategories) => {
-								setCategories(selectedCategories || []);
+							onDone={() => {
 								setCurrentStep(2);
 							}}
 						/>
@@ -150,11 +162,54 @@ function PublishBookForm() {
 interface StepProps {
 	form: UseFormReturn<PublishSchemaType>;
 	bookId?: string;
-	onDone: (selectedCategories?: string[]) => void;
+	onDone: () => void;
 }
 
 function StepFirst({ form, onDone }: StepProps) {
-	const [filterValues, setFilterValues] = useState<string[]>();
+	const { publishState, setPublishState } = usePublishFormContext();
+
+	const processOne = async () => {
+		// block execution on back/prev button click
+		if (publishState.bookId) {
+			return;
+		}
+
+		// 1. validation
+		const { book, cover, ...rest } = form.getValues();
+
+		const bookDetailes: PureBookDetailesSchemaType = {
+			...rest,
+			categories: publishState.categories,
+			publishingRights: rest.publishingRights === "true",
+		};
+
+		// 2. send book detailes
+		let bookId: string;
+		try {
+			const { addBookDetails } = await fetcher({
+				query: addBookDetailsMutation,
+				variables: bookDetailes,
+				server: false,
+				protectid: true,
+			});
+			bookId = String(addBookDetails?._id);
+		} catch (error) {
+			if (error instanceof Error) {
+				return toast.error(error.message);
+			}
+			return toast.error("Faild to add book data");
+		}
+
+		if (!bookId) {
+			return toast.error("Development Error");
+		}
+
+		// 3. update publishState (bookId)
+		setPublishState({
+			...publishState,
+			bookId,
+		});
+	};
 
 	const goNext = async () => {
 		const isValid = await form.trigger([
@@ -165,7 +220,8 @@ function StepFirst({ form, onDone }: StepProps) {
 		]);
 
 		if (isValid) {
-			onDone(filterValues);
+			onDone();
+			processOne();
 		}
 	};
 
@@ -196,10 +252,7 @@ function StepFirst({ form, onDone }: StepProps) {
 				/>
 
 				<Suspense fallback={<Spinner />}>
-					<SelectCategories
-						filterValues={filterValues}
-						setFilterValues={setFilterValues}
-					/>
+					<SelectCategories />
 				</Suspense>
 			</div>
 
@@ -211,9 +264,20 @@ function StepFirst({ form, onDone }: StepProps) {
 }
 
 function StepSecond({ form, onDone }: StepProps) {
+	const { publishState } = usePublishFormContext();
+
+	const processTwo = async () => {
+		// watch book file to call it
+		// 1. get bookId
+		// 2. upload book file
+		// 3. get book content list
+		// 4. update publishState (chapters)
+	};
+
 	const goNext = async () => {
+		// todo trigger chapters too
 		const isValid = await form.trigger(["cover", "book"]);
-		if (isValid) {
+		if (isValid && publishState.bookId) {
 			onDone();
 		}
 	};
