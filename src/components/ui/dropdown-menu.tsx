@@ -5,6 +5,7 @@ import { Check, ChevronRight, Circle } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { signOut } from "next-auth/react";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
@@ -181,6 +182,19 @@ const DropdownMenuShortcut = ({
 };
 DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
 
+const DropdownLogoutItem = () => {
+	return (
+		<DropdownMenuItem
+			onClick={() => {
+				signOut();
+			}}
+		>
+			Log out
+			<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+		</DropdownMenuItem>
+	);
+};
+
 export {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -188,6 +202,7 @@ export {
 	DropdownMenuItem,
 	DropdownMenuCheckboxItem,
 	DropdownMenuRadioItem,
+	DropdownLogoutItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuShortcut,

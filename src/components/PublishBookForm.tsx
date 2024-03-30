@@ -15,7 +15,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
@@ -62,7 +62,6 @@ function PublishBookForm() {
 		const bookId = String(addBookDetailsState.data?.addBookDetails?._id);
 
 		if (!bookId) {
-			console.log(bookId);
 			return toast.error("Development Error");
 		}
 
@@ -195,10 +194,13 @@ function StepFirst({ form, onDone }: StepProps) {
 					]}
 					label="Language"
 				/>
-				<SelectCategories
-					filterValues={filterValues}
-					setFilterValues={setFilterValues}
-				/>
+
+				<Suspense fallback={<Spinner />}>
+					<SelectCategories
+						filterValues={filterValues}
+						setFilterValues={setFilterValues}
+					/>
+				</Suspense>
 			</div>
 
 			<Button type="button" className="w-64 ms-auto mt-8" onClick={goNext}>

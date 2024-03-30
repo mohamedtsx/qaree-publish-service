@@ -1,18 +1,25 @@
+import { getCurrentUser } from "@/lib/authOptions";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { userInfoQuery } from "@/lib/graphql/queries";
 
-async function Dashboard() {
+async function getUserInfo() {
 	const { userInfo } = await fetcher({
 		query: userInfoQuery,
 		server: true,
 		protectid: true,
 	});
 
-	if (!userInfo) {
-		return <h1 className="text-4xl">Something went wrong!</h1>;
-	}
+	return userInfo;
+}
 
-	const { name } = { name: "mohamed" };
+export default async function Dashboard() {
+	const user = await getCurrentUser();
+	if (!user) return;
+
+	const userInfo = await getUserInfo();
+
+	if (!userInfo) return;
+	const { name } = userInfo;
 
 	return (
 		<div className="container py-14">
@@ -22,5 +29,3 @@ async function Dashboard() {
 		</div>
 	);
 }
-
-export default Dashboard;

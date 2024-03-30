@@ -61,6 +61,9 @@ export async function fetcher<
 					variables,
 				}),
 				cache,
+				next: {
+					revalidate: 0,
+				},
 			});
 		} else {
 			res = await fetch("/api", {

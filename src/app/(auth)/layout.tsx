@@ -1,13 +1,12 @@
 import ThemeToggle from "@/components/ThemeToggle";
-import { authOptions } from "@/lib/authOptions";
-import { getServerSession } from "next-auth";
+import { getCurrentUser } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
 async function Layout({ children }: { children: ReactNode }) {
-	const session = await getServerSession(authOptions);
+	const user = await getCurrentUser();
 
-	if (session) {
+	if (user) {
 		redirect("/dashboard");
 	}
 
