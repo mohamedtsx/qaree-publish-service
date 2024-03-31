@@ -50,6 +50,7 @@ function PublishBookForm() {
 	});
 
 	const onSubmit = async (values: PublishSchemaType) => {
+		// todo no need to this old submit handler anymore I'll update it when complete process
 		const { book, cover, ...rest } = values;
 
 		const bookId = publishState.bookId;
@@ -347,7 +348,7 @@ function StepSecond({ form, onDone }: StepProps) {
 		if (file) {
 			processTwo();
 		}
-	}, [file, processTwo]);
+	}, [file]);
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);
