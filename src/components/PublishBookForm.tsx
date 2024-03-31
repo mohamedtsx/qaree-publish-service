@@ -1,5 +1,10 @@
 "use client";
 
+import { usePublishFormContext } from "@/context";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { addBookDetailsMutation } from "@/lib/graphql/mutations";
+import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 import type { PureBookDetailesSchemaType } from "@/lib/graphql/types";
 import {
 	type PublishSchemaType,
@@ -9,23 +14,18 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
-import { Suspense, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
 import { FormImage } from "./FormImage";
+import SampleMultiSelect from "./SampleMultiSelect";
 import { SelectCategories } from "./SelectCategories";
 import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Spinner } from "./Spinner";
 import { Button } from "./ui/button";
 import { Form } from "./ui/form";
-import { UPLOAD_FULL_URL } from "@/lib/graphql";
-import { useSession } from "next-auth/react";
-import { usePublishFormContext } from "@/context";
-import { fetcher } from "@/lib/graphql/fetcher";
-import { addBookDetailsMutation } from "@/lib/graphql/mutations";
-import SampleMultiSelect from "./SampleMultiSelect";
-import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -269,7 +269,7 @@ function StepFirst({ form, onDone }: StepProps) {
 function StepSecond({ form, onDone }: StepProps) {
 	const { publishState, setPublishState } = usePublishFormContext();
 
-	const processTwo = async () => {
+	const processTwo = useCallback(async () => {
 		// 2. show loader if user click on add sample
 		// todo fix stop loading when the process return
 
@@ -285,7 +285,7 @@ function StepSecond({ form, onDone }: StepProps) {
 		}
 
 		// 4. upload book file
-		const { book } = form.getValues();
+		const book = form.getValues("book");
 		const formData = new FormData();
 		formData.append("file", book);
 		console.log("4");
@@ -339,7 +339,7 @@ function StepSecond({ form, onDone }: StepProps) {
 			}
 			return toast.error("Something went wrong!");
 		}
-	};
+	}, [form, publishState.bookId]);
 
 	//1. run the process directly after file upload
 	const file = form.watch("book");
@@ -348,7 +348,7 @@ function StepSecond({ form, onDone }: StepProps) {
 		if (file) {
 			processTwo();
 		}
-	}, [file]);
+	}, [file, processTwo]);
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);

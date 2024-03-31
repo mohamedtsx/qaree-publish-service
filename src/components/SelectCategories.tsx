@@ -20,10 +20,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { getAllCategoriesQuery } from "@/lib/graphql/queries";
 
+import { usePublishFormContext } from "@/context";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { usePublishFormContext } from "@/context";
 
 export function SelectCategories() {
 	const [options, setOptions] = useState<{ label: string; value: string }[]>(
