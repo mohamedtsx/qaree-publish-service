@@ -9,7 +9,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
@@ -25,6 +25,7 @@ import { usePublishFormContext } from "@/context";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { addBookDetailsMutation } from "@/lib/graphql/mutations";
 import SampleMultiSelect from "./SampleMultiSelect";
+import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -269,12 +270,14 @@ function StepSecond({ form, onDone }: StepProps) {
 
 	const processTwo = async () => {
 		// 2. show loader if user click on add sample
-		setPublishState({ ...publishState, sampleItemsIsLoading: true });
+		// todo fix stop loading when the process return
+
+		// setPublishState({ ...publishState, sampleItemsIsLoading: true });
 
 		// 3. get bookId
 		const bookId = publishState.bookId;
 		if (!bookId) {
-			setPublishState({ ...publishState, sampleItemsIsLoading: false });
+			// setPublishState({ ...publishState, sampleItemsIsLoading: false });
 			return toast.error(
 				"Error in previous step. Please retry or contact support",
 			);
@@ -284,10 +287,7 @@ function StepSecond({ form, onDone }: StepProps) {
 		const { book } = form.getValues();
 		const formData = new FormData();
 		formData.append("file", book);
-
-		const session = useSession();
-		const token = session.data?.user.access_token;
-		if (!token) return;
+		console.log("4");
 
 		try {
 			const res = await fetch("/api", {
@@ -303,31 +303,51 @@ function StepSecond({ form, onDone }: StepProps) {
 				throw new Error("Failed to upload book file");
 			}
 
-			toast.success("File Uploaded OK");
+			// 5. get book content list (F)
+			const { getBookEPubContent } = await fetcher({
+				query: getBookEPubContentQuery,
+				variables: {
+					bookId,
+				},
+				server: false,
+				protectid: true,
+				cache: "default",
+			});
 
-			// 5. get book content list
+			// const options = getBookEPubContent?.content?.map((el) => ({
+			// 	label: el?.title,
+			// 	value: el?.id,
+			// })) as { label: string; value: string }[];
+
+			// if (!options) {
+			// 	return toast.error("Development Error");
+			// }
+
+			// 6. update publishState (sampleItems)
+			// setPublishState({
+			// 	...publishState,
+			// 	sampleItems: options,
+			// 	// sampleItemsIsLoading: false,
+			// });
+			// console.log("6");
+
+			toast.success("OK To - Upload file");
 		} catch (error) {
 			if (error instanceof Error) {
 				return toast.error(error.message);
 			}
 			return toast.error("Something went wrong!");
 		}
-
-		// 4. update publishState (chapters)
 	};
 
 	//1. run the process directly after file upload
 	const file = form.watch("book");
 
-	// setPublishState({
-	// 	...publishState,
-	// 	sampleItemsIsLoading: true,
-	// });
-	if (file) {
-		if (!publishState.sampleItemsIsLoading) {
+	useEffect(() => {
+		if (file) {
 			processTwo();
 		}
-	}
+	}, [file, processTwo]);
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);
