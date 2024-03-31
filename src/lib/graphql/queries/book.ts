@@ -10,3 +10,14 @@ export const getAllCategoriesQuery = graphql(`
     }
   }
 `);
+
+export const getBookEPubContentQuery = graphql(`
+  query getBookEPubContent($bookId: String!){
+    getBookEPubContent(bookId: $bookId) {
+        content {
+          id
+          title
+        }
+    }
+  }
+`);

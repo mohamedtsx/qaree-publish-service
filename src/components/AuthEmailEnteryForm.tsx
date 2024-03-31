@@ -55,7 +55,7 @@ function AuthEmailEnteryForm() {
 			setShowNext(true);
 		} catch (error) {
 			if (error instanceof Error) {
-				return toast.error(error.name);
+				return toast.error(error.message);
 			}
 			toast.error("Something went wrong!");
 		}

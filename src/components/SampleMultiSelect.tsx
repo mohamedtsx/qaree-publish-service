@@ -12,65 +12,34 @@ import {
 	CommandList,
 	CommandSeparator,
 } from "@/components/ui/command";
+
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+
 import { Separator } from "@/components/ui/separator";
-import { getAllCategoriesQuery } from "@/lib/graphql/queries";
 
 import { usePublishFormContext } from "@/context";
-import { fetcher } from "@/lib/graphql/fetcher";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
-export function SelectCategories() {
-	const [options, setOptions] = useState<{ label: string; value: string }[]>(
-		[],
-	);
-	const [loading, setLoading] = useState(false);
+function SampleMultiSelect() {
 	const { publishState, setPublishState } = usePublishFormContext();
 
-	const selectedValues = new Set(publishState.categories);
-
-	useEffect(() => {
-		const getCategoriesOptions = async () => {
-			setLoading(true);
-
-			try {
-				const { getAllCategories } = await fetcher({
-					query: getAllCategoriesQuery,
-					server: false,
-					protectid: false,
-				});
-				const categoriesOptions = getAllCategories?.categories?.map((el) => ({
-					label: el?.name_en,
-					value: `${el?._id}`,
-				})) as {
-					label: string;
-					value: string;
-				}[];
-
-				setOptions(categoriesOptions);
-			} catch (error) {
-				if (error instanceof Error) {
-					setLoading(false);
-					return toast.error(error.message);
-				}
-				toast.error("Failed to get categories");
-			}
-			setLoading(false);
-		};
-		getCategoriesOptions();
-	}, []);
+	const options = publishState.sampleItems;
+	const loading = publishState.sampleItemsIsLoading;
+	const selectedValues = new Set(publishState.sampleSelectedValues);
 
 	return (
 		<Popover>
-			<PopoverTrigger asChild className="justify-start">
+			<PopoverTrigger
+				asChild
+				className="justify-start"
+				disabled={!loading && !publishState.sampleItems.length ? true : false}
+			>
 				<Button variant="outline" className="bg-transparent text-sm">
 					<Plus className="mr-2 h-4 w-4" />
-					Categories
+					Add Sample
 					{selectedValues?.size > 0 && (
 						<>
 							<Separator orientation="vertical" className="mx-2 h-4" />
@@ -108,7 +77,7 @@ export function SelectCategories() {
 			</PopoverTrigger>
 			<PopoverContent className="w-[200px] p-0" align="start">
 				<Command>
-					<CommandInput placeholder={"Categories"} />
+					<CommandInput placeholder={"Sample"} />
 					<CommandList>
 						<CommandEmpty>
 							{loading ? "Loading..." : "No results found."}
@@ -126,10 +95,10 @@ export function SelectCategories() {
 											} else {
 												selectedValues.add(option.value);
 											}
-											const categories = Array.from(selectedValues);
+											const sampleSelectedValues = Array.from(selectedValues);
 											setPublishState({
 												...publishState,
-												categories,
+												sampleSelectedValues,
 											});
 										}}
 									>
@@ -143,10 +112,6 @@ export function SelectCategories() {
 										>
 											<Check className={cn("h-4 w-4")} />
 										</div>
-										{/* todo replace jsx icon with fetched path */}
-										{/* {option.icon && (
-											<option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-										)} */}
 										<span>{option.label}</span>
 									</CommandItem>
 								);
@@ -176,3 +141,5 @@ export function SelectCategories() {
 		</Popover>
 	);
 }
+
+export default SampleMultiSelect;

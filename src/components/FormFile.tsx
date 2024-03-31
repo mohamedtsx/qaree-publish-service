@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { ImageIcon } from "lucide-react";
 import { type ComponentProps, useId } from "react";
 import type { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import EbupIcon from "./EbupIcon";
