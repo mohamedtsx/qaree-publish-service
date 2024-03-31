@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
 import { Suspense, useState } from "react";
-import { type UseFormReturn, useForm, useFormContext } from "react-hook-form";
+import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
 import { FormImage } from "./FormImage";
@@ -24,6 +24,7 @@ import { useSession } from "next-auth/react";
 import { usePublishFormContext } from "@/context";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { addBookDetailsMutation } from "@/lib/graphql/mutations";
+import SampleMultiSelect from "./SampleMultiSelect";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -264,21 +265,79 @@ function StepFirst({ form, onDone }: StepProps) {
 }
 
 function StepSecond({ form, onDone }: StepProps) {
-	const { publishState } = usePublishFormContext();
+	const { publishState, setPublishState } = usePublishFormContext();
 
 	const processTwo = async () => {
-		// watch book file to call it
-		// 1. get bookId
-		// 2. upload book file
-		// 3. get book content list
+		// 2. show loader if user click on add sample
+		setPublishState({ ...publishState, sampleItemsIsLoading: true });
+
+		// 3. get bookId
+		const bookId = publishState.bookId;
+		if (!bookId) {
+			setPublishState({ ...publishState, sampleItemsIsLoading: false });
+			return toast.error(
+				"Error in previous step. Please retry or contact support",
+			);
+		}
+
+		// 4. upload book file
+		const { book } = form.getValues();
+		const formData = new FormData();
+		formData.append("file", book);
+
+		const session = useSession();
+		const token = session.data?.user.access_token;
+		if (!token) return;
+
+		try {
+			const res = await fetch("/api", {
+				method: "POST",
+				body: JSON.stringify({
+					body: formData,
+					protectid: true,
+					contentType: "multipart/form-data",
+				}),
+			});
+
+			if (!res.ok) {
+				throw new Error("Failed to upload book file");
+			}
+
+			toast.success("File Uploaded OK");
+
+			// 5. get book content list
+		} catch (error) {
+			if (error instanceof Error) {
+				return toast.error(error.message);
+			}
+			return toast.error("Something went wrong!");
+		}
+
 		// 4. update publishState (chapters)
 	};
 
+	//1. run the process directly after file upload
+	const file = form.watch("book");
+
+	// setPublishState({
+	// 	...publishState,
+	// 	sampleItemsIsLoading: true,
+	// });
+	if (file) {
+		if (!publishState.sampleItemsIsLoading) {
+			processTwo();
+		}
+	}
+
 	const goNext = async () => {
-		// todo trigger chapters too
 		const isValid = await form.trigger(["cover", "book"]);
+
 		if (isValid && publishState.bookId) {
-			onDone();
+			if (!publishState.sampleSelectedValues) {
+				toast.error("Please select sample");
+			} else {
+				onDone();
+			}
 		}
 	};
 
@@ -287,6 +346,8 @@ function StepSecond({ form, onDone }: StepProps) {
 			<div className="grid gap-4">
 				<FormImage form={form} name="cover" label="cover" />
 				<FormFile form={form} name="book" label="book" />
+
+				<SampleMultiSelect />
 			</div>
 			<Button type="button" onClick={goNext} className="w-64 ml-auto">
 				<span>Review</span> <ArrowRightIcon className="w-4 ml-2 " />
