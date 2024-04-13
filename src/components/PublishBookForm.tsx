@@ -26,6 +26,9 @@ import { Form } from "./ui/form";
 import { publishBookAction } from "@/app/actions";
 import { useFormState } from "react-dom";
 import { getBookEPubContentQuery } from "@/lib/graphql/queries";
+import { BACKEND_BASE_URL, UPLOAD_FULL_URL } from "@/lib/graphql";
+import { useSession } from "next-auth/react";
+import { ResultOf } from "gql.tada";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -211,83 +214,96 @@ function StepFirst({ form, onDone }: StepProps) {
 
 function StepSecond({ form, onDone }: StepProps) {
 	const { publishState, setPublishState } = usePublishFormContext();
+	const session = useSession();
 
-	const processTwo = useCallback(async () => {
+	const processTwo = async () => {
 		// 2. show loader if user click on add sample
 		// todo fix stop loading when the process return
 
-		// setPublishState({ ...publishState, sampleItemsIsLoading: true });
+		setPublishState({ ...publishState, sampleItemsIsLoading: true });
 
 		// 3. get bookId
 		const bookId = publishState.bookId;
 		if (!bookId) {
-			// setPublishState({ ...publishState, sampleItemsIsLoading: false });
+			setPublishState({ ...publishState, sampleItemsIsLoading: false });
 			return toast.error(
 				"Error in previous step. Please retry or contact support",
 			);
 		}
 
+		// todo book cover doesn't uploaded yet
 		// 4. upload book file
 		const book = form.getValues("book");
 		const formData = new FormData();
 		formData.append("file", book);
 
+		const token = session.data?.user.access_token;
+
 		try {
-			const res = await fetch("/api", {
+			const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
 				method: "POST",
-				body: JSON.stringify({
-					body: formData,
-					protectid: true,
+				headers: {
+					Authorization: `Bearer ${token}`,
+					accept: "application/json",
 					contentType: "multipart/form-data",
-				}),
+				},
+				body: formData,
 			});
+			const data = await res.json();
 
-			if (!res.ok) {
-				throw new Error("Failed to upload book file");
-			}
-
-			// 5. get book content list (F)
-			// const { getBookEPubContent } = await fetcher({
-			// 	query: getBookEPubContentQuery,
-			// 	variables: {
-			// 		bookId,
-			// 	},
-			// 	server: false,
-			// 	protectid: true,
-			// 	cache: "default",
+			// todo do it using api route
+			// const res = await fetch("/api/media", {
+			// 	method: "POST",
+			// 	body: JSON.stringify({
+			// 		body: formData,
+			// 		contentType: "multipart/form-data",
+			// 	}),
 			// });
-
-			// const options = getBookEPubContent?.content?.map((el) => ({
-			// 	label: el?.title,
-			// 	value: el?.id,
-			// })) as { label: string; value: string }[];
-
-			// if (!options) {
-			// 	return toast.error("Development Error");
+			// if (!res.ok) {
+			// 	throw new Error("Failed to upload book file");
 			// }
 
-			// // 6. update publishState (sampleItems)
-			// setPublishState({
-			// 	...publishState,
-			// 	sampleItems: options,
-			// 	// sampleItemsIsLoading: false,
-			// });
+			// 5. get book content list (F)
+			const { getBookEPubContent } = await fetcher({
+				query: getBookEPubContentQuery,
+				variables: {
+					bookId: data._id,
+				},
+				server: false,
+				protectid: true,
+				cache: "default",
+			});
+
+			const options = getBookEPubContent?.content?.map((el) => ({
+				label: el?.title,
+				value: el?.id,
+			})) as { label: string; value: string }[];
+			if (!options) {
+				return toast.error("Development Error");
+			}
+			// 6. update publishState (sampleItems)
+			setPublishState({
+				...publishState,
+				sampleItems: options,
+				sampleItemsIsLoading: false,
+			});
 		} catch (error) {
 			if (error instanceof Error) {
 				return toast.error(error.message);
 			}
 			return toast.error("Something went wrong!");
 		}
-	}, [form, publishState.bookId]);
+	};
 
 	//1. run the process directly after file upload
-	const file = form.watch("book");
 
+	const file = form.watch("book");
 	useEffect(() => {
 		if (file) {
+			console.log("process two start");
 			processTwo();
 		}
-	}, [file, processTwo]);
+	}, [file]);
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);
