@@ -649,9 +649,12 @@ export type introspection = {
           {
             "name": "sample",
             "type": {
-              "kind": "OBJECT",
-              "name": "File",
-              "ofType": null
+              "kind": "LIST",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "args": []
           },

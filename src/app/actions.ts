@@ -394,7 +394,7 @@ export const publishBookAction = async (bookId: string) => {
 
 		return {
 			success: true,
-			message: "success",
+			message: "Congratulations! Your book has been uploaded successfully 📚🎉",
 		};
 	} catch (error) {
 		let message = "Something went wrong!";

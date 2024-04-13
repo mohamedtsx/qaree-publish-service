@@ -1,10 +1,8 @@
 "use client";
 
 import { usePublishFormContext } from "@/context";
-import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { addBookDetailsMutation } from "@/lib/graphql/mutations";
-import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 import type { PureBookDetailesSchemaType } from "@/lib/graphql/types";
 import {
 	type PublishSchemaType,
@@ -14,9 +12,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { Suspense, useCallback, useEffect, useState } from "react";
-import { type UseFormReturn, useForm } from "react-hook-form";
+import { type UseFormReturn, useForm, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
 import { FormImage } from "./FormImage";
@@ -26,6 +23,9 @@ import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Spinner } from "./Spinner";
 import { Button } from "./ui/button";
 import { Form } from "./ui/form";
+import { publishBookAction } from "@/app/actions";
+import { useFormState } from "react-dom";
+import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -39,10 +39,6 @@ function PublishBookForm() {
 
 	const { publishState } = usePublishFormContext();
 
-	// todo remove this after test
-	const session = useSession();
-	const token = session.data?.user.access_token;
-
 	const form = useForm<PublishSchemaType>({
 		mode: "onBlur",
 		resolver: zodResolver(publishSchema),
@@ -50,69 +46,13 @@ function PublishBookForm() {
 	});
 
 	const onSubmit = async (values: PublishSchemaType) => {
-		// todo no need to this old submit handler anymore I'll update it when complete process
-		const { book, cover, ...rest } = values;
-
+		// Publish the book
 		const bookId = publishState.bookId;
-
-		// todo test upload book file request
-		setCurrentProcessMessage("Uploading files...");
-
-		const formData = new FormData();
-		formData.append("file", book);
-
-		try {
-			const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					accept: "application/json",
-					contentType: "multipart/form-data",
-				},
-				body: formData,
-			});
-
-			if (!res.ok) {
-				throw Error(res.statusText);
-			}
-
-			toast.success("Done");
-		} catch (error) {
-			console.log(error);
+		const { message, success } = await publishBookAction(bookId);
+		if (!success) {
+			return toast.error(message);
 		}
-
-		// // 2. upload the files
-		// setCurrentProcessMessage("Uploading files...");
-		// const files: Record<keyof MediaType, File> = {
-		// 	cover,
-		// 	book,
-		// };
-
-		// const formDataMap: { [key in keyof MediaType]: FormData } = {
-		// 	cover: new FormData(),
-		// 	book: new FormData(),
-		// };
-
-		// for (const [name, file] of Object.entries(files)) {
-		// 	formDataMap[name as keyof MediaType].append(name, file);
-		// }
-
-		// const uploadFilesState = await uploadFilesAction(formDataMap, bookId);
-
-		// if (!uploadFilesState.success) {
-		// 	return toast.error(uploadFilesState.message);
-		// }
-
-		// // 3. publish the book
-		// setCurrentProcessMessage("Publishing...");
-		// const publishBookState = await publishBookAction(bookId);
-		// if (!publishBookState.success) {
-		// 	return toast.error(publishBookState.message);
-		// }
-
-		// toast.success(
-		// 	"Congratulations! Your book has been uploaded successfully 📚🎉",
-		// );
+		toast.success(message);
 	};
 
 	return (
@@ -164,7 +104,6 @@ function PublishBookForm() {
 
 interface StepProps {
 	form: UseFormReturn<PublishSchemaType>;
-	bookId?: string;
 	onDone: () => void;
 }
 
@@ -173,6 +112,10 @@ function StepFirst({ form, onDone }: StepProps) {
 
 	const processOne = async () => {
 		// block execution on back/prev button click
+
+		// todo use form context instead context api
+		// const formX = useFormContext<PublishSchemaType>()
+
 		if (publishState.bookId) {
 			return;
 		}
@@ -288,7 +231,6 @@ function StepSecond({ form, onDone }: StepProps) {
 		const book = form.getValues("book");
 		const formData = new FormData();
 		formData.append("file", book);
-		console.log("4");
 
 		try {
 			const res = await fetch("/api", {
@@ -305,15 +247,15 @@ function StepSecond({ form, onDone }: StepProps) {
 			}
 
 			// 5. get book content list (F)
-			const { getBookEPubContent } = await fetcher({
-				query: getBookEPubContentQuery,
-				variables: {
-					bookId,
-				},
-				server: false,
-				protectid: true,
-				cache: "default",
-			});
+			// const { getBookEPubContent } = await fetcher({
+			// 	query: getBookEPubContentQuery,
+			// 	variables: {
+			// 		bookId,
+			// 	},
+			// 	server: false,
+			// 	protectid: true,
+			// 	cache: "default",
+			// });
 
 			// const options = getBookEPubContent?.content?.map((el) => ({
 			// 	label: el?.title,
@@ -324,15 +266,12 @@ function StepSecond({ form, onDone }: StepProps) {
 			// 	return toast.error("Development Error");
 			// }
 
-			// 6. update publishState (sampleItems)
+			// // 6. update publishState (sampleItems)
 			// setPublishState({
 			// 	...publishState,
 			// 	sampleItems: options,
 			// 	// sampleItemsIsLoading: false,
 			// });
-			// console.log("6");
-
-			toast.success("OK To - Upload file");
 		} catch (error) {
 			if (error instanceof Error) {
 				return toast.error(error.message);
