@@ -1,6 +1,7 @@
 "use client";
 
 import { publishBookAction, uploadCoverAction } from "@/app/actions";
+
 import { usePublishFormContext } from "@/context";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
@@ -17,6 +18,7 @@ import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Suspense, useState } from "react";
+
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
@@ -220,7 +222,7 @@ function StepSecond({ form, onDone }: StepProps) {
 	const { publishState, setPublishState } = usePublishFormContext();
 	const session = useSession();
 
-	const processTwo = async () => {
+	const processTwo = useCallback(async () => {
 		// 2. show loader if user click on add sample
 		setPublishState({ ...publishState, sampleItemsIsLoading: true });
 
@@ -295,17 +297,10 @@ function StepSecond({ form, onDone }: StepProps) {
 			}
 			return toast.error("Something went wrong!");
 		}
-	};
+	}, [form, publishState.bookId]);
 
-	//1. run the process directly after file upload
+	//1. todo run the process directly after file upload
 
-	const file = form.watch("book");
-	// useEffect(() => {
-	// 	if (file) {
-	// 		console.log("process two start");
-	// 		processTwo();
-	// 	}
-	// }, [file]);
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);
