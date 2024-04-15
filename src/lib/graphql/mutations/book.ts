@@ -46,3 +46,29 @@ export const publishBookMutation = graphql(`
     }
   }
 `);
+
+export const editBookMutation = graphql(`
+  mutation editBookDetails(  $name: String!, 
+    $description: String!, 
+    $publishingRights: Boolean!, 
+    $categories: [String]!,
+    $language: String!,
+    $isbn: String,
+    $price: Float,
+    $edition: Int,
+  ) {
+    editBookDetails(    
+      name: $name, 
+      description: $description, 
+      publishingRights: $publishingRights, 
+      categories: $categories, 
+      language: $language,
+      isbn: $isbn,
+      price: $price,
+      edition: $edition,
+    ) {
+      _id
+      name
+    }
+  }
+`);

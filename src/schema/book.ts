@@ -8,7 +8,7 @@ const errors = {
 	description: "Description is required",
 	language: "Please select book language",
 	publishingRights: "Please confirm publishing rights",
-	ispn: "",
+	isbn: "",
 	edition: "",
 	categories: "",
 };
@@ -72,11 +72,12 @@ export const editBookSchema = z.object({
 		.min(10, {
 			message: invalid.description,
 		}),
-	ispn: z
+	isbn: z
 		.number({
-			required_error: errors.ispn,
+			required_error: errors.isbn,
 		})
 		.optional(),
+	edition: z.number().optional(),
 	price: z.number().optional(),
 	categories: z.array(z.string()).min(1, {
 		message: errors.categories,
