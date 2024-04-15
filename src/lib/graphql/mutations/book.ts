@@ -14,7 +14,7 @@ mutation addBookDetails(
     description: $description, 
     publishingRights: $publishingRights, 
     categories: $categories, 
-    language: $language
+    language: $language,
     ) {
     _id
     name
@@ -43,6 +43,45 @@ export const publishBookMutation = graphql(`
           status,
           price,
       }
+    }
+  }
+`);
+
+export const editBookMutation = graphql(`
+  mutation editBookDetails(  
+    $name: String!, 
+    $description: String!, 
+    $publishingRights: Boolean!, 
+    $categories: [String]!,
+    $language: String!, 
+    $isbn: String,
+    $price: Float,
+    $edition: Int,
+    $bookId: String!
+  ) {
+    editBookDetails(  
+      bookId: $bookId  
+      name: $name, 
+      description: $description, 
+      publishingRights: $publishingRights, 
+      categories: $categories, 
+      language: $language,
+      isbn: $isbn,
+      price: $price,
+      edition: $edition,
+    ) {
+      _id
+      name
+    }
+  }
+`);
+
+export const moveBookToRecycleBinMutation = graphql(`
+  mutation moveBookToRecycleBin($bookId: String!) {
+    moveBookToRecycleBin(bookId: $bookId) {
+      deleted_id
+      message
+      success
     }
   }
 `);

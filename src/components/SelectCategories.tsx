@@ -25,12 +25,22 @@ import { fetcher } from "@/lib/graphql/fetcher";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export function SelectCategories() {
+export function SelectCategories({
+	defaultValues,
+}: { defaultValues?: string[] }) {
 	const [options, setOptions] = useState<{ label: string; value: string }[]>(
 		[],
 	);
+	// todo make it works with edit action
 	const [loading, setLoading] = useState(false);
 	const { publishState, setPublishState } = usePublishFormContext();
+
+	if (defaultValues?.length) {
+		setPublishState({
+			...publishState,
+			categories: defaultValues,
+		});
+	}
 
 	const selectedValues = new Set(publishState.categories);
 

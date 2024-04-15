@@ -1,5 +1,7 @@
 "use client";
 
+import { publishBookAction, uploadCoverAction } from "@/app/actions";
+
 import { usePublishFormContext } from "@/context";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
@@ -15,7 +17,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
+
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
@@ -35,13 +38,7 @@ const steps = [
 
 function PublishBookForm() {
 	const [currentStep, setCurrentStep] = useState(1);
-	const [currentProcessMessage, setCurrentProcessMessage] = useState("");
-
 	const { publishState } = usePublishFormContext();
-
-	// todo remove this after test
-	const session = useSession();
-	const token = session.data?.user.access_token;
 
 	const form = useForm<PublishSchemaType>({
 		mode: "onBlur",
@@ -50,69 +47,25 @@ function PublishBookForm() {
 	});
 
 	const onSubmit = async (values: PublishSchemaType) => {
-		// todo no need to this old submit handler anymore I'll update it when complete process
-		const { book, cover, ...rest } = values;
-
 		const bookId = publishState.bookId;
 
-		// todo test upload book file request
-		setCurrentProcessMessage("Uploading files...");
-
+		// 1. upload cover
+		const book = form.getValues("cover");
 		const formData = new FormData();
-		formData.append("file", book);
+		formData.append("cover", book);
 
-		try {
-			const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					accept: "application/json",
-					contentType: "multipart/form-data",
-				},
-				body: formData,
-			});
-
-			if (!res.ok) {
-				throw Error(res.statusText);
-			}
-
-			toast.success("Done");
-		} catch (error) {
-			console.log(error);
+		const coverState = await uploadCoverAction(formData, bookId);
+		if (!coverState.success) {
+			return toast.error("Error: Invalid book cover");
 		}
 
-		// // 2. upload the files
-		// setCurrentProcessMessage("Uploading files...");
-		// const files: Record<keyof MediaType, File> = {
-		// 	cover,
-		// 	book,
-		// };
-
-		// const formDataMap: { [key in keyof MediaType]: FormData } = {
-		// 	cover: new FormData(),
-		// 	book: new FormData(),
-		// };
-
-		// for (const [name, file] of Object.entries(files)) {
-		// 	formDataMap[name as keyof MediaType].append(name, file);
-		// }
-
-		// const uploadFilesState = await uploadFilesAction(formDataMap, bookId);
-
-		// if (!uploadFilesState.success) {
-		// 	return toast.error(uploadFilesState.message);
-		// }
-
-		// // 3. publish the book
-		// setCurrentProcessMessage("Publishing...");
-		// const publishBookState = await publishBookAction(bookId);
-		// if (!publishBookState.success) {
-		// 	return toast.error(publishBookState.message);
-		// }
-
-		// toast.success(
-		// 	"Congratulations! Your book has been uploaded successfully 📚🎉",
-		// );
+		// Publish the book
+		const { message, success } = await publishBookAction(bookId);
+		if (!success) {
+			return toast.error(message);
+		}
+		toast.success(message);
+		form.reset(publishDefaultValues);
 	};
 
 	return (
@@ -150,11 +103,7 @@ function PublishBookForm() {
 							}}
 						/>
 					) : currentStep === 3 ? (
-						<StepThird
-							form={form}
-							onDone={() => {}}
-							currentProcessMessage={currentProcessMessage}
-						/>
+						<StepThird form={form} onDone={() => {}} />
 					) : null}
 				</div>
 			</form>
@@ -164,7 +113,6 @@ function PublishBookForm() {
 
 interface StepProps {
 	form: UseFormReturn<PublishSchemaType>;
-	bookId?: string;
 	onDone: () => void;
 }
 
@@ -173,6 +121,10 @@ function StepFirst({ form, onDone }: StepProps) {
 
 	const processOne = async () => {
 		// block execution on back/prev button click
+
+		// todo use form context instead context api
+		// const formX = useFormContext<PublishSchemaType>()
+
 		if (publishState.bookId) {
 			return;
 		}
@@ -248,8 +200,8 @@ function StepFirst({ form, onDone }: StepProps) {
 					form={form}
 					name="language"
 					items={[
-						{ label: "English", value: "en" },
-						{ label: "Arabic", value: "ar" },
+						{ label: "English", value: "1" },
+						{ label: "Arabic", value: "2" },
 					]}
 					label="Language"
 				/>
@@ -268,17 +220,16 @@ function StepFirst({ form, onDone }: StepProps) {
 
 function StepSecond({ form, onDone }: StepProps) {
 	const { publishState, setPublishState } = usePublishFormContext();
+	const session = useSession();
 
 	const processTwo = useCallback(async () => {
 		// 2. show loader if user click on add sample
-		// todo fix stop loading when the process return
-
-		// setPublishState({ ...publishState, sampleItemsIsLoading: true });
+		setPublishState({ ...publishState, sampleItemsIsLoading: true });
 
 		// 3. get bookId
 		const bookId = publishState.bookId;
 		if (!bookId) {
-			// setPublishState({ ...publishState, sampleItemsIsLoading: false });
+			setPublishState({ ...publishState, sampleItemsIsLoading: false });
 			return toast.error(
 				"Error in previous step. Please retry or contact support",
 			);
@@ -288,23 +239,34 @@ function StepSecond({ form, onDone }: StepProps) {
 		const book = form.getValues("book");
 		const formData = new FormData();
 		formData.append("file", book);
-		console.log("4");
+
+		const token = session.data?.user.access_token;
 
 		try {
-			const res = await fetch("/api", {
+			await fetch(UPLOAD_FULL_URL.file(bookId), {
 				method: "POST",
-				body: JSON.stringify({
-					body: formData,
-					protectid: true,
+				headers: {
+					Authorization: `Bearer ${token}`,
+					accept: "application/json",
 					contentType: "multipart/form-data",
-				}),
+				},
+				body: formData,
 			});
 
-			if (!res.ok) {
-				throw new Error("Failed to upload book file");
-			}
+			// todo use media route instead and remove the token from client
+			// const queries = new URLSearchParams();
+			// queries.append("id", bookId);
 
-			// 5. get book content list (F)
+			// const res = await fetch(`/api/media?${queries.toString()}`, {
+			// 	method: "POST",
+			// 	body: formData,
+			// });
+
+			// if (!res.ok) {
+			// 	throw new Error("Failed to upload book file");
+			// }
+
+			// 5. get book content list
 			const { getBookEPubContent } = await fetcher({
 				query: getBookEPubContentQuery,
 				variables: {
@@ -315,25 +277,21 @@ function StepSecond({ form, onDone }: StepProps) {
 				cache: "default",
 			});
 
-			// const options = getBookEPubContent?.content?.map((el) => ({
-			// 	label: el?.title,
-			// 	value: el?.id,
-			// })) as { label: string; value: string }[];
-
-			// if (!options) {
-			// 	return toast.error("Development Error");
-			// }
-
+			const options = getBookEPubContent?.content?.map((el) => ({
+				label: el?.title,
+				value: el?.id,
+			})) as { label: string; value: string }[];
+			if (!options) {
+				return toast.error("Development Error");
+			}
 			// 6. update publishState (sampleItems)
-			// setPublishState({
-			// 	...publishState,
-			// 	sampleItems: options,
-			// 	// sampleItemsIsLoading: false,
-			// });
-			// console.log("6");
-
-			toast.success("OK To - Upload file");
+			setPublishState({
+				...publishState,
+				sampleItems: options,
+				sampleItemsIsLoading: false,
+			});
 		} catch (error) {
+			setPublishState({ ...publishState, sampleItemsIsLoading: false });
 			if (error instanceof Error) {
 				return toast.error(error.message);
 			}
@@ -341,14 +299,8 @@ function StepSecond({ form, onDone }: StepProps) {
 		}
 	}, [form, publishState.bookId]);
 
-	//1. run the process directly after file upload
-	const file = form.watch("book");
+	//1. todo run the process directly after file upload
 
-	useEffect(() => {
-		if (file) {
-			processTwo();
-		}
-	}, [file, processTwo]);
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);
@@ -364,11 +316,19 @@ function StepSecond({ form, onDone }: StepProps) {
 
 	return (
 		<>
+			{/* <Button onClick={() => processTwo()}>Click Me</Button> */}
+
 			<div className="grid gap-4">
 				<FormImage form={form} name="cover" label="cover" />
 				<FormFile form={form} name="book" label="book" />
 
-				<SampleMultiSelect />
+				<SampleMultiSelect
+					onClick={() => {
+						if (!publishState.sampleItems.length && file) {
+							processTwo();
+						}
+					}}
+				/>
 			</div>
 			<Button type="button" onClick={goNext} className="w-64 ml-auto">
 				<span>Review</span> <ArrowRightIcon className="w-4 ml-2 " />
@@ -377,11 +337,7 @@ function StepSecond({ form, onDone }: StepProps) {
 	);
 }
 
-type StepThirdProps = StepProps & {
-	currentProcessMessage: string;
-};
-
-function StepThird({ form, currentProcessMessage }: StepThirdProps) {
+function StepThird({ form }: StepProps) {
 	return (
 		<>
 			<div>Your book is good hit the publish button</div>
@@ -398,7 +354,6 @@ function StepThird({ form, currentProcessMessage }: StepThirdProps) {
 				{form.formState.isLoading || form.formState.isSubmitting ? (
 					<div className="flex gap-2">
 						<Spinner />
-						<div>{currentProcessMessage}</div>
 					</div>
 				) : (
 					"Publish"

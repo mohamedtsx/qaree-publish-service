@@ -22,8 +22,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 import { usePublishFormContext } from "@/context";
+import { Spinner } from "./Spinner";
 
-function SampleMultiSelect() {
+function SampleMultiSelect({ onClick }: { onClick?: () => void }) {
 	const { publishState, setPublishState } = usePublishFormContext();
 
 	const options = publishState.sampleItems;
@@ -35,9 +36,13 @@ function SampleMultiSelect() {
 			<PopoverTrigger
 				asChild
 				className="justify-start"
-				disabled={!loading && !publishState.sampleItems.length ? true : false}
+				// disabled={!loading && !publishState.sampleItems.length ? true : false}
 			>
-				<Button variant="outline" className="bg-transparent text-sm">
+				<Button
+					variant="outline"
+					className="bg-transparent text-sm"
+					onClick={onClick}
+				>
 					<Plus className="mr-2 h-4 w-4" />
 					Add Sample
 					{selectedValues?.size > 0 && (
@@ -75,13 +80,18 @@ function SampleMultiSelect() {
 					)}
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-[200px] p-0" align="start">
+			<PopoverContent className="w-fit  p-0" align="start">
 				<Command>
 					<CommandInput placeholder={"Sample"} />
 					<CommandList>
 						<CommandEmpty>
-							{loading ? "Loading..." : "No results found."}
+							{loading ? (
+								<Spinner className=" mx-auto border-t-foreground" />
+							) : (
+								"No results found! Upload a file"
+							)}
 						</CommandEmpty>
+
 						<CommandGroup>
 							{options.map((option) => {
 								const isSelected = selectedValues.has(option.value);
@@ -122,12 +132,12 @@ function SampleMultiSelect() {
 								<CommandSeparator />
 								<CommandGroup>
 									<CommandItem
-										onSelect={() =>
+										onSelect={() => {
 											setPublishState({
 												...publishState,
-												categories: [],
-											})
-										}
+												sampleSelectedValues: [],
+											});
+										}}
 										className="justify-center text-center"
 									>
 										Clear
