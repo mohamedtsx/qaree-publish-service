@@ -3,9 +3,9 @@
 import {
 	type ColumnDef,
 	flexRender,
-	useReactTable,
 	getCoreRowModel,
 	getPaginationRowModel,
+	useReactTable,
 } from "@tanstack/react-table";
 
 import {

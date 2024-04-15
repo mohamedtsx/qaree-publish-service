@@ -26,11 +26,11 @@ import {
 	SelectValue,
 } from "./ui/select";
 
+import { Label } from "@radix-ui/react-label";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Button } from "./ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { Textarea } from "./ui/textarea";
-import { Label } from "@radix-ui/react-label";
 
 // todo distribute the file and refactore this logic for more efficent way
 

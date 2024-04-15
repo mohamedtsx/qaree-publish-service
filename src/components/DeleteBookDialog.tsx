@@ -1,9 +1,9 @@
 "use client";
 
+import { moveBookToRecycleBinAction } from "@/app/actions";
+import { Trash2 } from "lucide-react";
 import React from "react";
 import { Button } from "./ui/button";
-import { Trash2 } from "lucide-react";
-import { moveBookToRecycleBinAction } from "@/app/actions";
 
 import {
 	AlertDialog,
@@ -17,10 +17,10 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 import { SubmitButton } from "./SmartForm";
 import { Form } from "./ui/form";
 

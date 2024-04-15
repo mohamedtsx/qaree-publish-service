@@ -1,6 +1,6 @@
-import { NextResponse, type NextRequest } from "next/server";
 import { getCurrentUser } from "@/lib/authOptions";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
 	const user = await getCurrentUser();

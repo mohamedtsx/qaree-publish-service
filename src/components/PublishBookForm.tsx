@@ -1,8 +1,11 @@
 "use client";
 
+import { publishBookAction, uploadCoverAction } from "@/app/actions";
 import { usePublishFormContext } from "@/context";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { addBookDetailsMutation } from "@/lib/graphql/mutations";
+import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 import type { PureBookDetailesSchemaType } from "@/lib/graphql/types";
 import {
 	type PublishSchemaType,
@@ -12,6 +15,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { Suspense, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,10 +27,6 @@ import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Spinner } from "./Spinner";
 import { Button } from "./ui/button";
 import { Form } from "./ui/form";
-import { publishBookAction, uploadCoverAction } from "@/app/actions";
-import { getBookEPubContentQuery } from "@/lib/graphql/queries";
-import { UPLOAD_FULL_URL } from "@/lib/graphql";
-import { useSession } from "next-auth/react";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },

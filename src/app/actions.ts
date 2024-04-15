@@ -20,7 +20,7 @@ import type {
 	PureBookDetailesSchemaType,
 	RegisterData,
 } from "@/lib/graphql/types";
-import { registerFormSchema, type EditBookType } from "@/schema";
+import { type EditBookType, registerFormSchema } from "@/schema";
 import type { ResultOf } from "gql.tada";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";

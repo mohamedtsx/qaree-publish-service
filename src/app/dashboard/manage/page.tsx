@@ -1,9 +1,11 @@
+export const dynamic = "force-dynamic";
+
 import { fetcher } from "@/lib/graphql/fetcher";
+import { getMyBooksQuery } from "@/lib/graphql/queries";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { getMyBooksQuery } from "@/lib/graphql/queries";
 
-async function Manage() {
+async function getData() {
 	const { getBooks } = await fetcher({
 		query: getMyBooksQuery,
 		variables: {
@@ -14,7 +16,11 @@ async function Manage() {
 		protectid: true,
 	});
 
-	const { books } = getBooks as NonNullable<typeof getBooks>;
+	return getBooks?.books;
+}
+
+export default async function Page() {
+	const books = await getData();
 
 	return (
 		<div className="container">
@@ -24,5 +30,3 @@ async function Manage() {
 		</div>
 	);
 }
-
-export default Manage;

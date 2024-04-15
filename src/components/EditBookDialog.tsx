@@ -1,10 +1,12 @@
-import React from "react";
-import { Button } from "./ui/button";
-import { Pencil } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { type EditBookType, editBookSchema } from "@/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Pencil } from "lucide-react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "./ui/button";
 
+import { updateBookAction } from "@/app/actions";
+import type { Book } from "@/app/dashboard/manage/columns";
 import {
 	Dialog,
 	DialogContent,
@@ -14,11 +16,9 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { FormInput, FormSelect, FormTextare, SubmitButton } from "./SmartForm";
 import { Form } from "./ui/form";
-import type { Book } from "@/app/dashboard/manage/columns";
-import { updateBookAction } from "@/app/actions";
-import { toast } from "sonner";
 
 const getDefaultValues = (book: Book): EditBookType => {
 	const categoriesList = book.categories.map((el) => el._id);
@@ -80,7 +80,7 @@ export function EditBookDialog({ book }: { book: Book }) {
 						<DialogHeader>
 							<DialogTitle>Edit book details</DialogTitle>
 							<DialogDescription>
-								Make changes to your book here. Click save when you're done.
+								Make changes to your book here. Click save when you`re done.
 							</DialogDescription>
 						</DialogHeader>
 						<div className="py-4 space-y-5">
