@@ -47,16 +47,16 @@ export function EditBookDialog({ book }: { book: Book }) {
 
 	const defaultValues = getDefaultValues(book);
 	const form = useForm<EditBookType>({
-		mode: "onBlur",
+		mode: "onSubmit",
 		resolver: zodResolver(editBookSchema),
 		defaultValues,
 	});
 
 	const onSubmit = async (values: EditBookType) => {
 		// check if the inputs are modified
-		if (!form.formState.isDirty) {
-			return toast.error("No updates were made!");
-		}
+		// if (!form.formState.isDirty) {
+		// 	return toast.error("No updates were made!");
+		// }
 
 		const { success, message } = await updateBookAction(book._id, values);
 

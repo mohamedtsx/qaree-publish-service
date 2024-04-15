@@ -36,9 +36,7 @@ const bookDetailesSchema = z.object({
 			message: invalid.name,
 		}),
 	description: z.string().min(10, { message: errors.description }),
-	categories: z.array(z.string()).min(1, {
-		message: errors.categories,
-	}),
+	categories: z.array(z.string()),
 	language: z
 		.string({ required_error: errors.language })
 		.min(1, { message: errors.language }),
@@ -79,9 +77,7 @@ export const editBookSchema = z.object({
 		.optional(),
 	edition: z.coerce.number().optional(),
 	price: z.coerce.number().optional(),
-	categories: z.array(z.string()).min(1, {
-		message: errors.categories,
-	}),
+	categories: z.array(z.string()),
 	language: z
 		.string({ required_error: errors.language })
 		.min(1, { message: errors.language }),
