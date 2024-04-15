@@ -1,5 +1,7 @@
 "use client";
 
+import { DeleteBookDialog } from "@/components/DeleteBookDialog";
+import { EditBookDialog } from "@/components/EditBookDialog";
 import { Badge } from "@/components/ui/badge";
 import type { ColumnDef } from "@tanstack/react-table";
 
@@ -65,5 +67,15 @@ export const columns: Array<ColumnDef<Book>> = [
 		id: "actions",
 		accessorKey: "actions",
 		header: "Actions",
+		cell(props) {
+			const bookId = props.row.original._id;
+
+			return (
+				<div className="space-x-4">
+					<EditBookDialog id={bookId} />
+					<DeleteBookDialog id={bookId} />
+				</div>
+			);
+		},
 	},
 ];

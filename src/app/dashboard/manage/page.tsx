@@ -6,26 +6,23 @@ import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
 
 async function Manage() {
-	// todo when to fetch new?
 	const { getBooks } = await fetcher({
 		query: getMyBooksQuery,
 		variables: {
-			// page: 2,
+			// todo keep this limit for now
 			limit: 100,
 		},
 		server: true,
 		protectid: true,
-		cache: "default",
+		// cache: "default",
 	});
 
-	const { books, currentPage, numberOfPages, total } = getBooks as NonNullable<
-		typeof getBooks
-	>;
+	const { books } = getBooks as NonNullable<typeof getBooks>;
 
 	return (
 		<div className="container">
 			<h1 className="mb-8 py-4 text-4xl">Manage Your Books</h1>
-			{/* todo fix typescript error */}
+			{/* @ts-ignore */}
 			<DataTable columns={columns} data={books} />
 		</div>
 	);
