@@ -1,6 +1,6 @@
 import { env } from "@/env";
 
-const BACKEND_BASE_URL = env.NEXT_PUBLIC_BACKEND_URL;
+export const BACKEND_BASE_URL = env.NEXT_PUBLIC_BACKEND_URL;
 
 export const BACKEND_URL = `${BACKEND_BASE_URL}/graphql`;
 

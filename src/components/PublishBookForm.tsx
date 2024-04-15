@@ -1,13 +1,13 @@
 "use client";
 
-import {
-	addBookDetailsAction,
-	publishBookAction,
-	uploadFilesAction,
-} from "@/app/actions";
+import { publishBookAction, uploadCoverAction } from "@/app/actions";
+import { usePublishFormContext } from "@/context";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { addBookDetailsMutation } from "@/lib/graphql/mutations";
+import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 import type { PureBookDetailesSchemaType } from "@/lib/graphql/types";
 import {
-	type MediaType,
 	type PublishSchemaType,
 	publishDefaultValues,
 	publishSchema,
@@ -15,11 +15,13 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { Suspense, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
 import { FormImage } from "./FormImage";
+import SampleMultiSelect from "./SampleMultiSelect";
 import { SelectCategories } from "./SelectCategories";
 import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Spinner } from "./Spinner";
@@ -34,8 +36,7 @@ const steps = [
 
 function PublishBookForm() {
 	const [currentStep, setCurrentStep] = useState(1);
-	const [categories, setCategories] = useState<string[]>([]);
-	const [currentProcessMessage, setCurrentProcessMessage] = useState("");
+	const { publishState } = usePublishFormContext();
 
 	const form = useForm<PublishSchemaType>({
 		mode: "onBlur",
@@ -44,59 +45,25 @@ function PublishBookForm() {
 	});
 
 	const onSubmit = async (values: PublishSchemaType) => {
-		const { book, cover, ...rest } = values;
+		const bookId = publishState.bookId;
 
-		const bookDetailes: PureBookDetailesSchemaType = {
-			...rest,
-			categories,
-			publishingRights: rest.publishingRights === "true",
-		};
+		// 1. upload cover
+		const book = form.getValues("cover");
+		const formData = new FormData();
+		formData.append("cover", book);
 
-		// 1. send book detailes request
-		setCurrentProcessMessage("Sending detailes...");
-		const addBookDetailsState = await addBookDetailsAction(bookDetailes);
-		if (!addBookDetailsState.success) {
-			return toast.error(addBookDetailsState.message);
+		const coverState = await uploadCoverAction(formData, bookId);
+		if (!coverState.success) {
+			return toast.error("Error: Invalid book cover");
 		}
 
-		const bookId = String(addBookDetailsState.data?.addBookDetails?._id);
-
-		if (!bookId) {
-			return toast.error("Development Error");
+		// Publish the book
+		const { message, success } = await publishBookAction(bookId);
+		if (!success) {
+			return toast.error(message);
 		}
-
-		// 2. upload the files
-		setCurrentProcessMessage("Uploading files...");
-		const files: Record<keyof MediaType, File> = {
-			cover,
-			book,
-		};
-
-		const formDataMap: { [key in keyof MediaType]: FormData } = {
-			cover: new FormData(),
-			book: new FormData(),
-		};
-
-		for (const [name, file] of Object.entries(files)) {
-			formDataMap[name as keyof MediaType].append(name, file);
-		}
-
-		const uploadFilesState = await uploadFilesAction(formDataMap, bookId);
-
-		if (!uploadFilesState.success) {
-			return toast.error(uploadFilesState.message);
-		}
-
-		// 3. publish the book
-		setCurrentProcessMessage("Publishing...");
-		const publishBookState = await publishBookAction(bookId);
-		if (!publishBookState.success) {
-			return toast.error(publishBookState.message);
-		}
-
-		toast.success(
-			"Congratulations! Your book has been uploaded successfully 📚🎉",
-		);
+		toast.success(message);
+		form.reset(publishDefaultValues);
 	};
 
 	return (
@@ -122,8 +89,7 @@ function PublishBookForm() {
 					{currentStep === 1 ? (
 						<StepFirst
 							form={form}
-							onDone={(selectedCategories) => {
-								setCategories(selectedCategories || []);
+							onDone={() => {
 								setCurrentStep(2);
 							}}
 						/>
@@ -135,11 +101,7 @@ function PublishBookForm() {
 							}}
 						/>
 					) : currentStep === 3 ? (
-						<StepThird
-							form={form}
-							onDone={() => {}}
-							currentProcessMessage={currentProcessMessage}
-						/>
+						<StepThird form={form} onDone={() => {}} />
 					) : null}
 				</div>
 			</form>
@@ -149,12 +111,58 @@ function PublishBookForm() {
 
 interface StepProps {
 	form: UseFormReturn<PublishSchemaType>;
-	bookId?: string;
-	onDone: (selectedCategories?: string[]) => void;
+	onDone: () => void;
 }
 
 function StepFirst({ form, onDone }: StepProps) {
-	const [filterValues, setFilterValues] = useState<string[]>();
+	const { publishState, setPublishState } = usePublishFormContext();
+
+	const processOne = async () => {
+		// block execution on back/prev button click
+
+		// todo use form context instead context api
+		// const formX = useFormContext<PublishSchemaType>()
+
+		if (publishState.bookId) {
+			return;
+		}
+
+		// 1. validation
+		const { book, cover, ...rest } = form.getValues();
+
+		const bookDetailes: PureBookDetailesSchemaType = {
+			...rest,
+			categories: publishState.categories,
+			publishingRights: rest.publishingRights === "true",
+		};
+
+		// 2. send book detailes
+		let bookId: string;
+		try {
+			const { addBookDetails } = await fetcher({
+				query: addBookDetailsMutation,
+				variables: bookDetailes,
+				server: false,
+				protectid: true,
+			});
+			bookId = String(addBookDetails?._id);
+		} catch (error) {
+			if (error instanceof Error) {
+				return toast.error(error.message);
+			}
+			return toast.error("Faild to add book data");
+		}
+
+		if (!bookId) {
+			return toast.error("Development Error");
+		}
+
+		// 3. update publishState (bookId)
+		setPublishState({
+			...publishState,
+			bookId,
+		});
+	};
 
 	const goNext = async () => {
 		const isValid = await form.trigger([
@@ -165,7 +173,8 @@ function StepFirst({ form, onDone }: StepProps) {
 		]);
 
 		if (isValid) {
-			onDone(filterValues);
+			onDone();
+			processOne();
 		}
 	};
 
@@ -189,17 +198,14 @@ function StepFirst({ form, onDone }: StepProps) {
 					form={form}
 					name="language"
 					items={[
-						{ label: "English", value: "en" },
-						{ label: "Arabic", value: "ar" },
+						{ label: "English", value: "1" },
+						{ label: "Arabic", value: "2" },
 					]}
 					label="Language"
 				/>
 
 				<Suspense fallback={<Spinner />}>
-					<SelectCategories
-						filterValues={filterValues}
-						setFilterValues={setFilterValues}
-					/>
+					<SelectCategories />
 				</Suspense>
 			</div>
 
@@ -211,18 +217,123 @@ function StepFirst({ form, onDone }: StepProps) {
 }
 
 function StepSecond({ form, onDone }: StepProps) {
+	const { publishState, setPublishState } = usePublishFormContext();
+	const session = useSession();
+
+	const processTwo = async () => {
+		// 2. show loader if user click on add sample
+		setPublishState({ ...publishState, sampleItemsIsLoading: true });
+
+		// 3. get bookId
+		const bookId = publishState.bookId;
+		if (!bookId) {
+			setPublishState({ ...publishState, sampleItemsIsLoading: false });
+			return toast.error(
+				"Error in previous step. Please retry or contact support",
+			);
+		}
+
+		// 4. upload book file
+		const book = form.getValues("book");
+		const formData = new FormData();
+		formData.append("file", book);
+
+		const token = session.data?.user.access_token;
+
+		try {
+			await fetch(UPLOAD_FULL_URL.file(bookId), {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					accept: "application/json",
+					contentType: "multipart/form-data",
+				},
+				body: formData,
+			});
+
+			// todo use media route instead and remove the token from client
+			// const queries = new URLSearchParams();
+			// queries.append("id", bookId);
+
+			// const res = await fetch(`/api/media?${queries.toString()}`, {
+			// 	method: "POST",
+			// 	body: formData,
+			// });
+
+			// if (!res.ok) {
+			// 	throw new Error("Failed to upload book file");
+			// }
+
+			// 5. get book content list
+			const { getBookEPubContent } = await fetcher({
+				query: getBookEPubContentQuery,
+				variables: {
+					bookId,
+				},
+				server: false,
+				protectid: true,
+				cache: "default",
+			});
+
+			const options = getBookEPubContent?.content?.map((el) => ({
+				label: el?.title,
+				value: el?.id,
+			})) as { label: string; value: string }[];
+			if (!options) {
+				return toast.error("Development Error");
+			}
+			// 6. update publishState (sampleItems)
+			setPublishState({
+				...publishState,
+				sampleItems: options,
+				sampleItemsIsLoading: false,
+			});
+		} catch (error) {
+			setPublishState({ ...publishState, sampleItemsIsLoading: false });
+			if (error instanceof Error) {
+				return toast.error(error.message);
+			}
+			return toast.error("Something went wrong!");
+		}
+	};
+
+	//1. run the process directly after file upload
+
+	const file = form.watch("book");
+	// useEffect(() => {
+	// 	if (file) {
+	// 		console.log("process two start");
+	// 		processTwo();
+	// 	}
+	// }, [file]);
+
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);
-		if (isValid) {
-			onDone();
+
+		if (isValid && publishState.bookId) {
+			if (!publishState.sampleSelectedValues) {
+				toast.error("Please select sample");
+			} else {
+				onDone();
+			}
 		}
 	};
 
 	return (
 		<>
+			{/* <Button onClick={() => processTwo()}>Click Me</Button> */}
+
 			<div className="grid gap-4">
 				<FormImage form={form} name="cover" label="cover" />
 				<FormFile form={form} name="book" label="book" />
+
+				<SampleMultiSelect
+					onClick={() => {
+						if (!publishState.sampleItems.length && file) {
+							processTwo();
+						}
+					}}
+				/>
 			</div>
 			<Button type="button" onClick={goNext} className="w-64 ml-auto">
 				<span>Review</span> <ArrowRightIcon className="w-4 ml-2 " />
@@ -231,11 +342,7 @@ function StepSecond({ form, onDone }: StepProps) {
 	);
 }
 
-type StepThirdProps = StepProps & {
-	currentProcessMessage: string;
-};
-
-function StepThird({ form, currentProcessMessage }: StepThirdProps) {
+function StepThird({ form }: StepProps) {
 	return (
 		<>
 			<div>Your book is good hit the publish button</div>
@@ -252,7 +359,6 @@ function StepThird({ form, currentProcessMessage }: StepThirdProps) {
 				{form.formState.isLoading || form.formState.isSubmitting ? (
 					<div className="flex gap-2">
 						<Spinner />
-						<div>{currentProcessMessage}</div>
 					</div>
 				) : (
 					"Publish"

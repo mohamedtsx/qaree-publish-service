@@ -1,3 +1,9 @@
+export type DeepNonNullable<T> = {
+	[P in keyof T]: T[P] extends object | null | undefined
+		? DeepNonNullable<T[P]>
+		: T[P];
+};
+
 type ApiResponseSuccess<T> = {
 	data: T;
 };

@@ -12,3 +12,12 @@ export const userInfoQuery = graphql(`
     }
   }
 `);
+
+export const refreshTokenQuery = graphql(`
+  query refreshToken {
+    refreshToken {
+      message
+      refresh_token
+    }
+  }
+`);

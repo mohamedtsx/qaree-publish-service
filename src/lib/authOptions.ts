@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
 						headers: {
 							Authorization: `Bearer ${resetToken}`,
 						},
+						cache: "default",
 					});
 
 					return {
@@ -69,10 +70,11 @@ export const authOptions: NextAuthOptions = {
 				const { userInfo } = await fetcher({
 					query: userInfoQuery,
 					server: true,
-					protectid: true,
+					protectid: false,
 					headers: {
 						Authorization: `Bearer ${signin.access_token}`,
 					},
+					cache: "no-cache",
 				});
 
 				const user = {
