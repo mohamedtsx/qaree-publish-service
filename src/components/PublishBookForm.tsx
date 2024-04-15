@@ -12,8 +12,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
-import { Suspense, useCallback, useEffect, useState } from "react";
-import { type UseFormReturn, useForm, useFormContext } from "react-hook-form";
+import { Suspense, useState } from "react";
+import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
 import { FormImage } from "./FormImage";
@@ -23,12 +23,10 @@ import { FormErrors, FormInput, FormSelect, FormTextare } from "./SmartForm";
 import { Spinner } from "./Spinner";
 import { Button } from "./ui/button";
 import { Form } from "./ui/form";
-import { publishBookAction } from "@/app/actions";
-import { useFormState } from "react-dom";
+import { publishBookAction, uploadCoverAction } from "@/app/actions";
 import { getBookEPubContentQuery } from "@/lib/graphql/queries";
-import { BACKEND_BASE_URL, UPLOAD_FULL_URL } from "@/lib/graphql";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { useSession } from "next-auth/react";
-import { ResultOf } from "gql.tada";
 
 const steps = [
 	{ id: "Step 1", name: "Book detailes" },
@@ -38,8 +36,6 @@ const steps = [
 
 function PublishBookForm() {
 	const [currentStep, setCurrentStep] = useState(1);
-	const [currentProcessMessage, setCurrentProcessMessage] = useState("");
-
 	const { publishState } = usePublishFormContext();
 
 	const form = useForm<PublishSchemaType>({
@@ -49,13 +45,25 @@ function PublishBookForm() {
 	});
 
 	const onSubmit = async (values: PublishSchemaType) => {
-		// Publish the book
 		const bookId = publishState.bookId;
+
+		// 1. upload cover
+		const book = form.getValues("cover");
+		const formData = new FormData();
+		formData.append("cover", book);
+
+		const coverState = await uploadCoverAction(formData, bookId);
+		if (!coverState.success) {
+			return toast.error(coverState.message);
+		}
+
+		// Publish the book
 		const { message, success } = await publishBookAction(bookId);
 		if (!success) {
 			return toast.error(message);
 		}
 		toast.success(message);
+		form.reset(publishDefaultValues);
 	};
 
 	return (
@@ -93,11 +101,7 @@ function PublishBookForm() {
 							}}
 						/>
 					) : currentStep === 3 ? (
-						<StepThird
-							form={form}
-							onDone={() => {}}
-							currentProcessMessage={currentProcessMessage}
-						/>
+						<StepThird form={form} onDone={() => {}} />
 					) : null}
 				</div>
 			</form>
@@ -218,8 +222,6 @@ function StepSecond({ form, onDone }: StepProps) {
 
 	const processTwo = async () => {
 		// 2. show loader if user click on add sample
-		// todo fix stop loading when the process return
-
 		setPublishState({ ...publishState, sampleItemsIsLoading: true });
 
 		// 3. get bookId
@@ -231,7 +233,6 @@ function StepSecond({ form, onDone }: StepProps) {
 			);
 		}
 
-		// todo book cover doesn't uploaded yet
 		// 4. upload book file
 		const book = form.getValues("book");
 		const formData = new FormData();
@@ -240,7 +241,7 @@ function StepSecond({ form, onDone }: StepProps) {
 		const token = session.data?.user.access_token;
 
 		try {
-			const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
+			await fetch(UPLOAD_FULL_URL.file(bookId), {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -249,25 +250,25 @@ function StepSecond({ form, onDone }: StepProps) {
 				},
 				body: formData,
 			});
-			const data = await res.json();
 
-			// todo do it using api route
-			// const res = await fetch("/api/media", {
+			// todo use media route instead and remove the token from client
+			// const queries = new URLSearchParams();
+			// queries.append("id", bookId);
+
+			// const res = await fetch(`/api/media?${queries.toString()}`, {
 			// 	method: "POST",
-			// 	body: JSON.stringify({
-			// 		body: formData,
-			// 		contentType: "multipart/form-data",
-			// 	}),
+			// 	body: formData,
 			// });
+
 			// if (!res.ok) {
 			// 	throw new Error("Failed to upload book file");
 			// }
 
-			// 5. get book content list (F)
+			// 5. get book content list
 			const { getBookEPubContent } = await fetcher({
 				query: getBookEPubContentQuery,
 				variables: {
-					bookId: data._id,
+					bookId,
 				},
 				server: false,
 				protectid: true,
@@ -288,6 +289,7 @@ function StepSecond({ form, onDone }: StepProps) {
 				sampleItemsIsLoading: false,
 			});
 		} catch (error) {
+			setPublishState({ ...publishState, sampleItemsIsLoading: false });
 			if (error instanceof Error) {
 				return toast.error(error.message);
 			}
@@ -298,12 +300,12 @@ function StepSecond({ form, onDone }: StepProps) {
 	//1. run the process directly after file upload
 
 	const file = form.watch("book");
-	useEffect(() => {
-		if (file) {
-			console.log("process two start");
-			processTwo();
-		}
-	}, [file]);
+	// useEffect(() => {
+	// 	if (file) {
+	// 		console.log("process two start");
+	// 		processTwo();
+	// 	}
+	// }, [file]);
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);
@@ -319,11 +321,19 @@ function StepSecond({ form, onDone }: StepProps) {
 
 	return (
 		<>
+			{/* <Button onClick={() => processTwo()}>Click Me</Button> */}
+
 			<div className="grid gap-4">
 				<FormImage form={form} name="cover" label="cover" />
 				<FormFile form={form} name="book" label="book" />
 
-				<SampleMultiSelect />
+				<SampleMultiSelect
+					onClick={() => {
+						if (!publishState.sampleItems.length && file) {
+							processTwo();
+						}
+					}}
+				/>
 			</div>
 			<Button type="button" onClick={goNext} className="w-64 ml-auto">
 				<span>Review</span> <ArrowRightIcon className="w-4 ml-2 " />
@@ -332,11 +342,7 @@ function StepSecond({ form, onDone }: StepProps) {
 	);
 }
 
-type StepThirdProps = StepProps & {
-	currentProcessMessage: string;
-};
-
-function StepThird({ form, currentProcessMessage }: StepThirdProps) {
+function StepThird({ form }: StepProps) {
 	return (
 		<>
 			<div>Your book is good hit the publish button</div>
@@ -353,7 +359,6 @@ function StepThird({ form, currentProcessMessage }: StepThirdProps) {
 				{form.formState.isLoading || form.formState.isSubmitting ? (
 					<div className="flex gap-2">
 						<Spinner />
-						<div>{currentProcessMessage}</div>
 					</div>
 				) : (
 					"Publish"

@@ -22,7 +22,7 @@ export const getBookEPubContentQuery = graphql(`
   }
 `);
 
-export const getMyBooks = graphql(`
+export const getMyBooksQuery = graphql(`
   query getBooks{
     getBooks {
       books {

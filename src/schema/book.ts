@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const errors = {
 	name: "Book name should be at least 2 characters",
-	cover: "Please select a book cover image.",
+	cover: "Please upload a book cover image.",
 	book: "Please upload a valid EPUB file",
 	description: "Description should be at least 10 characters",
 	language: "Please select book language",

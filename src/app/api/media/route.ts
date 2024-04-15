@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getCurrentUser } from "@/lib/authOptions";
-import { BACKEND_BASE_URL } from "@/lib/graphql";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
 
 export async function POST(req: NextRequest) {
 	const user = await getCurrentUser();
@@ -9,17 +9,17 @@ export async function POST(req: NextRequest) {
 	const searchParams = req.nextUrl.searchParams;
 
 	const options = {
-		path: searchParams.get("path"),
+		bookId: searchParams.get("id"),
 	};
 
-	const url = BACKEND_BASE_URL + options.path;
+	if (!options.bookId) return;
 
-	const res = await fetch(url, {
+	const res = await fetch(UPLOAD_FULL_URL.file(options.bookId), {
 		method: "POST",
 		headers: {
 			Authorization: `Bearer ${user.access_token}`,
 			accept: "application/json",
-			contentType: "multipart/form-data",
+			// contentType: "multipart/form-data",
 		},
 		body: formData,
 	});

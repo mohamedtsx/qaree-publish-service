@@ -333,17 +333,13 @@ export const addBookDetailsAction = async (
 	}
 };
 
-export const uploadFilesAction = async (
-	formDataMap: { [key in keyof MediaType]: FormData },
+export const uploadCoverAction = async (
+	formData: FormData,
 	bookId: string,
 ): Promise<ActionState> => {
 	const user = await getCurrentUser();
 
 	// todo first do it second do it better
-
-	const coverFormData = formDataMap.cover;
-	const fileFormData = formDataMap.book;
-
 	try {
 		await fetch(UPLOAD_FULL_URL.cover(bookId), {
 			method: "POST",
@@ -352,17 +348,7 @@ export const uploadFilesAction = async (
 				accept: "application/json",
 				contentType: "multipart/form-data",
 			},
-			body: coverFormData,
-		});
-
-		await fetch(UPLOAD_FULL_URL.file(bookId), {
-			method: "POST",
-			headers: {
-				Authorization: `Bearer ${user.access_token}`,
-				accept: "application/json",
-				contentType: "multipart/form-data",
-			},
-			body: fileFormData,
+			body: formData,
 		});
 
 		return {

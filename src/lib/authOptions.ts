@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
 						headers: {
 							Authorization: `Bearer ${resetToken}`,
 						},
+						cache: "default",
 					});
 
 					return {
@@ -60,7 +61,7 @@ export const authOptions: NextAuthOptions = {
 					},
 					server: true,
 					protectid: false,
-					cache: "default",
+					cache: "no-cache",
 				});
 
 				if (!signin?.access_token) return null;
@@ -73,6 +74,7 @@ export const authOptions: NextAuthOptions = {
 					headers: {
 						Authorization: `Bearer ${signin.access_token}`,
 					},
+					cache: "no-cache",
 				});
 
 				const user = {
