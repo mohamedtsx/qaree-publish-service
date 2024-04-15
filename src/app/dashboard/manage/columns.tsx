@@ -14,9 +14,15 @@ export type Book = {
 		name_en: string;
 		background: string;
 	}[];
-	price: string;
+	price: number;
 	createdAt: string;
+	updatedAt: string;
+	isbn: string;
+	description: string;
 	avgRate: string;
+	language: string;
+	publishingRights: boolean;
+	edition: number;
 };
 
 export const columns: Array<ColumnDef<Book>> = [
@@ -67,12 +73,12 @@ export const columns: Array<ColumnDef<Book>> = [
 		id: "actions",
 		accessorKey: "actions",
 		header: "Actions",
-		cell(props) {
-			const bookId = props.row.original._id;
+		cell({ row }) {
+			const bookId = row.original._id;
 
 			return (
 				<div className="space-x-4">
-					<EditBookDialog id={bookId} />
+					<EditBookDialog book={row.original} />
 					<DeleteBookDialog id={bookId} />
 				</div>
 			);

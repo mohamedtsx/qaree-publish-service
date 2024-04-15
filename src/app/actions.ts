@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/authOptions";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
+	editBookMutation,
 	forgetPasswordMutation,
 	publishBookMutation,
 	resendResetPasswordOTPMutation,
@@ -18,7 +19,7 @@ import type {
 	PureBookDetailesSchemaType,
 	RegisterData,
 } from "@/lib/graphql/types";
-import { type MediaType, registerFormSchema } from "@/schema";
+import { registerFormSchema, type EditBookType } from "@/schema";
 import type { ResultOf } from "gql.tada";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -386,6 +387,39 @@ export const publishBookAction = async (bookId: string) => {
 		};
 	} catch (error) {
 		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const updateBookAction = async (
+	bookId: string,
+	values: EditBookType,
+): Promise<ActionState> => {
+	try {
+		const { editBookDetails } = await fetcher({
+			query: editBookMutation,
+			variables: {
+				...values,
+				bookId,
+				publishingRights: values.publishingRights === "true",
+			},
+			server: true,
+			protectid: true,
+		});
+		revalidatePath("/dashboard/manage");
+
+		return {
+			success: true,
+			message: `'${editBookDetails?.name}' book has been successfully updated!`,
+		};
+	} catch (error) {
+		let message = "Error: faild to update book data";
 		if (error instanceof Error) {
 			message = error.message;
 		}

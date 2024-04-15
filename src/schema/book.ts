@@ -73,7 +73,7 @@ export const editBookSchema = z.object({
 			message: invalid.description,
 		}),
 	isbn: z
-		.number({
+		.string({
 			required_error: errors.isbn,
 		})
 		.optional(),
@@ -81,6 +81,12 @@ export const editBookSchema = z.object({
 	price: z.number().optional(),
 	categories: z.array(z.string()).min(1, {
 		message: errors.categories,
+	}),
+	language: z
+		.string({ required_error: errors.language })
+		.min(1, { message: errors.language }),
+	publishingRights: z.string({
+		required_error: errors.publishingRights,
 	}),
 });
 
