@@ -1,12 +1,21 @@
 import { z } from "zod";
 
+// todo write better error messages
 const errors = {
-	name: "Book name should be at least 2 characters",
+	name: "Book name is required",
 	cover: "Please upload a book cover image.",
 	book: "Please upload a valid EPUB file",
-	description: "Description should be at least 10 characters",
+	description: "Description is required",
 	language: "Please select book language",
 	publishingRights: "Please confirm publishing rights",
+	ispn: "",
+	edition: "",
+	categories: "",
+};
+
+const invalid = {
+	name: "Book name should be at least 3 characters",
+	description: "Description should be at least 10 characters",
 };
 
 const filesSchema = z.object({
@@ -19,12 +28,20 @@ const filesSchema = z.object({
 });
 
 const bookDetailesSchema = z.object({
-	name: z.string().min(2, {
-		message: errors.name,
-	}),
+	name: z
+		.string({
+			required_error: errors.name,
+		})
+		.min(3, {
+			message: invalid.name,
+		}),
 	description: z.string().min(10, { message: errors.description }),
-	categories: z.array(z.string()),
-	language: z.string().min(1, { message: errors.language }),
+	categories: z.array(z.string()).min(1, {
+		message: errors.categories,
+	}),
+	language: z
+		.string({ required_error: errors.language })
+		.min(1, { message: errors.language }),
 	publishingRights: z.string({
 		required_error: errors.publishingRights,
 	}),
@@ -39,6 +56,34 @@ export const publishDefaultValues: Omit<PublishSchemaType, keyof MediaType> = {
 	language: "",
 	publishingRights: "",
 };
+
+export const editBookSchema = z.object({
+	name: z
+		.string({
+			required_error: errors.name,
+		})
+		.min(3, {
+			message: invalid.name,
+		}),
+	description: z
+		.string({
+			required_error: errors.description,
+		})
+		.min(10, {
+			message: invalid.description,
+		}),
+	ispn: z
+		.number({
+			required_error: errors.ispn,
+		})
+		.optional(),
+	price: z.number().optional(),
+	categories: z.array(z.string()).min(1, {
+		message: errors.categories,
+	}),
+});
+
+export type EditBookType = z.infer<typeof editBookSchema>;
 
 export type AddBookDetailsSchemaType = z.infer<typeof bookDetailesSchema>;
 
