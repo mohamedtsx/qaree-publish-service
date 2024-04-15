@@ -20,6 +20,7 @@ import type {
 } from "@/lib/graphql/types";
 import { type MediaType, registerFormSchema } from "@/schema";
 import type { ResultOf } from "gql.tada";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 type ActionState = {
@@ -378,6 +379,7 @@ export const publishBookAction = async (bookId: string) => {
 			cache: "default",
 		});
 
+		revalidatePath("/dashboard/manage");
 		return {
 			success: true,
 			message: "Congratulations! Your book has been uploaded successfully 📚🎉",

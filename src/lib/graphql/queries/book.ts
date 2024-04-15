@@ -23,8 +23,8 @@ export const getBookEPubContentQuery = graphql(`
 `);
 
 export const getMyBooksQuery = graphql(`
-  query getBooks{
-    getBooks {
+  query getBooks($page: Int, $limit: Int){
+    getBooks(page: $page, limit: $limit) {
       books {
           _id,
           name,
@@ -32,8 +32,12 @@ export const getMyBooksQuery = graphql(`
           categories {
             _id
             name_en
+            background
           },
           status,
+          createdAt,
+          avgRate,
+          updatedAt,
       },
       currentPage,
       numberOfPages,

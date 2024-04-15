@@ -54,7 +54,7 @@ function PublishBookForm() {
 
 		const coverState = await uploadCoverAction(formData, bookId);
 		if (!coverState.success) {
-			return toast.error(coverState.message);
+			return toast.error("Error: Invalid book cover");
 		}
 
 		// Publish the book

@@ -1,47 +1,69 @@
+"use client";
+
+import { Badge } from "@/components/ui/badge";
 import type { ColumnDef } from "@tanstack/react-table";
 
 export type Book = {
-	id: string;
-	title: string;
+	_id: string;
+	name: string;
 	status: string;
-	categories: string[];
+	categories: {
+		_id: string;
+		name_en: string;
+		background: string;
+	}[];
 	price: string;
-	created_time: string;
+	createdAt: string;
+	avgRate: string;
 };
 
 export const columns: Array<ColumnDef<Book>> = [
 	{
-		accessorKey: "title",
-		header: "Title",
-	},
-	{
-		accessorKey: "status",
-		header: "status",
+		accessorKey: "name",
+		header: "Name",
 	},
 	{
 		accessorKey: "categories",
-		header: "categories",
+		header: "Categories",
+		cell(props) {
+			const categoreis = props.row.original.categories;
+
+			return (
+				<div className="flex gap-2">
+					{categoreis.map((el) => (
+						<Badge
+							key={el._id}
+							style={{
+								backgroundColor: el.background,
+							}}
+						>
+							{el.name_en}
+						</Badge>
+					))}
+				</div>
+			);
+		},
 	},
 	{
-		accessorKey: "price",
-		header: "price",
+		accessorKey: "status",
+		header: "Status",
 	},
 	{
-		accessorKey: "created_time",
-		header: "created_time",
+		accessorKey: "createdAt",
+		header: "Created At",
+		cell(props) {
+			const createdAt = props.row.original.createdAt;
+			const formatedDate = new Date(+createdAt).toLocaleDateString("en-US");
+			return <div>{formatedDate}</div>;
+		},
+	},
+	{
+		accessorKey: "avgRate",
+		header: "Rate",
 	},
 	{
 		id: "actions",
 		accessorKey: "actions",
-		header: "Title",
+		header: "Actions",
 	},
 ];
-
-/**
- * title
- * status
- * categories
- * price
- * created time
- * actions
- */
