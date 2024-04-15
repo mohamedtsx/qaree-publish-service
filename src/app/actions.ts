@@ -6,6 +6,7 @@ import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	editBookMutation,
 	forgetPasswordMutation,
+	moveBookToRecycleBinMutation,
 	publishBookMutation,
 	resendResetPasswordOTPMutation,
 	resendValidatingOTPMutation,
@@ -423,6 +424,43 @@ export const updateBookAction = async (
 		if (error instanceof Error) {
 			message = error.message;
 		}
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const moveBookToRecycleBinAction = async (
+	bookId: string,
+): Promise<ActionState> => {
+	try {
+		const { moveBookToRecycleBin } = await fetcher({
+			query: moveBookToRecycleBinMutation,
+			variables: {
+				bookId,
+			},
+			server: true,
+			protectid: true,
+		});
+
+		if (!moveBookToRecycleBin?.success) {
+			throw Error(moveBookToRecycleBin?.message || "Something went wrong!");
+		}
+
+		const { success, message } = moveBookToRecycleBin;
+
+		revalidatePath("/dashboard/manage");
+		return {
+			success,
+			message: message ? message : "Done",
+		};
+	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+
 		return {
 			success: false,
 			message,

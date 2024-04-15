@@ -75,3 +75,13 @@ export const editBookMutation = graphql(`
     }
   }
 `);
+
+export const moveBookToRecycleBinMutation = graphql(`
+  mutation moveBookToRecycleBin($bookId: String!) {
+    moveBookToRecycleBin(bookId: $bookId) {
+      deleted_id
+      message
+      success
+    }
+  }
+`);
