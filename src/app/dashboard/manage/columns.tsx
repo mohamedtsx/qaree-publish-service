@@ -75,6 +75,7 @@ export const columns: Array<ColumnDef<Book>> = [
 		header: "Actions",
 		cell({ row }) {
 			const bookId = row.original._id;
+			console.log(row.original);
 
 			return (
 				<div className="space-x-4">

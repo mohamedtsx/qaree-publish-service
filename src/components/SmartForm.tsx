@@ -30,6 +30,7 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Button } from "./ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { Textarea } from "./ui/textarea";
+import { Label } from "@radix-ui/react-label";
 
 // todo distribute the file and refactore this logic for more efficent way
 
@@ -133,6 +134,7 @@ interface FormElementSelectProps<T extends FieldValues>
 		> {
 	label: string;
 	items: Item[];
+	showLabel?: boolean;
 }
 
 export function FormSelect<T extends FieldValues>({
@@ -140,6 +142,7 @@ export function FormSelect<T extends FieldValues>({
 	form,
 	label,
 	items,
+	showLabel,
 	...props
 }: FormElementSelectProps<T>) {
 	return (
@@ -153,6 +156,7 @@ export function FormSelect<T extends FieldValues>({
 					{...field}
 					{...props}
 				>
+					{showLabel && <Label>{label}</Label>}
 					<div className="group">
 						<SelectTrigger ref={ref}>
 							<SelectValue placeholder={label} />
