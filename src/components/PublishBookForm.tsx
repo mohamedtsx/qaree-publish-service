@@ -1,7 +1,6 @@
 "use client";
 
 import { publishBookAction, uploadCoverAction } from "@/app/actions";
-
 import { usePublishFormContext } from "@/context";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
@@ -222,7 +221,7 @@ function StepSecond({ form, onDone }: StepProps) {
 	const { publishState, setPublishState } = usePublishFormContext();
 	const session = useSession();
 
-	const processTwo = useCallback(async () => {
+	const processTwo = async () => {
 		// 2. show loader if user click on add sample
 		setPublishState({ ...publishState, sampleItemsIsLoading: true });
 
@@ -297,10 +296,11 @@ function StepSecond({ form, onDone }: StepProps) {
 			}
 			return toast.error("Something went wrong!");
 		}
-	}, [form, publishState.bookId]);
+	};
 
 	//1. todo run the process directly after file upload
 
+	const file = form.watch("book");
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);
