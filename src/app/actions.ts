@@ -4,7 +4,9 @@ import { getCurrentUser } from "@/lib/authOptions";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
+	editBookMutation,
 	forgetPasswordMutation,
+	moveBookToRecycleBinMutation,
 	publishBookMutation,
 	resendResetPasswordOTPMutation,
 	resendValidatingOTPMutation,
@@ -18,8 +20,9 @@ import type {
 	PureBookDetailesSchemaType,
 	RegisterData,
 } from "@/lib/graphql/types";
-import { type MediaType, registerFormSchema } from "@/schema";
+import { type EditBookType, registerFormSchema } from "@/schema";
 import type { ResultOf } from "gql.tada";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 type ActionState = {
@@ -333,17 +336,13 @@ export const addBookDetailsAction = async (
 	}
 };
 
-export const uploadFilesAction = async (
-	formDataMap: { [key in keyof MediaType]: FormData },
+export const uploadCoverAction = async (
+	formData: FormData,
 	bookId: string,
 ): Promise<ActionState> => {
 	const user = await getCurrentUser();
 
 	// todo first do it second do it better
-
-	const coverFormData = formDataMap.cover;
-	const fileFormData = formDataMap.book;
-
 	try {
 		await fetch(UPLOAD_FULL_URL.cover(bookId), {
 			method: "POST",
@@ -352,17 +351,7 @@ export const uploadFilesAction = async (
 				accept: "application/json",
 				contentType: "multipart/form-data",
 			},
-			body: coverFormData,
-		});
-
-		await fetch(UPLOAD_FULL_URL.file(bookId), {
-			method: "POST",
-			headers: {
-				Authorization: `Bearer ${user.access_token}`,
-				accept: "application/json",
-				contentType: "multipart/form-data",
-			},
-			body: fileFormData,
+			body: formData,
 		});
 
 		return {
@@ -392,15 +381,86 @@ export const publishBookAction = async (bookId: string) => {
 			cache: "default",
 		});
 
+		revalidatePath("/dashboard/manage");
 		return {
 			success: true,
-			message: "success",
+			message: "Congratulations! Your book has been uploaded successfully 📚🎉",
 		};
 	} catch (error) {
 		let message = "Something went wrong!";
 		if (error instanceof Error) {
 			message = error.message;
 		}
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const updateBookAction = async (
+	bookId: string,
+	values: EditBookType,
+): Promise<ActionState> => {
+	try {
+		const { editBookDetails } = await fetcher({
+			query: editBookMutation,
+			variables: {
+				...values,
+				bookId,
+				publishingRights: values.publishingRights === "true",
+			},
+			server: true,
+			protectid: true,
+		});
+		revalidatePath("/dashboard/manage");
+
+		return {
+			success: true,
+			message: `'${editBookDetails?.name}' book has been successfully updated!`,
+		};
+	} catch (error) {
+		let message = "Error: faild to update book data";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const moveBookToRecycleBinAction = async (
+	bookId: string,
+): Promise<ActionState> => {
+	try {
+		const { moveBookToRecycleBin } = await fetcher({
+			query: moveBookToRecycleBinMutation,
+			variables: {
+				bookId,
+			},
+			server: true,
+			protectid: true,
+		});
+
+		if (!moveBookToRecycleBin?.success) {
+			throw Error(moveBookToRecycleBin?.message || "Something went wrong!");
+		}
+
+		const { success, message } = moveBookToRecycleBin;
+
+		revalidatePath("/dashboard/manage");
+		return {
+			success,
+			message: message ? message : "Done",
+		};
+	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+
 		return {
 			success: false,
 			message,

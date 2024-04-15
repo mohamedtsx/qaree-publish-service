@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
 						headers: {
 							Authorization: `Bearer ${resetToken}`,
 						},
+						cache: "default",
 					});
 
 					return {
@@ -73,6 +74,7 @@ export const authOptions: NextAuthOptions = {
 					headers: {
 						Authorization: `Bearer ${signin.access_token}`,
 					},
+					cache: "no-cache",
 				});
 
 				const user = {

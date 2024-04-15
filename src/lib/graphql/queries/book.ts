@@ -21,3 +21,32 @@ export const getBookEPubContentQuery = graphql(`
     }
   }
 `);
+
+export const getMyBooksQuery = graphql(`
+  query getBooks($page: Int, $limit: Int){
+    getBooks(page: $page, limit: $limit) {
+      books {
+        _id,
+        name,
+        price,
+        categories {
+          _id
+          name_en
+          background
+        },
+        status,
+        createdAt,
+        avgRate,
+        updatedAt,
+        isbn,
+        description,
+        language,
+        publishingRights,
+        edition,
+      },
+      currentPage,
+      numberOfPages,
+      total
+    }
+  }
+`);
