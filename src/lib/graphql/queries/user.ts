@@ -21,3 +21,36 @@ export const refreshTokenQuery = graphql(`
     }
   }
 `);
+
+export const getMerchantStatusQuery = graphql(`
+  query getBookEPubContent($bookId: String!) {
+    getBookEPubContent(bookId: $bookId) {
+      content {
+        id
+        title
+      }
+    }
+}
+`);
+
+export const getSignupActionURLQuery = graphql(`
+  query getSignupActionURL {
+    getSignupActionURL {
+      actionURL
+    }
+  }
+`);
+
+export const getSellerOnboardingStatusQuery = graphql(`
+  query getSellerOnboardingStatus($trackingId: String!) {
+    getSellerOnboardingStatus(trackingId: $trackingId) {
+      merchantId
+      trackingId
+      links {
+        href
+        rel
+        method
+      }
+    }
+  }
+`);
