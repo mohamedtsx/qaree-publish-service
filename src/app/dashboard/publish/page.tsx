@@ -6,7 +6,8 @@ function Publish() {
 	return (
 		<div className="container py-16">
 			<PublishFormContextProvider>
-				<PublishBookForm />
+				{/* <PublishBookForm /> */}
+				<div>Mentance...</div>
 			</PublishFormContextProvider>
 		</div>
 	);

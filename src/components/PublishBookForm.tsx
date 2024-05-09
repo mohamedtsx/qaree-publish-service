@@ -1,9 +1,7 @@
 "use client";
 
-<<<<<<< HEAD
-=======
 import { publishBookAction, uploadCoverAction } from "@/app/actions";
->>>>>>> buggy-mvc-production
+
 import { usePublishFormContext } from "@/context";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
@@ -302,21 +300,12 @@ function StepSecond({ form, onDone }: StepProps) {
 
 	//1. run the process directly after file upload
 
-<<<<<<< HEAD
+	const file = form.watch("book");
 	useEffect(() => {
 		if (file) {
 			processTwo();
 		}
 	}, [file, processTwo]);
-=======
-	const file = form.watch("book");
-	// useEffect(() => {
-	// 	if (file) {
-	// 		console.log("process two start");
-	// 		processTwo();
-	// 	}
-	// }, [file]);
->>>>>>> buggy-mvc-production
 
 	const goNext = async () => {
 		const isValid = await form.trigger(["cover", "book"]);

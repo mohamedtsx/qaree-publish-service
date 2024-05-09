@@ -1400,7 +1400,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "payments_receivable",
+            "name": "paymentsReceivable",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -1409,7 +1409,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "legal_name",
+            "name": "legalName",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1418,7 +1418,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "primary_email_confirmed",
+            "name": "primaryEmailConfirmed",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1427,7 +1427,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "oauth_integrations",
+            "name": "oauthIntegrations",
             "type": {
               "kind": "LIST",
               "ofType": {
@@ -1464,7 +1464,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "vetting_status",
+            "name": "vettingStatus",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1517,7 +1517,7 @@ export type introspection = {
         "name": "OAuthIntergation",
         "fields": [
           {
-            "name": "integration_type",
+            "name": "integrationType",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1526,7 +1526,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "integration_method",
+            "name": "integrationMethod",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1535,7 +1535,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "oauth_third_party",
+            "name": "oauthThirdParty",
             "type": {
               "kind": "LIST",
               "ofType": {
@@ -1554,7 +1554,7 @@ export type introspection = {
         "name": "OAuthThirdParty",
         "fields": [
           {
-            "name": "partner_client_id",
+            "name": "partnerClientId",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -1563,7 +1563,7 @@ export type introspection = {
             "args": []
           },
           {
-            "name": "merchant_client_id",
+            "name": "merchantClientId",
             "type": {
               "kind": "SCALAR",
               "name": "String",
