@@ -3,6 +3,7 @@ import { graphql } from "gql.tada";
 export const userInfoQuery = graphql(`
   query userInfo {
     userInfo {
+        _id
         name,
         email,
         avatar {
@@ -20,17 +21,6 @@ export const refreshTokenQuery = graphql(`
       refresh_token
     }
   }
-`);
-
-export const getMerchantStatusQuery = graphql(`
-  query getBookEPubContent($bookId: String!) {
-    getBookEPubContent(bookId: $bookId) {
-      content {
-        id
-        title
-      }
-    }
-}
 `);
 
 export const getSignupActionURLQuery = graphql(`
@@ -53,4 +43,35 @@ export const getSellerOnboardingStatusQuery = graphql(`
       }
     }
   }
+`);
+
+export const getMerchantStatusQuery = graphql(`
+  query getMerchantStatus {
+    getMerchantStatus {
+      merchantId
+      trackingId
+      products {
+        name
+        status
+        vettingStatus
+        capabilities
+      }
+      capabilities {
+        name
+        status
+      }
+      paymentsReceivable
+      legalName
+      primaryEmailConfirmed
+      oauthIntegrations {
+        integrationType
+        integrationMethod
+        oauthThirdParty {
+          partnerClientId
+          merchantClientId
+          scopes 
+        }
+      }
+    }
+}
 `);

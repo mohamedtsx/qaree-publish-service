@@ -60,7 +60,6 @@ export async function fetcher<
 					query: print(query),
 					variables,
 				}),
-				cache,
 				next: {
 					revalidate: 0,
 				},
