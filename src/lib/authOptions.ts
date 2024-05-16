@@ -24,32 +24,6 @@ export const authOptions: NextAuthOptions = {
 			async authorize(credentials, req) {
 				const email = credentials?.email as string;
 				const password = credentials?.password as string;
-				const resetToken = req.body?.reset_token;
-
-				if (resetToken) {
-					// todo(security) validate the token
-
-					// I need more data about user
-					const { userInfo } = await fetcher({
-						query: userInfoQuery,
-						server: true,
-						protectid: true,
-						headers: {
-							Authorization: `Bearer ${resetToken}`,
-						},
-						cache: "default",
-					});
-
-					return {
-						access_token: resetToken,
-						name: userInfo?.name as string,
-						email: userInfo?.email as string,
-						avatar: userInfo?.avatar as {
-							size: number;
-							path: string;
-						},
-					};
-				}
 
 				if (!email || !password) return null;
 
@@ -61,7 +35,6 @@ export const authOptions: NextAuthOptions = {
 					},
 					server: true,
 					protectid: false,
-					cache: "default",
 				});
 
 				if (!signin?.access_token) return null;
@@ -74,7 +47,6 @@ export const authOptions: NextAuthOptions = {
 					headers: {
 						Authorization: `Bearer ${signin.access_token}`,
 					},
-					cache: "no-cache",
 				});
 
 				const user = {

@@ -4,6 +4,7 @@ import { fetcher } from "@/lib/graphql/fetcher";
 import { getMyBooksQuery } from "@/lib/graphql/queries";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { tags } from "@/lib/graphql/tags";
 
 async function getData() {
 	const { getBooks } = await fetcher({
@@ -14,6 +15,7 @@ async function getData() {
 		},
 		server: true,
 		protectid: true,
+		tags: [tags.books],
 	});
 
 	return getBooks?.books;

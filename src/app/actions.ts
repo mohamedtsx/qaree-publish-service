@@ -22,8 +22,9 @@ import type {
 } from "@/lib/graphql/types";
 import { type EditBookType, registerFormSchema } from "@/schema";
 import type { ResultOf } from "gql.tada";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { revalidateTag } from "next/cache";
+import { tags } from "@/lib/graphql/tags";
 
 type ActionState = {
 	success: boolean;
@@ -47,7 +48,6 @@ export const registerAction = async (
 		const { signup } = await fetcher({
 			query: signUpMutation,
 			variables: userData,
-			cache: "default",
 			server: true,
 			protectid: false,
 		});
@@ -88,7 +88,7 @@ export const resendValidatingOTPAction = async ({
 			variables: userData,
 			server: true,
 			protectid: false,
-			cache: "default",
+			revalidate: 0,
 		});
 
 		if (!resendValidatingOTP?.success) {
@@ -131,7 +131,6 @@ export const forgotPasswordAction = async (
 			},
 			server: true,
 			protectid: false,
-			cache: "default",
 		});
 
 		if (!forgetPassword?.success) {
@@ -161,7 +160,6 @@ export const verifyAccountAction = async (variables: {
 			variables,
 			server: true,
 			protectid: false,
-			cache: "default",
 		});
 
 		if (!verifyAccount?.success) {
@@ -199,7 +197,6 @@ export const validateResetPasswordOTPAction = async (variables: {
 			variables,
 			server: true,
 			protectid: false,
-			cache: "default",
 		});
 		if (!validateResetPasswordOTP?.success) {
 			return {
@@ -232,7 +229,7 @@ export const resendResetPasswordOTPAction = async (variables: {
 			variables,
 			server: true,
 			protectid: false,
-			cache: "default",
+			revalidate: 0,
 		});
 
 		if (!resendResetPasswordOTP?.success) {
@@ -265,11 +262,9 @@ export const resetPasswordAction = async (payload: {
 	token: string;
 }): Promise<ActionState> => {
 	try {
-		// todo send token validation request!
 		const { resetPassword } = await fetcher({
 			query: resetPasswordMutation,
 			variables: { newPassword: payload.newPassword },
-			cache: "default",
 			protectid: false,
 			server: true,
 			headers: {
@@ -297,8 +292,6 @@ export const resetPasswordAction = async (payload: {
 		};
 	}
 };
-
-// todo distribute action file
 
 type StateWithData<T> = ActionState & {
 	data?: T;
@@ -378,10 +371,9 @@ export const publishBookAction = async (bookId: string) => {
 			server: true,
 			protectid: true,
 			variables: { bookId },
-			cache: "default",
 		});
 
-		revalidatePath("/dashboard/manage");
+		revalidateTag(tags.books);
 		return {
 			success: true,
 			message: "Congratulations! Your book has been uploaded successfully 📚🎉",
@@ -413,8 +405,8 @@ export const updateBookAction = async (
 			server: true,
 			protectid: true,
 		});
-		revalidatePath("/dashboard/manage");
 
+		revalidateTag(tags.books);
 		return {
 			success: true,
 			message: `'${editBookDetails?.name}' book has been successfully updated!`,
@@ -450,7 +442,7 @@ export const moveBookToRecycleBinAction = async (
 
 		const { success, message } = moveBookToRecycleBin;
 
-		revalidatePath("/dashboard/manage");
+		revalidateTag(tags.books);
 		return {
 			success,
 			message: message ? message : "Done",

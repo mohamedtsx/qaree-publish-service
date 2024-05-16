@@ -19,23 +19,25 @@ import { authOptions } from "../authOptions";
  */
 
 interface TypeOptions<T> {
-	cache?: RequestCache;
 	headers?: HeadersInit;
 	query: T;
 	variables?: VariablesOf<T>;
 	server?: boolean;
 	protectid?: boolean;
+	revalidate?: number;
+	tags?: Array<string>;
 }
 
 export async function fetcher<
 	T extends TadaDocumentNode<ResultOf<T>, VariablesOf<T>>,
 >({
-	cache = "force-cache",
 	headers,
 	query,
 	variables,
 	server = false,
 	protectid = true,
+	revalidate = 3600,
+	tags,
 }: TypeOptions<T>): Promise<ResultOf<T>> {
 	let res: Response;
 	let processRedirect = false;
@@ -61,7 +63,8 @@ export async function fetcher<
 					variables,
 				}),
 				next: {
-					revalidate: 0,
+					revalidate,
+					tags,
 				},
 			});
 		} else {
