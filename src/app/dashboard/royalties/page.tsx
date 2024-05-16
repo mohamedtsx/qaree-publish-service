@@ -1,12 +1,12 @@
+import { ConnectWithPayPal } from "@/components/ConnectWithPayPal";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	getMerchantStatusQuery,
 	getSignupActionURLQuery,
 } from "@/lib/graphql/queries";
-import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { ConnectWithPayPal } from "@/components/ConnectWithPayPal";
 
 const getData = async () => {
 	try {
@@ -70,9 +70,9 @@ export default async function Royalties() {
 						<div>
 							<ul className="list-disc list-inside mb-8 text-muted-foreground">
 								<li>Something should be written here</li>
-								<li>I don't know what to write</li>
+								<li>I don`t know what to write</li>
 								<li>Another list item to fill the space</li>
-								<li>Don't forget to update this data with real one</li>
+								<li>Don`t forget to update this data with real one</li>
 							</ul>
 							<ConnectWithPayPal url={signUpUrl} />
 						</div>

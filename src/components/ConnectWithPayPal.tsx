@@ -1,6 +1,6 @@
-import React from "react";
-import Script from "next/script";
 import Link from "next/link";
+import Script from "next/script";
+import React from "react";
 import { buttonVariants } from "./ui/button";
 
 export const ConnectWithPayPal = ({ url }: { url: string }) => {
