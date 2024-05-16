@@ -1,81 +1,84 @@
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	getMerchantStatusQuery,
-	getSellerOnboardingStatusQuery,
 	getSignupActionURLQuery,
-	userInfoQuery,
 } from "@/lib/graphql/queries";
-import Link from "next/link";
-import React from "react";
-import Script from "next/script";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import { ConnectWithPayPal } from "@/components/ConnectWithPayPal";
 
-const getData = async (): Promise<{
-	url: string;
-	isConnected: boolean;
-}> => {
+const getData = async () => {
+	try {
+		const { getMerchantStatus } = await fetcher({
+			query: getMerchantStatusQuery,
+			server: true,
+		});
+
+		if (!getMerchantStatus) {
+			throw Error("Error: GetMerchantStatus");
+		}
+
+		if (getMerchantStatus?.paymentsReceivable) {
+			return {
+				merchanStatus: getMerchantStatus,
+			};
+		}
+	} catch (error) {
+		if (process.env.NODE_ENV === "development") {
+			console.log(error);
+		}
+	}
+
 	const { getSignupActionURL } = await fetcher({
 		query: getSignupActionURLQuery,
 		server: true,
 	});
 
-	const { userInfo } = await fetcher({
-		query: userInfoQuery,
-		server: true,
-	});
-
-	const id = userInfo?._id as string;
-
-	const { getSellerOnboardingStatus } = await fetcher({
-		query: getSellerOnboardingStatusQuery,
-		variables: {
-			trackingId: id,
-		},
-		server: true,
-	});
-
-	// const { getMerchantStatus } = await fetcher({
-	// 	query: getMerchantStatusQuery,
-	// 	server: true,
-	// });
-
 	return {
-		url: getSignupActionURL?.actionURL as string,
-		isConnected: false,
+		signUpUrl: getSignupActionURL?.actionURL as string,
 	};
 };
 
 export default async function Royalties() {
-	// const { url, isConnected } = await getData();
-	const { url, isConnected } = { url: "", isConnected: false };
+	const { merchanStatus, signUpUrl } = await getData();
 
 	return (
-		<div className="h-svh flex items-center justify-center">
-			{/* <pre>{JSON.stringify(getMerchantStatusQuery, null, 2)}</pre> */}
-			{!isConnected ? (
-				<div>
-					<Script
-						id="paypal-js"
-						src="https://www.paypal.com/webapps/merchantboarding/js/lib/lightbox/partner.js"
+		<div className="p-4">
+			<Card>
+				<CardHeader>
+					<Image
+						src={"/assets/paypal.svg"}
+						alt="PayPal"
+						width={170}
+						height={48}
 					/>
-					<Link
-						href={`${url}&displayMode=minibrowser`}
-						className={buttonVariants({
-							size: "lg",
-						})}
-					>
-						Connect to paypal
-					</Link>
-				</div>
-			) : (
-				<>Active</>
-			)}
+				</CardHeader>
+				<CardContent>
+					{merchanStatus ? (
+						<div className="space-y-2">
+							<div className="flex items-center gap-2">
+								<span className="font-semibold">Status: </span>
+								<Badge className="uppercase">Active</Badge>
+							</div>
+							<div className="">
+								<span className="font-semibold">Merchan Id:</span>{" "}
+								<text>{merchanStatus.merchantId}</text>
+							</div>
+						</div>
+					) : (
+						<div>
+							<ul className="list-disc list-inside mb-8 text-muted-foreground">
+								<li>Something should be written here</li>
+								<li>I don't know what to write</li>
+								<li>Another list item to fill the space</li>
+								<li>Don't forget to update this data with real one</li>
+							</ul>
+							<ConnectWithPayPal url={signUpUrl} />
+						</div>
+					)}
+				</CardContent>
+			</Card>
 		</div>
 	);
 }
-
-// pubcom2023@gmail.com
-// Publish14rC0mp@ny2o2
-
-// mohamedali00949@gmail.com
-// mohamedali00949
