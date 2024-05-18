@@ -4,6 +4,9 @@ import type { getDraftBookQuery } from "@/lib/graphql/queries";
 import { cn } from "@/lib/utils";
 import type { ResultOf } from "gql.tada";
 import { useEffect, useState } from "react";
+import { Step1 } from "./Step1";
+import { Step2 } from "./Step2";
+import { Step3 } from "./Step3";
 
 type DraftBook = ResultOf<typeof getDraftBookQuery>;
 
@@ -18,7 +21,7 @@ type New = {
 
 type Props = Draft | New;
 
-type CurrentStep = 1 | 2 | 3;
+export type CurrentStep = 1 | 2 | 3;
 
 const steps: Array<{
 	label: string;
@@ -40,16 +43,36 @@ const steps: Array<{
 
 export const PublishForm = (props: Props) => {
 	const [currentStep, setCurrentStep] = useState<CurrentStep>(1);
+	const [bookId, setBookId] = useState<string>("");
 
 	useEffect(() => {
 		if (props.type === "draft") {
 			setCurrentStep(getCurrentStep(props.draftBook));
+			setBookId(props.draftBook.getBook?._id as string);
 		}
 	}, [props]);
 
 	return (
 		<div className="">
 			<StepsNavigator selectedStep={currentStep} />
+			<div>
+				{currentStep === 1 && (
+					<Step1
+						onDone={(bookId: string) => {
+							setCurrentStep(2);
+							setBookId(bookId);
+						}}
+					/>
+				)}
+				{currentStep === 2 && (
+					<Step2
+						onDone={() => {
+							setCurrentStep(3);
+						}}
+					/>
+				)}
+				{currentStep === 3 && <Step3 onDone={() => {}} />}
+			</div>
 		</div>
 	);
 };
@@ -64,6 +87,7 @@ const getCurrentStep = (info: DraftBook): CurrentStep => {
 };
 
 const StepsNavigator = ({ selectedStep }: { selectedStep: CurrentStep }) => {
+	// note: you can use shadcn tabs
 	return (
 		<div>
 			{steps.map((el) => (
