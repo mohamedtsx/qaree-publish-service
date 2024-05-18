@@ -26,7 +26,7 @@ export const columns: Array<ColumnDef<Book>> = [
 							className="w-full"
 							width={60}
 							height={90}
-							alt={row.original.name}
+							alt={`${row.original.name} cover`}
 						/>
 					) : (
 						<ImageIcon className="size-12 text-muted-foreground" />
