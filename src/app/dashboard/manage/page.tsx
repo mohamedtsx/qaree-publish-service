@@ -16,7 +16,6 @@ async function getData({ pageNumber, sizeNumber, filter, sort }: TableSetting) {
 			sortBy: sort,
 		},
 		server: true,
-		protectid: true,
 		tags: [tags.books],
 	});
 
