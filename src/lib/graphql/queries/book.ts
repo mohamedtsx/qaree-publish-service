@@ -23,8 +23,37 @@ export const getBookEPubContentQuery = graphql(`
 `);
 
 export const getMyBooksQuery = graphql(`
-  query getBooks($page: Int, $limit: Int){
-    getBooks(page: $page, limit: $limit) {
+  query getBooks($page: Int, $limit: Int, $filterBy: String, $sortBy: String, $keyword: String){
+    getBooks(page: $page, limit: $limit, filterBy: $filterBy, sortBy: $sortBy, keyword: $keyword) {
+      books {
+        _id,
+        name,
+        price,
+        categories {
+          _id
+          name_en
+          background
+        },
+        status,
+        createdAt,
+        avgRate,
+        updatedAt,
+        isbn,
+        description,
+        language,
+        publishingRights,
+        edition,
+      },
+      currentPage,
+      numberOfPages,
+      total
+    }
+  }
+`);
+
+export const getBooksFromRecycleBinQuery = graphql(`
+  query getBooksFromRecycleBin {
+    getBooksFromRecycleBin {
       books {
         _id,
         name,

@@ -63,8 +63,9 @@ export async function fetcher<
 					variables,
 				}),
 				next: {
-					revalidate,
-					tags,
+					// remove zoero value
+					revalidate: 0,
+					// tags,
 				},
 			});
 		} else {

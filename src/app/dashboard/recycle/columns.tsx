@@ -4,31 +4,12 @@ import { DeleteBookDialog } from "@/components/DeleteBookDialog";
 import { EditBookDialog } from "@/components/EditBookDialog";
 import { Badge } from "@/components/ui/badge";
 import type { ColumnDef } from "@tanstack/react-table";
-
-export type Book = {
-	_id: string;
-	name: string;
-	status: string;
-	categories: {
-		_id: string;
-		name_en: string;
-		background: string;
-	}[];
-	price: number;
-	createdAt: string;
-	updatedAt: string;
-	isbn: string;
-	description: string;
-	avgRate: number;
-	language: string;
-	publishingRights: boolean;
-	edition: number;
-};
+import type { Book } from "../manage/columns";
 
 export const columns: Array<ColumnDef<Book>> = [
 	{
 		accessorKey: "name",
-		header: "Name",
+		header: "XName",
 	},
 	{
 		accessorKey: "categories",

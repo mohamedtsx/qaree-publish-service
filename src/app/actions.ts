@@ -442,7 +442,9 @@ export const moveBookToRecycleBinAction = async (
 
 		const { success, message } = moveBookToRecycleBin;
 
-		revalidateTag(tags.books);
+		// revalidateTag(tags.books);
+		revalidateTag(tags.bin);
+
 		return {
 			success,
 			message: message ? message : "Done",

@@ -31,6 +31,11 @@ export const navItems: NavItemType[] = [
 		icon: "dollar",
 	},
 	{
+		label: "Recycle Bin",
+		href: "/dashboard/recycle",
+		icon: "trash2",
+	},
+	{
 		label: "Help",
 		href: "/dashboard/help",
 		icon: "help",
