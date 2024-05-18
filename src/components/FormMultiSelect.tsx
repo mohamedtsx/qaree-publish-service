@@ -113,7 +113,7 @@ export function FormMultiSelect<
 									</PopoverTrigger>
 									<PopoverContent className="w-fit p-0" align="start">
 										<Command>
-											<CommandInput placeholder={"Sample"} />
+											<CommandInput placeholder={placeholder} />
 											<CommandList>
 												<CommandEmpty>No results found!</CommandEmpty>
 												<CommandGroup>
@@ -129,9 +129,9 @@ export function FormMultiSelect<
 																	} else {
 																		selectedValues.add(el.value);
 																	}
-																	// @ts-expect-error
 																	form.setValue(
 																		name,
+																		// @ts-expect-error
 																		Array.from(selectedValues),
 																	);
 																}}
