@@ -4,6 +4,7 @@ import { DeleteBookDialog } from "@/components/DeleteBookDialog";
 import { EditBookDialog } from "@/components/EditBookDialog";
 import { Badge } from "@/components/ui/badge";
 import type { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 
 export type Book = {
 	_id: string;
@@ -83,6 +84,10 @@ export const columns: Array<ColumnDef<Book>> = [
 				<div className="space-x-4">
 					<EditBookDialog book={row.original} />
 					<DeleteBookDialog bookId={bookId} />
+					{/* TODO: convert these actions to dropdown menu*/}
+					{row.original.status === "draft" && (
+						<Link href={`/dashboard/publish/${bookId}`}>Publish</Link>
+					)}
 				</div>
 			);
 		},

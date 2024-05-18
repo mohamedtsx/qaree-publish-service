@@ -16,7 +16,7 @@ function Layout({ children }: { children: ReactNode }) {
 
 			<div className="flex-1 flex flex-col">
 				<Header />
-				<div className="flex-1 flex overflow-hidden">
+				<div className="flex-1 flex overflow-hidden p-4">
 					<ScrollArea className="flex-1">{children}</ScrollArea>
 				</div>
 			</div>

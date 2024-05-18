@@ -82,3 +82,29 @@ export const getBooksFromRecycleBinQuery = graphql(`
     }
   }
 `);
+
+export const getDraftBookQuery = graphql(`
+  query getBook($bookId: String!) {
+    getBook(bookId: $bookId) {
+      _id
+      sample
+      cover {
+        path
+      }
+      file {
+        name
+        path
+      }
+      name
+      description
+      isbn
+      edition
+      categories {
+        name_en
+        background
+      }
+      price
+      language
+    }
+  }
+`);
