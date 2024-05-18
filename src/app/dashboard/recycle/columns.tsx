@@ -92,7 +92,7 @@ export const columns: Array<ColumnDef<Book>> = [
 		header: "Actions",
 		cell({ row }) {
 			const bookId = row.original._id;
-			const [loading, setLoading] = useState(false);
+			const [loading, setLoading] = useState(true);
 
 			return (
 				<div className="space-x-4">
@@ -115,7 +115,7 @@ export const columns: Array<ColumnDef<Book>> = [
 						variant={"outline"}
 					>
 						{loading ? (
-							<Spinner className="border-t-white me-2 size-4" />
+							<Spinner className="border-t-foreground me-2 size-4" />
 						) : (
 							<History className="size-5 me-2" />
 						)}
