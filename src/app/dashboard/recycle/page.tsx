@@ -1,6 +1,7 @@
 import { getBooksFromRecycleBinQuery } from "@/lib/graphql/queries";
 import { fetcher } from "@/lib/graphql/fetcher";
 import type { TableSetting } from "@/components/DataTable";
+import { tags } from "@/lib/graphql/tags";
 
 const getData = async ({
 	pageNumber,
@@ -17,7 +18,7 @@ const getData = async ({
 			sortBy: sort,
 		},
 		server: true,
-		// tags: [tags.bin],
+		tags: [tags.bin],
 	});
 
 	return {
