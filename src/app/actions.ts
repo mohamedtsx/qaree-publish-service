@@ -461,3 +461,7 @@ export const moveBookToRecycleBinAction = async (
 		};
 	}
 };
+
+export const moveBookFromRecycleBinAction = async (bookId: string) => {
+	// move to to recycle bin fetcher
+};

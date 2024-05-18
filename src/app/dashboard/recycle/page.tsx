@@ -47,6 +47,9 @@ export default async function Page({
 	const books: Array<RecycleBook> = [
 		{
 			_id: "6608bdad9bd556631e84b1e6",
+			cover: {
+				path: "",
+			},
 			name: "one",
 			price: 0,
 			categories: [
