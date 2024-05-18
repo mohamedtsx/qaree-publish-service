@@ -54,7 +54,7 @@ export const PublishForm = (props: Props) => {
 
 	return (
 		<div className="">
-			<StepsNavigator selectedStep={currentStep} />
+			{/* <StepsNavigator selectedStep={currentStep} /> */}
 			<div>
 				{currentStep === 1 && (
 					<Step1

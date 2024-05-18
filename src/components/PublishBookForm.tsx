@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { Suspense, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormFile } from "./FormFile";
@@ -273,7 +273,6 @@ function StepSecond({ form, onDone }: StepProps) {
 				},
 				server: false,
 				protectid: true,
-				cache: "default",
 			});
 
 			const options = getBookEPubContent?.content?.map((el) => ({

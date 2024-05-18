@@ -46,3 +46,5 @@ export type PureBookDetailesSchemaType = {
 	language: string;
 	publishingRights: boolean;
 };
+
+export type SelectItems = Array<{ label: string; value: string }>;

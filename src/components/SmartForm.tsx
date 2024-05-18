@@ -132,9 +132,9 @@ interface FormElementSelectProps<T extends FieldValues>
 			ComponentProps<typeof Select>,
 			"form" | "name" | "id" | keyof ControllerRenderProps<T, FieldPath<T>>
 		> {
-	label: string;
+	label?: string;
 	items: Item[];
-	showLabel?: boolean;
+	placeholder?: string;
 }
 
 export function FormSelect<T extends FieldValues>({
@@ -142,7 +142,7 @@ export function FormSelect<T extends FieldValues>({
 	form,
 	label,
 	items,
-	showLabel,
+	placeholder,
 	...props
 }: FormElementSelectProps<T>) {
 	return (
@@ -156,23 +156,25 @@ export function FormSelect<T extends FieldValues>({
 					{...field}
 					{...props}
 				>
-					{showLabel && <Label>{label}</Label>}
-					<div className="group">
-						<SelectTrigger ref={ref}>
-							<SelectValue placeholder={label} />
-						</SelectTrigger>
+					<div className="flex flex-col gap-2">
+						{label && <FormLabel>{label}</FormLabel>}
+						<div className="group">
+							<SelectTrigger ref={ref}>
+								<SelectValue placeholder={placeholder} />
+							</SelectTrigger>
 
-						<SelectContent>
-							{items?.map((item) => (
-								<SelectItem
-									key={item.value}
-									value={item.value}
-									className="capitalize"
-								>
-									{item?.label}
-								</SelectItem>
-							))}
-						</SelectContent>
+							<SelectContent>
+								{items?.map((item) => (
+									<SelectItem
+										key={item.value}
+										value={item.value}
+										className="capitalize"
+									>
+										{item?.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</div>
 					</div>
 				</Select>
 			)}
@@ -241,9 +243,9 @@ export function FormTextare<T extends FieldValues>({
 			form={form}
 			name={name}
 			render={({ value, ...field }) => (
-				<div>
+				<div className="flex flex-col gap-2">
 					<FormLabel>{label}</FormLabel>
-					<Textarea {...props} id={id} value={value ?? ""} {...field} />
+					<Textarea id={id} value={value ?? ""} {...field} {...props} />
 				</div>
 			)}
 		/>
