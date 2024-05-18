@@ -37,40 +37,40 @@ export default async function Page({
 		pageNumber = 1;
 	}
 
-	// const { books, total } = await getData({
-	// 	pageNumber,
-	// 	sizeNumber,
-	// 	filter,
-	// 	sort,
-	// });
+	const { books, total } = await getData({
+		pageNumber,
+		sizeNumber,
+		filter,
+		sort,
+	});
 
-	const books: Array<RecycleBook> = [
-		{
-			_id: "6608bdad9bd556631e84b1e6",
-			cover: {
-				path: "",
-			},
-			name: "one",
-			price: 0,
-			categories: [
-				{
-					_id: "asdlkfjasdf",
-					name_en: "category",
-					background: "#0ff",
-				},
-			],
-			status: "draft",
-			createdAt: "1711848877391",
-			avgRate: 0,
-			updatedAt: "1716003158194",
-			isbn: "",
-			description:
-				"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae sequi eveniet itaque non fugiat dolor eaque possimus ad tempore a commodi fugit quos aut illo illum tenetur, id iure quia. Omnis iusto odio repudiandae mollitia soluta veritatis itaque. Veniam laudantium ducimus hic aperiam at veritatis quasi velit id nobis repellendus!",
-			language: "en",
-			publishingRights: true,
-			edition: 1,
-		},
-	];
+	// const books: Array<RecycleBook> = [
+	// 	{
+	// 		_id: "6608bdad9bd556631e84b1e6",
+	// 		cover: {
+	// 			path: "",
+	// 		},
+	// 		name: "one",
+	// 		price: 0,
+	// 		categories: [
+	// 			{
+	// 				_id: "asdlkfjasdf",
+	// 				name_en: "category",
+	// 				background: "#0ff",
+	// 			},
+	// 		],
+	// 		status: "draft",
+	// 		createdAt: "1711848877391",
+	// 		avgRate: 0,
+	// 		updatedAt: "1716003158194",
+	// 		isbn: "",
+	// 		description:
+	// 			"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae sequi eveniet itaque non fugiat dolor eaque possimus ad tempore a commodi fugit quos aut illo illum tenetur, id iure quia. Omnis iusto odio repudiandae mollitia soluta veritatis itaque. Veniam laudantium ducimus hic aperiam at veritatis quasi velit id nobis repellendus!",
+	// 		language: "en",
+	// 		publishingRights: true,
+	// 		edition: 1,
+	// 	},
+	// ];
 
 	return (
 		<div>
@@ -83,8 +83,7 @@ export default async function Page({
 						pageIndex: pageNumber - 1,
 						pageSize: sizeNumber,
 					},
-					// rowCount: total ?? 0,
-					rowCount: 1,
+					rowCount: total ?? 0,
 				}}
 			/>
 		</div>

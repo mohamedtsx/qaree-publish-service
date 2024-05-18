@@ -92,7 +92,7 @@ export const columns: Array<ColumnDef<Book>> = [
 		header: "Actions",
 		cell({ row }) {
 			const bookId = row.original._id;
-			const [loading, setLoading] = useState(true);
+			const [loading, setLoading] = useState(false);
 
 			return (
 				<div className="space-x-4">
