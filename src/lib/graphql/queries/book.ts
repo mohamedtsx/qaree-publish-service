@@ -27,6 +27,9 @@ export const getMyBooksQuery = graphql(`
     getBooks(page: $page, limit: $limit, filterBy: $filterBy, sortBy: $sortBy, keyword: $keyword) {
       books {
         _id,
+        cover {
+          path
+        }
         name,
         price,
         categories {

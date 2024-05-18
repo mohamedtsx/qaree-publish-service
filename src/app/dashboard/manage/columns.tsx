@@ -7,6 +7,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 export type Book = {
 	_id: string;
+	cover: {
+		path: string;
+	};
 	name: string;
 	status: string;
 	categories: {

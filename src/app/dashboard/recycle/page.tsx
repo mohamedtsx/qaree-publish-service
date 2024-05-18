@@ -1,7 +1,8 @@
 import { getBooksFromRecycleBinQuery } from "@/lib/graphql/queries";
 import { fetcher } from "@/lib/graphql/fetcher";
-import type { TableSetting } from "@/components/DataTable";
+import { DataTable, type TableSetting } from "@/components/DataTable";
 import { tags } from "@/lib/graphql/tags";
+import { type RecycleBook, columns } from "./columns";
 
 const getData = async ({
 	pageNumber,
@@ -23,7 +24,7 @@ const getData = async ({
 
 	return {
 		books: getBooksFromRecycleBin?.books,
-		rowCount: getBooksFromRecycleBin?.total,
+		total: getBooksFromRecycleBin?.total,
 	};
 };
 export default async function Page({
@@ -36,27 +37,53 @@ export default async function Page({
 		pageNumber = 1;
 	}
 
-	const { books, rowCount } = await getData({
-		pageNumber,
-		sizeNumber,
-		filter,
-		sort,
-	});
+	// const { books, total } = await getData({
+	// 	pageNumber,
+	// 	sizeNumber,
+	// 	filter,
+	// 	sort,
+	// });
+
+	const books: Array<RecycleBook> = [
+		{
+			_id: "6608bdad9bd556631e84b1e6",
+			name: "one",
+			price: 0,
+			categories: [
+				{
+					_id: "asdlkfjasdf",
+					name_en: "category",
+					background: "#0ff",
+				},
+			],
+			status: "draft",
+			createdAt: "1711848877391",
+			avgRate: 0,
+			updatedAt: "1716003158194",
+			isbn: "",
+			description:
+				"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae sequi eveniet itaque non fugiat dolor eaque possimus ad tempore a commodi fugit quos aut illo illum tenetur, id iure quia. Omnis iusto odio repudiandae mollitia soluta veritatis itaque. Veniam laudantium ducimus hic aperiam at veritatis quasi velit id nobis repellendus!",
+			language: "en",
+			publishingRights: true,
+			edition: 1,
+		},
+	];
 
 	return (
 		<div>
-			<pre className="p-4 bg-muted m-4">{JSON.stringify(books, null, 2)}</pre>
-			{/* <RecycleBooksDataTable
+			{/* <pre className="p-4 bg-muted m-4">{JSON.stringify(books, null, 2)}</pre> */}
+			<DataTable
 				columns={columns}
-				data={books as Array<Book>}
+				data={books as Array<RecycleBook>}
 				paginationConfig={{
 					state: {
 						pageIndex: pageNumber - 1,
 						pageSize: sizeNumber,
 					},
-					rowCount: rowCount ?? 0,
+					// rowCount: total ?? 0,
+					rowCount: 1,
 				}}
-			/> */}
+			/>
 		</div>
 	);
 }
