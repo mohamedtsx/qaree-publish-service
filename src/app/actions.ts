@@ -6,6 +6,7 @@ import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	editBookMutation,
 	forgetPasswordMutation,
+	moveBookFromRecycleBinMutation,
 	moveBookToRecycleBinMutation,
 	publishBookMutation,
 	resendResetPasswordOTPMutation,
@@ -25,6 +26,7 @@ import type { ResultOf } from "gql.tada";
 import { redirect } from "next/navigation";
 import { revalidateTag } from "next/cache";
 import { tags } from "@/lib/graphql/tags";
+import { FetcherError, getErrorMessage } from "@/lib/graphql/errors";
 
 type ActionState = {
 	success: boolean;
@@ -462,6 +464,37 @@ export const moveBookToRecycleBinAction = async (
 	}
 };
 
-export const moveBookFromRecycleBinAction = async (bookId: string) => {
-	// move to to recycle bin fetcher
+export const moveBookFromRecycleBinAction = async (
+	bookId: string,
+): Promise<ActionState> => {
+	try {
+		const { moveBookFromRecycleBin } = await fetcher({
+			query: moveBookFromRecycleBinMutation,
+			variables: {
+				bookId,
+			},
+			server: true,
+		});
+
+		if (!moveBookFromRecycleBin?.success) {
+			throw new FetcherError(
+				moveBookFromRecycleBin?.message ?? "Something went wrong!",
+			);
+		}
+
+		revalidateTag(tags.bin);
+		revalidateTag(tags.books);
+
+		return {
+			success: true,
+			message: moveBookFromRecycleBin?.message ?? "Book moved sucessfully",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
+
+		return {
+			success: false,
+			message,
+		};
+	}
 };

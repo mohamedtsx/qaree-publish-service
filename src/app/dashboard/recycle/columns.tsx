@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { History } from "lucide-react";
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
+import { moveBookFromRecycleBinAction } from "@/app/actions";
+import { toast } from "sonner";
+import { useState } from "react";
+import { Spinner } from "@/components/Spinner";
 
 // TODO: keep it with Book type for now then update the recycle query
 export type RecycleBook = Book;
@@ -88,18 +92,34 @@ export const columns: Array<ColumnDef<Book>> = [
 		header: "Actions",
 		cell({ row }) {
 			const bookId = row.original._id;
+			const [loading, setLoading] = useState(false);
 
 			return (
 				<div className="space-x-4">
 					<Button
-						onClick={() => {
-							// move book from bing action
+						className="w-24"
+						disabled={loading}
+						onClick={async () => {
+							setLoading(true);
+							const { success, message } =
+								await moveBookFromRecycleBinAction(bookId);
+							setLoading(false);
+
+							if (!success) {
+								return toast.error(message);
+							}
+
+							toast.success(message);
 						}}
 						size={"sm"}
 						variant={"outline"}
 					>
-						{/* <History className="size-5 me-2" /> */}
-						Restore
+						{loading ? (
+							<Spinner className="border-t-white me-2 size-4" />
+						) : (
+							<History className="size-5 me-2" />
+						)}
+						<span>Restore</span>
 					</Button>
 				</div>
 			);
