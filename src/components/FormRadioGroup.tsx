@@ -52,7 +52,9 @@ export function FormRadioGroup<
 									<FormControl>
 										<RadioGroupItem value={el.value} />
 									</FormControl>
-									<FormLabel className="font-normal py-1">{el.label}</FormLabel>
+									<FormLabel className="font-normal py-1 !text-primary">
+										{el.label}
+									</FormLabel>
 								</FormItem>
 							))}
 						</RadioGroup>
