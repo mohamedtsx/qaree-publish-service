@@ -60,9 +60,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			<Comp
 				className={cn(buttonVariants({ variant, size, className }))}
 				ref={ref}
+				disabled={isLoading}
 				{...props}
 			>
-				{isLoading ? <Spinner /> : children}
+				{isLoading ? (
+					<Spinner
+						className={cn(variant === "outline" && "border-t-primary")}
+					/>
+				) : (
+					children
+				)}
 			</Comp>
 		);
 	},
