@@ -18,7 +18,7 @@ import {
 	verifyAccountMutation,
 } from "@/lib/graphql/mutations";
 import { addBookDetailsMutation } from "@/lib/graphql/mutations";
-import type { RegisterData } from "@/lib/graphql/types";
+import type { RegisterData, SelectItems } from "@/lib/graphql/types";
 import { type EditBookType, registerFormSchema } from "@/schema";
 import type { ResultOf } from "gql.tada";
 import { redirect } from "next/navigation";
@@ -27,6 +27,7 @@ import { tags } from "@/lib/graphql/tags";
 import { FetcherError, getErrorMessage } from "@/lib/graphql/errors";
 import type { BookDetailsSchema } from "@/components/publish/Step1";
 import { getServerSession } from "next-auth";
+import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 
 type ActionState = {
 	success: boolean;
@@ -554,5 +555,32 @@ export const addBookSampleAction = async (variables: {
 			sucess: false,
 			message,
 		};
+	}
+};
+
+export const getBookEPubContentAction = async (
+	bookId: string,
+): Promise<SelectItems> => {
+	try {
+		const { getBookEPubContent } = await fetcher({
+			query: getBookEPubContentQuery,
+			variables: {
+				bookId,
+			},
+			server: true,
+		});
+
+		if (!getBookEPubContent?.content) {
+			throw Error("Cannot get book content!");
+		}
+
+		const items = getBookEPubContent?.content?.map((el) => ({
+			label: el?.title as string,
+			value: el?.id as string,
+		}));
+
+		return items;
+	} catch (_error) {
+		return [];
 	}
 };

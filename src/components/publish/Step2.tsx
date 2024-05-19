@@ -1,4 +1,4 @@
-import { addBookSampleAction } from "@/app/actions";
+import { addBookSampleAction, getBookEPubContentAction } from "@/app/actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type ReactNode, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -8,6 +8,7 @@ import { Form } from "../ui/form";
 import { FormUploadImage } from "../FormUploadImage";
 import { Button } from "../ui/button";
 import { FormUploadFile } from "../FormUploadFile";
+import { FormMultiSelect } from "../FormMultiSelect";
 
 const bookContentSchema = z.object({
 	// this will be sent onsubmit
@@ -121,6 +122,14 @@ export const Step2 = ({
 						{form.formState.errors.fileUploaded?.message}
 					</p>
 				</div>
+
+				<FormMultiSelect
+					form={form}
+					name="sample"
+					label="Select Book Sample"
+					placeholder="Add New"
+					items={async () => getBookEPubContentAction(data.bookId)}
+				/>
 
 				<div className="flex items-center justify-end gap-4 pt-6">
 					<Button
