@@ -31,6 +31,7 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Button } from "./ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { Textarea } from "./ui/textarea";
+import { cn } from "@/lib/utils";
 
 // todo distribute the file and refactore this logic for more efficent way
 
@@ -184,15 +185,17 @@ export function FormSelect<T extends FieldValues>({
 
 export const SubmitButton = <T extends FieldValues>({
 	children,
+	className,
 }: {
 	children?: React.ReactNode;
+	className?: string;
 	props?: React.ComponentPropsWithRef<typeof Button>;
 }) => {
 	const formState = useFormState<T>();
 	return (
 		<Button
 			type="submit"
-			className="w-full"
+			className={cn("w-full", className)}
 			isLoading={
 				formState.isSubmitting || formState.isLoading || formState.isValidating
 			}
