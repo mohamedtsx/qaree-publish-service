@@ -18,10 +18,7 @@ import {
 	verifyAccountMutation,
 } from "@/lib/graphql/mutations";
 import { addBookDetailsMutation } from "@/lib/graphql/mutations";
-import type {
-	PureBookDetailesSchemaType,
-	RegisterData,
-} from "@/lib/graphql/types";
+import type { RegisterData } from "@/lib/graphql/types";
 import { type EditBookType, registerFormSchema } from "@/schema";
 import type { ResultOf } from "gql.tada";
 import { redirect } from "next/navigation";
