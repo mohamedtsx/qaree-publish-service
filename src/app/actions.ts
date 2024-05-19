@@ -368,6 +368,33 @@ export const uploadCoverAction = async (
 	}
 };
 
+export const uploadFileAction = async (formData: FormData, bookId: string) => {
+	const user = await getCurrentUser();
+
+	try {
+		await fetch(UPLOAD_FULL_URL.file(bookId), {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${user.access_token}`,
+				accept: "application/json",
+				contentType: "multipart/form-data",
+			},
+			body: formData,
+		});
+
+		return {
+			sucess: true,
+			message: "Book file added successfully",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
 export const publishBookAction = async (bookId: string) => {
 	try {
 		await fetcher({
