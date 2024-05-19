@@ -614,7 +614,7 @@ export type introspection = {
             "name": "avgRate",
             "type": {
               "kind": "SCALAR",
-              "name": "Int",
+              "name": "Float",
               "ofType": null
             },
             "args": []
