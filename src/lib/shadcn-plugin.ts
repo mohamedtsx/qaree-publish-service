@@ -1,7 +1,7 @@
 import plugin from "tailwindcss/plugin";
 
 export const shadcnPlugin = plugin(
-	({ addBase }) => {
+	({ addBase, addUtilities }) => {
 		addBase({
 			":root": {
 				"--background": " 0 0% 100%",
@@ -46,6 +46,15 @@ export const shadcnPlugin = plugin(
 				"--border": "240 3.7% 15.9%",
 				"--input": "240 3.7% 15.9%",
 				"--ring": "240 4.9% 83.9%",
+			},
+		});
+		addUtilities({
+			".no-scrollbar::-webkit-scrollbar": {
+				display: "none",
+			},
+			".no-scrollbar": {
+				"-ms-overflow-style": "none" /* IE and Edge */,
+				"scrollbar-width": "none" /* Firefox */,
 			},
 		});
 	},
