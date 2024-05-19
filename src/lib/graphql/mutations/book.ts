@@ -89,3 +89,11 @@ export const moveBookFromRecycleBinMutation = graphql(`
     }
   }
 `);
+
+export const addBookSampleMutation = graphql(`
+  mutation addBookSample($bookId: String!, $sample: [String]!) {
+    addBookSample(bookId: $bookId, sample: $sample) {
+      message
+    }
+  }
+`);
