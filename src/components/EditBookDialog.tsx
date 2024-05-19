@@ -94,7 +94,6 @@ export function EditBookDialog({ book }: { book: Book }) {
 										{ label: "No", value: "false" },
 									]}
 									label="Rights"
-									showLabel
 								/>
 
 								<FormSelect
@@ -105,7 +104,6 @@ export function EditBookDialog({ book }: { book: Book }) {
 										{ label: "Arabic", value: "2" },
 									]}
 									label="Language"
-									showLabel
 								/>
 
 								{/* <Suspense fallback={<Spinner />}>
