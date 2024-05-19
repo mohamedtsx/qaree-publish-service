@@ -33,7 +33,7 @@ import {
 
 import { Separator } from "@/components/ui/separator";
 import type { SelectItems } from "@/lib/graphql/types";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "./Spinner";
 
 interface SharedProps<T extends FieldValues> {
@@ -59,17 +59,20 @@ export function FormMultiSelect<
 	const [items2, setItems2] = useState<SelectItems>([]);
 
 	useEffect(() => {
-		setLoading(true);
 		const foo = async () => {
 			if (typeof items === "function") {
-				setItems2(await items());
+				setLoading(true);
+				const value = await items();
+				setItems2(value);
+				if (items2.length > 0 || !value.length) {
+					setLoading(false);
+				}
 			} else {
 				setItems2(items);
 			}
-			setLoading(false);
 		};
 		foo();
-	}, [items]);
+	}, [items, items2]);
 
 	return (
 		<FormField
@@ -89,7 +92,6 @@ export function FormMultiSelect<
 											variant="outline"
 											className="bg-transparent text-sm w-full"
 											ref={ref}
-											onBlur={onBlur}
 										>
 											<Plus className="mr-2 h-4 w-4" />
 											{placeholder}
@@ -156,6 +158,7 @@ export function FormMultiSelect<
 																		selectedValues.add(el.value);
 																	}
 																	onChange(Array.from(selectedValues));
+																	onBlur();
 																}}
 															>
 																<div
@@ -181,6 +184,7 @@ export function FormMultiSelect<
 															<CommandItem
 																onSelect={() => {
 																	form.resetField(name);
+																	onBlur();
 																}}
 																className="justify-center text-center"
 															>
