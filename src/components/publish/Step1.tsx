@@ -12,6 +12,7 @@ import { addBookDetailsAction } from "@/app/actions";
 import { toast } from "sonner";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { getAllCategoriesQuery } from "@/lib/graphql/queries";
+import type { SelectItems } from "@/lib/graphql/types";
 
 const bookDetailsSchema = z.object({
 	name: z
@@ -58,22 +59,19 @@ const defaultValues = {
 
 export type BookDetailsSchema = z.infer<typeof bookDetailsSchema>;
 
-const getAllCategories = async () => {
-	// const { getAllCategories } = await fetcher({
-	// 	query: getAllCategoriesQuery,
-	// 	server: false,
-	// 	protectid: false,
-	// });
+const getAllCategories = async (): Promise<SelectItems> => {
+	const { getAllCategories } = await fetcher({
+		query: getAllCategoriesQuery,
+		server: false,
+		protectid: false,
+	});
 
-	// return getAllCategories ?? [];
-	await new Promise((resolve) => setTimeout(resolve, 4000));
+	const formatedItems =
+		getAllCategories?.categories?.map((el) => {
+			return { label: el?.name_en as string, value: el?._id as string };
+		}) ?? [];
 
-	return [
-		{
-			label: "async item one",
-			value: "test1",
-		},
-	];
+	return formatedItems;
 };
 
 export const Step1 = ({

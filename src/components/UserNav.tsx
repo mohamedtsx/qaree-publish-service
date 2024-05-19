@@ -18,23 +18,13 @@ import { Button } from "./ui/button";
 async function UserNav() {
 	const user = await getCurrentUser();
 
-	if (!user) return;
 	const { name, email, avatar } = user;
-
-	// const { name, avatar, email } = {
-	// 	name: "mohamed",
-	// 	email: "",
-	// 	avatar: {
-	// 		size: 34234,
-	// 		path: "kljsdf",
-	// 	},
-	// };
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" className="relative h-8 w-8 rounded-full">
-					<Avatar className="h-8 w-8">
+				<Button variant="ghost" className="relative size-8 rounded-full">
+					<Avatar className="size-8">
 						<AvatarImage src={avatar?.path || ""} alt={`@${name}`} />
 						<AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
 					</Avatar>

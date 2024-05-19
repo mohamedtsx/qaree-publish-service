@@ -19,7 +19,7 @@ function Header() {
 					<div className="max-lg:hidden">
 						<ThemeToggle />
 					</div>
-					<Suspense fallback={<Spinner />}>
+					<Suspense fallback={<div className="size-8 rounded-full bg-muted" />}>
 						<UserNav />
 					</Suspense>
 				</div>
