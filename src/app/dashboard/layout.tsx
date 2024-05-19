@@ -2,7 +2,6 @@ import Header from "@/components/layouts/Header";
 import SideNav from "@/components/layouts/SideNav";
 import type { ReactNode } from "react";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -16,8 +15,8 @@ function Layout({ children }: { children: ReactNode }) {
 
 			<div className="flex-1 flex flex-col">
 				<Header />
-				<div className="flex-1 flex overflow-hidden p-4">
-					<ScrollArea className="flex-1">{children}</ScrollArea>
+				<div className="flex-1 p-4 pb-20 overflow-y-auto no-scrollbar">
+					{children}
 				</div>
 			</div>
 		</div>
