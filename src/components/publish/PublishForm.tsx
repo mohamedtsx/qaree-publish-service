@@ -82,6 +82,7 @@ const getCurrentStep = (info: DraftBook): CurrentStep => {
 	// if the parsing sucess skip to the next step and so on
 	// until a parse field so this step is the current one so return its number
 
+	// we may need to return an object that include both current step & steps default values
 	// return 1 for now
 	return 1;
 };

@@ -1,10 +1,10 @@
-import { Suspense, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import { z } from "zod";
 import { Form } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormInput, FormSelect, FormTextare, SubmitButton } from "../SmartForm";
+import { FormInput, FormSelect, FormTextare } from "../SmartForm";
 import { FormMultiSelect } from "../FormMultiSelect";
 import FormRadioGroup from "../FormRadioGroup";
 import { Button } from "../ui/button";
@@ -76,27 +76,48 @@ const getAllCategories = async (): Promise<SelectItems> => {
 
 export const Step1 = ({
 	onDone,
+	data,
 }: {
 	onDone: (bookId: string) => void;
+	data?: {
+		defaultValues: BookDetailsSchema;
+	};
 }) => {
 	const form = useForm<BookDetailsSchema>({
 		mode: "onSubmit",
 		resolver: zodResolver(bookDetailsSchema),
-		defaultValues,
+		defaultValues: data?.defaultValues || defaultValues,
 	});
 
+	const [draftLoading, setDraftLoading] = useState(false);
+	const [continueLoading, setContinueLoading] = useState(false);
+
 	const saveAndContinue = async (values: BookDetailsSchema) => {
+		setContinueLoading(true);
 		const { success, message, data } = await addBookDetailsAction(values);
+
 		if (!success) {
-			toast.error(message);
+			setContinueLoading(false);
+			return toast.error(message);
 		}
-		toast.success(message);
-	};
-	const saveAsDraft = (values: BookDetailsSchema) => {
-		// add book detailes action
+
+		setContinueLoading(false);
+		onDone(data?.addBookDetails?._id as string);
 	};
 
-	console.log(form.getValues("categories"));
+	const saveAsDraft = async (values: BookDetailsSchema) => {
+		setDraftLoading(true);
+		const { success, message } = await addBookDetailsAction(values);
+
+		if (!success) {
+			setDraftLoading(false);
+			return toast.error(message);
+		}
+
+		setDraftLoading(false);
+		toast.success("Draft book saved sucessfully");
+		form.reset(defaultValues);
+	};
 
 	return (
 		<Form {...form}>
@@ -163,13 +184,21 @@ export const Step1 = ({
 				<div className="flex items-center justify-end gap-4 pt-6">
 					<Button
 						type="button"
-						isLoading={form.formState.isLoading}
+						isLoading={draftLoading}
 						onClick={form.handleSubmit(saveAsDraft)}
 						variant={"outline"}
+						className="w-40"
 					>
 						Save as a draft
 					</Button>
-					<SubmitButton className="w-fit">Save and continue</SubmitButton>
+					<Button
+						type="button"
+						isLoading={continueLoading}
+						onClick={form.handleSubmit(saveAndContinue)}
+						className="w-32"
+					>
+						Save as a draft
+					</Button>
 				</div>
 			</form>
 		</Form>
