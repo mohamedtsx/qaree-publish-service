@@ -32,17 +32,22 @@ import {
 } from "@/components/ui/popover";
 
 import { Separator } from "@/components/ui/separator";
+import type { SelectItems } from "@/lib/graphql/types";
+import { Suspense, useEffect, useState } from "react";
+import { Spinner } from "./Spinner";
 
 interface SharedProps<T extends FieldValues> {
 	form?: UseFormReturn<T>;
 	name: FieldPath<T>;
 }
 
+type AsyncItemsFunction = () => Promise<SelectItems>;
+
 interface FormElementProps<T extends FieldValues, Name extends FieldPath<T>>
 	extends SharedProps<T> {
 	label?: string;
 	placeholder?: string;
-	items: Array<{ label: string; value: string }>;
+	items: SelectItems | AsyncItemsFunction;
 }
 
 export function FormMultiSelect<
@@ -50,6 +55,21 @@ export function FormMultiSelect<
 	Name extends FieldPath<T>,
 >({ form: _, name, items, label, placeholder }: FormElementProps<T, Name>) {
 	const form = useFormContext<T>();
+	const [loading, setLoading] = useState(false);
+	const [items2, setItems2] = useState<SelectItems>([]);
+
+	useEffect(() => {
+		setLoading(true);
+		const foo = async () => {
+			if (typeof items === "function") {
+				setItems2(await items());
+			} else {
+				setItems2(items);
+			}
+			setLoading(false);
+		};
+		foo();
+	}, [items]);
 
 	return (
 		<FormField
@@ -94,7 +114,7 @@ export function FormMultiSelect<
 																{selectedValues.size} selected
 															</Badge>
 														) : (
-															items
+															items2
 																.filter((el) => selectedValues.has(el.value))
 																.map((el) => (
 																	<Badge
@@ -115,9 +135,15 @@ export function FormMultiSelect<
 										<Command>
 											<CommandInput placeholder={placeholder} />
 											<CommandList>
-												<CommandEmpty>No results found!</CommandEmpty>
+												<CommandEmpty>
+													{loading ? (
+														<Spinner className=" mx-auto border-t-foreground" />
+													) : (
+														"No results found! Upload a file"
+													)}
+												</CommandEmpty>
 												<CommandGroup>
-													{items.map((el) => {
+													{items2.map((el) => {
 														const isSelected = selectedValues.has(el.value);
 
 														return (
@@ -151,6 +177,7 @@ export function FormMultiSelect<
 														);
 													})}
 												</CommandGroup>
+
 												{selectedValues.size > 0 && (
 													<>
 														<CommandSeparator />
