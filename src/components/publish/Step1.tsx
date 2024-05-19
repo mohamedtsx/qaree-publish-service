@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 
 import { z } from "zod";
 import { Form } from "../ui/form";
@@ -10,6 +10,8 @@ import FormRadioGroup from "../FormRadioGroup";
 import { Button } from "../ui/button";
 import { addBookDetailsAction } from "@/app/actions";
 import { toast } from "sonner";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { getAllCategoriesQuery } from "@/lib/graphql/queries";
 
 const bookDetailsSchema = z.object({
 	name: z
@@ -55,6 +57,24 @@ const defaultValues = {
 };
 
 export type BookDetailsSchema = z.infer<typeof bookDetailsSchema>;
+
+const getAllCategories = async () => {
+	// const { getAllCategories } = await fetcher({
+	// 	query: getAllCategoriesQuery,
+	// 	server: false,
+	// 	protectid: false,
+	// });
+
+	// return getAllCategories ?? [];
+	await new Promise((resolve) => setTimeout(resolve, 4000));
+
+	return [
+		{
+			label: "async item one",
+			value: "test1",
+		},
+	];
+};
 
 export const Step1 = ({
 	onDone,
@@ -112,18 +132,13 @@ export const Step1 = ({
 				</Group>
 				<Group>
 					<FormInput form={form} name="price" label="Price" type="number" />
+
 					<FormMultiSelect
 						form={form}
 						name="categories"
 						placeholder="Add New"
 						label="Categories"
-						items={[
-							{ label: "Label one 1", value: "one" },
-							{ label: "Label one 2", value: "two" },
-							{ label: "Label one 3", value: "three" },
-							{ label: "Label one 4", value: "four" },
-							{ label: "Label one 5", value: "five" },
-						]}
+						items={getAllCategories}
 					/>
 				</Group>
 
