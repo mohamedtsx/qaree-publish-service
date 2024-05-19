@@ -10,17 +10,22 @@ import { Button } from "../ui/button";
 import { FormUploadFile } from "../FormUploadFile";
 import { FormMultiSelect } from "../FormMultiSelect";
 
-const bookContentSchema = z.object({
-	// this will be sent onsubmit
-	sample: z.array(z.string()),
-	// these for client validation
-	fileUploaded: z.boolean().refine((arg) => arg, {
-		message: "Upload the ebook file.",
-	}),
-	coverUploaded: z.boolean().refine((arg) => arg, {
-		message: "Upload a cover for the book.",
-	}),
-});
+const bookContentSchema = z
+	.object({
+		// this will be sent onsubmit
+		sample: z.array(z.string()),
+		// these for client validation
+		fileUploaded: z.boolean().refine((arg) => arg, {
+			message: "Upload the ebook file.",
+		}),
+		coverUploaded: z.boolean().refine((arg) => arg, {
+			message: "Upload a cover for the book.",
+		}),
+	})
+	.refine((args) => !args.fileUploaded && args.sample.length, {
+		message: "Select at least one sample item.",
+		path: ["sample"],
+	});
 
 type BookContentSchema = z.infer<typeof bookContentSchema>;
 
@@ -39,12 +44,6 @@ export const Step2 = ({
 
 	const onSubmit = async (values: BookContentSchema) => {
 		// if form is not dirty you could call onDone directly here
-
-		if (!values.sample.length) {
-			return form.setError("sample", {
-				message: "Select at least one sample item.",
-			});
-		}
 
 		const { sucess, message } = await addBookSampleAction({
 			bookId: data.bookId,
