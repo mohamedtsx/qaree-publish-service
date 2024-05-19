@@ -2,12 +2,11 @@
 
 import { moveBookToRecycleBinAction } from "@/app/actions";
 import { Trash2 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 
 import {
 	AlertDialog,
-	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
 	AlertDialogDescription,
@@ -17,30 +16,17 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
-import { SubmitButton } from "./SmartForm";
-import { Form } from "./ui/form";
 
 export function DeleteBookDialog({ bookId }: { bookId: string }) {
 	const [open, setOpen] = React.useState(false);
+	const [loading, setLoading] = useState(false);
 
-	const schema = z.object({
-		id: z.string(),
-	});
-
-	const form = useForm<z.infer<typeof schema>>({
-		resolver: zodResolver(schema),
-		defaultValues: {
-			id: bookId,
-		},
-	});
-
-	const onSubmit = async () => {
+	const deleteBook = async () => {
+		setLoading(true);
 		const { success, message } = await moveBookToRecycleBinAction(bookId);
 		if (!success) {
+			setLoading(false);
 			return toast.error(message);
 		}
 		setOpen(false);
@@ -56,23 +42,19 @@ export function DeleteBookDialog({ bookId }: { bookId: string }) {
 			</AlertDialogTrigger>
 
 			<AlertDialogContent className="sm:max-w-md">
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-						<AlertDialogHeader className="mb-8">
-							<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-							<AlertDialogDescription>
-								This action cannot be undone. This will permanently delete your
-								account and remove your data from our servers.
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>Cancel</AlertDialogCancel>
-							<div className="w-32">
-								<SubmitButton>Continue</SubmitButton>
-							</div>
-						</AlertDialogFooter>
-					</form>
-				</Form>
+				<AlertDialogHeader className="mb-8">
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogDescription>
+						This action cannot be undone. This will permanently delete your
+						account and remove your data from our servers.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<Button isLoading={loading} onClick={deleteBook} className="w-32">
+						Continue
+					</Button>
+				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
 	);

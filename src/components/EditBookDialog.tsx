@@ -45,11 +45,19 @@ const getDefaultValues = (book: Book): EditBookType => {
 export function EditBookDialog({ book }: { book: Book }) {
 	const [open, setOpen] = React.useState(false);
 
-	const defaultValues = getDefaultValues(book);
 	const form = useForm<EditBookType>({
 		mode: "onSubmit",
 		resolver: zodResolver(editBookSchema),
-		defaultValues,
+		defaultValues: {
+			categories: [],
+			description: "",
+			edition: 1,
+			isbn: "",
+			language: "",
+			name: "",
+			price: 0,
+			publishingRights: "",
+		},
 	});
 
 	const onSubmit = async (values: EditBookType) => {
@@ -70,7 +78,13 @@ export function EditBookDialog({ book }: { book: Book }) {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button size={"icon"} variant={"outline"}>
+				<Button
+					size={"icon"}
+					variant={"outline"}
+					onClick={() => {
+						form.reset(getDefaultValues(book));
+					}}
+				>
 					<Pencil className="size-5" />
 				</Button>
 			</DialogTrigger>
