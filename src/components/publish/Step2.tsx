@@ -7,11 +7,11 @@ import { z } from "zod";
 import { Form } from "../ui/form";
 import { FormUploadImage } from "../FormUploadImage";
 import { Button } from "../ui/button";
+import { FormUploadFile } from "../FormUploadFile";
+
 const bookContentSchema = z.object({
 	// this will be sent onsubmit
-	sample: z
-		.array(z.string())
-		.min(1, { message: "Select at least one sample item." }),
+	sample: z.array(z.string()),
 	// these for client validation
 	fileUploaded: z.boolean().refine((arg) => arg, {
 		message: "Upload the ebook file.",
@@ -20,10 +20,6 @@ const bookContentSchema = z.object({
 		message: "Upload a cover for the book.",
 	}),
 });
-// .refine((args) => args.coverUploaded, {
-// 	message: "Upload ebook cover",
-// 	path: ["coverUploaded"],
-// });
 
 type BookContentSchema = z.infer<typeof bookContentSchema>;
 
@@ -42,20 +38,11 @@ export const Step2 = ({
 
 	const onSubmit = async (values: BookContentSchema) => {
 		// if form is not dirty you could call onDone directly here
-		if (!values.coverUploaded) {
-			form.setError("coverUploaded", {
-				message: "Upload a cover for the book.",
-			});
-		}
-
-		if (!values.fileUploaded) {
-			return form.setError("fileUploaded", {
-				message: "Upload the ebook file.",
-			});
-		}
 
 		if (!values.sample.length) {
-			form.setError("sample", { message: "Select at least one sample item." });
+			return form.setError("sample", {
+				message: "Select at least one sample item.",
+			});
 		}
 
 		const { sucess, message } = await addBookSampleAction({
@@ -103,7 +90,7 @@ export const Step2 = ({
 							form={form}
 							name="coverUploaded"
 							bookId={data.bookId}
-							className="aspect-[6/9] w-full max-sm:mx-auto max-w-48"
+							className="aspect-[6/9] w-full max-w-64 max-sm:mx-auto sm:max-w-48"
 						/>
 					</CardGroup>
 					<p className="text-destructive mt-1 font-medium">
@@ -123,6 +110,12 @@ export const Step2 = ({
 								<li>item one </li>
 							</ul>
 						</div>
+						<FormUploadFile
+							form={form}
+							name="fileUploaded"
+							bookId={data.bookId}
+							className="w-full max-w-64 max-sm:mx-auto aspect-video sm:max-w-48"
+						/>
 					</CardGroup>
 					<p className="text-destructive mt-1 font-medium">
 						{form.formState.errors.fileUploaded?.message}

@@ -42,12 +42,14 @@ const steps: Array<{
 ];
 
 export const PublishForm = (props: Props) => {
-	const [currentStep, setCurrentStep] = useState<CurrentStep>(1);
+	const [currentStep, setCurrentStep] = useState<CurrentStep>(
+		props.type === "draft" ? getCurrentStep(props.draftBook) : 1,
+	);
 	const [bookId, setBookId] = useState<string>("");
 
 	useEffect(() => {
 		if (props.type === "draft") {
-			setCurrentStep(getCurrentStep(props.draftBook));
+			// setCurrentStep(getCurrentStep(props.draftBook));
 			setBookId(props.draftBook.getBook?._id as string);
 		}
 	}, [props]);

@@ -5,10 +5,10 @@ function EbupIcon() {
 		<svg
 			width="800px"
 			height="800px"
-			viewBox="-10 -5 1034 1034"
+			viewBox="-10 100 1034 1034"
 			xmlns="http://www.w3.org/2000/svg"
 			version="1.1"
-			className="w-20 h-20 text-muted-foreground"
+			className="text-muted-foreground size-20"
 		>
 			<title>ebup</title>
 			<path

@@ -372,7 +372,7 @@ export const uploadFileAction = async (formData: FormData, bookId: string) => {
 	const user = await getCurrentUser();
 
 	try {
-		await fetch(UPLOAD_FULL_URL.file(bookId), {
+		const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${user.access_token}`,
@@ -382,15 +382,17 @@ export const uploadFileAction = async (formData: FormData, bookId: string) => {
 			body: formData,
 		});
 
+		if (!res.ok) {
+			throw Error(res.statusText);
+		}
 		return {
-			sucess: true,
-			message: "Book file added successfully",
+			success: true,
+			message: "Book file added successfully.",
 		};
 	} catch (error) {
-		const message = getErrorMessage(error);
 		return {
 			success: false,
-			message,
+			message: getErrorMessage(error),
 		};
 	}
 };

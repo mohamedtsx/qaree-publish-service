@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type React from "react";
 import { useCallback, useId, useState } from "react";
 import type {
@@ -8,12 +7,13 @@ import type {
 	UseFormReturn,
 } from "react-hook-form";
 import { useController, useFormContext } from "react-hook-form";
-import { Loader2 } from "./Loader2";
-import { uploadCoverAction } from "@/app/actions";
+import { uploadFileAction } from "@/app/actions";
 import EbupIcon from "./EbupIcon";
-import { ImageIcon, UndoIcon } from "lucide-react";
+import { CheckCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
+import { useSession } from "next-auth/react";
 
 interface Props<Form extends FieldValues, Name extends FieldPath<Form>> {
 	control?: Control<Form>;
@@ -39,6 +39,7 @@ export function FormUploadFile<
 
 	const [selectedFile, setSelectedFile] = useState<File>();
 	const [loading, setLoading] = useState(false);
+	const session = useSession();
 
 	const onSelectFile = useCallback(
 		async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,19 +50,32 @@ export function FormUploadFile<
 
 			// uploading process
 			const formData = new FormData();
-			formData.append("cover", file);
+			formData.append("file", file);
 
-			const { success, message } = await uploadCoverAction(formData, bookId);
-			if (!success) {
-				toast.error(message);
+			const token = session.data?.user.access_token;
+
+			const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+					accept: "application/json",
+					contentType: "multipart/form-data",
+				},
+				body: formData,
+			});
+
+			if (!res.ok) {
+				toast.error(res.statusText);
 				setSelectedFile(undefined);
+				field.onChange(false);
+			} else {
+				field.onChange(true);
 			}
 
-			field.onChange(success);
 			setLoading(false);
 			field.onBlur();
 		},
-		[bookId, field],
+		[bookId, field, session.data?.user.access_token],
 	);
 
 	return (
@@ -73,36 +87,32 @@ export function FormUploadFile<
 			)}
 			title="Upload a file (max 2mg)"
 		>
-			<div className="flex  items-center justify-center group  cursor-pointer rounded h-full border border-primary/20 hover:border-primary/50 transition  bg-muted text-muted-foreground">
+			<div className="flex items-center justify-center group  cursor-pointer rounded h-full border border-primary/20 hover:border-primary/50 transition  bg-muted text-muted-foreground">
 				{!selectedFile ? (
-					<div>
-						<ImageIcon className="size-24 opacity-80 group-hover:opacity-100 transition" />
+					<EbupIcon />
+				) : loading ? (
+					<div className="animate-spin duration-3000">
+						<EbupIcon />
 					</div>
 				) : (
-					<Image
-						src={defaultValue || URL.createObjectURL(selectedFile)}
-						alt={label ?? ""}
-						className="size-full object-contain px-2 object-center"
-						fill
-					/>
+					<div className="flex flex-col items-center justify-center">
+						<CheckCheck className="size-12" />
+						<p className="px-2 line-clamp-2 text-center">
+							{selectedFile?.name}
+						</p>
+					</div>
 				)}
 			</div>
 
 			<input
 				id={id}
 				type="file"
-				accept="image/*"
+				accept="application/epub+zip"
 				onChange={onSelectFile}
 				className="sr-only appearance-none"
 				ref={field.ref}
 				disabled={loading}
 			/>
-
-			{loading && (
-				<div className="absolute flex items-center justify-center inset-0 backdrop-blur-sm">
-					<Loader2 />
-				</div>
-			)}
 		</label>
 	);
 }
