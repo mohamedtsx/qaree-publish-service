@@ -23,7 +23,7 @@ async function PublishDraftBook({ params: { draft = "" } }) {
 	// const data = await getDraftBook(draft);
 	const data = {
 		getBook: {
-			_id: "6649a887c24674616bb570dd",
+			_id: "6608ca9c9bd556631e84b44c",
 		},
 	};
 

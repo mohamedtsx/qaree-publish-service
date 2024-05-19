@@ -22,12 +22,18 @@ const bookContentSchema = z
 			message: "Upload a cover for the book.",
 		}),
 	})
-	.refine((args) => !args.fileUploaded && args.sample.length, {
+	.refine((args) => args.fileUploaded && args.sample.length, {
 		message: "Select at least one sample item.",
 		path: ["sample"],
 	});
 
 type BookContentSchema = z.infer<typeof bookContentSchema>;
+
+const defaultValues = {
+	coverUploaded: false,
+	fileUploaded: false,
+	sample: [],
+};
 
 export const Step2 = ({
 	onDone,
@@ -42,8 +48,28 @@ export const Step2 = ({
 	const [draftLoading, setDraftLoading] = useState(false);
 	const [continueLoading, setContinueLoading] = useState(false);
 
-	const onSubmit = async (values: BookContentSchema) => {
+	const saveAsDraft = async (values: BookContentSchema) => {
 		// if form is not dirty you could call onDone directly here
+		setDraftLoading(true);
+		toast.info(<pre>{JSON.stringify(values.sample, null, 2)}</pre>);
+
+		// const { sucess, message } = await addBookSampleAction({
+		// 	bookId: data.bookId,
+		// 	sample: values.sample,
+		// });
+
+		// if (!sucess) {
+		// 	setDraftLoading(false);
+		// 	return toast.error(message);
+		// }
+
+		// setDraftLoading(false);
+		// toast.success("Draft book saved successfully");
+		// form.reset(defaultValues);
+	};
+
+	const saveAndContinue = async (values: BookContentSchema) => {
+		setContinueLoading(true);
 
 		const { sucess, message } = await addBookSampleAction({
 			bookId: data.bookId,
@@ -51,27 +77,21 @@ export const Step2 = ({
 		});
 
 		if (!sucess) {
+			setContinueLoading(false);
 			return toast.error(message);
 		}
-
 		onDone();
 	};
 
 	const form = useForm<BookContentSchema>({
 		mode: "onBlur",
 		resolver: zodResolver(bookContentSchema),
-		defaultValues: data.defaultValues || {
-			coverUploaded: false,
-			fileUploaded: false,
-			sample: [],
-		},
+		defaultValues: data.defaultValues || defaultValues,
 	});
-	const saveAsDraft = async () => {};
-	const saveAndContinue = async () => {};
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-4">
+			<form className="space-y-8 py-4">
 				<div>
 					<CardGroup>
 						<div>
