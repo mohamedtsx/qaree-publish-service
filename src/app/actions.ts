@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/authOptions";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
+	addBookSampleMutation,
 	editBookMutation,
 	forgetPasswordMutation,
 	moveBookFromRecycleBinMutation,
@@ -498,6 +499,30 @@ export const moveBookFromRecycleBinAction = async (
 
 		return {
 			success: false,
+			message,
+		};
+	}
+};
+
+export const addBookSampleAction = async (variables: {
+	bookId: string;
+	sample: Array<string>;
+}) => {
+	try {
+		const { addBookSample } = await fetcher({
+			query: addBookSampleMutation,
+			variables,
+			server: true,
+		});
+
+		return {
+			sucess: true,
+			message: addBookSample?.message ?? "Book sample added sucessfully",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
+		return {
+			sucess: false,
 			message,
 		};
 	}
