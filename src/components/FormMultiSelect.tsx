@@ -155,11 +155,7 @@ export function FormMultiSelect<
 																	} else {
 																		selectedValues.add(el.value);
 																	}
-																	form.setValue(
-																		name,
-																		// @ts-expect-error
-																		Array.from(selectedValues),
-																	);
+																	onChange(Array.from(selectedValues));
 																}}
 															>
 																<div

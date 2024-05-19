@@ -55,7 +55,7 @@ export const PublishForm = (props: Props) => {
 	return (
 		<div className="">
 			{/* <StepsNavigator selectedStep={currentStep} /> */}
-			<div>
+			<div className="max-w-7xl mx-auto">
 				{currentStep === 1 && (
 					<Step1
 						onDone={(bookId: string) => {
@@ -69,6 +69,7 @@ export const PublishForm = (props: Props) => {
 						onDone={() => {
 							setCurrentStep(3);
 						}}
+						data={{ bookId }}
 					/>
 				)}
 				{currentStep === 3 && <Step3 onDone={() => {}} />}
@@ -84,7 +85,7 @@ const getCurrentStep = (info: DraftBook): CurrentStep => {
 
 	// we may need to return an object that include both current step & steps default values
 	// return 1 for now
-	return 1;
+	return 2;
 };
 
 const StepsNavigator = ({ selectedStep }: { selectedStep: CurrentStep }) => {

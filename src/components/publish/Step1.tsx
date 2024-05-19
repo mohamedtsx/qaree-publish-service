@@ -187,7 +187,7 @@ export const Step1 = ({
 						isLoading={draftLoading}
 						onClick={form.handleSubmit(saveAsDraft)}
 						variant={"outline"}
-						className="w-40"
+						className="w-32"
 					>
 						Save as a draft
 					</Button>
@@ -195,9 +195,9 @@ export const Step1 = ({
 						type="button"
 						isLoading={continueLoading}
 						onClick={form.handleSubmit(saveAndContinue)}
-						className="w-32"
+						className="w-40"
 					>
-						Save as a draft
+						Save and continue
 					</Button>
 				</div>
 			</form>
