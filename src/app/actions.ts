@@ -27,6 +27,7 @@ import { redirect } from "next/navigation";
 import { revalidateTag } from "next/cache";
 import { tags } from "@/lib/graphql/tags";
 import { FetcherError, getErrorMessage } from "@/lib/graphql/errors";
+import { BookDetailsSchema } from "@/components/publish/Step1";
 
 type ActionState = {
 	success: boolean;
@@ -300,23 +301,26 @@ type StateWithData<T> = ActionState & {
 };
 
 export const addBookDetailsAction = async (
-	bookDetailes: PureBookDetailesSchemaType,
+	bookDetailes: BookDetailsSchema,
 ): Promise<StateWithData<ResultOf<typeof addBookDetailsMutation>>> => {
 	try {
 		const data = await fetcher({
 			query: addBookDetailsMutation,
-			variables: bookDetailes,
+			variables: {
+				...bookDetailes,
+				publishingRights:
+					bookDetailes.publishingRights === "true" ? true : false,
+			},
 			server: true,
-			protectid: true,
 		});
 
 		if (!data.addBookDetails) {
-			throw Error("Fetcher Error");
+			throw new FetcherError("Failed to add book details!");
 		}
 
 		return {
 			success: true,
-			message: "Success",
+			message: "Book details added sucessfully",
 			data,
 		};
 	} catch (error) {

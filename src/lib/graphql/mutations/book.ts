@@ -6,15 +6,22 @@ mutation addBookDetails(
   $description: String!, 
   $publishingRights: Boolean!, 
   $categories: [String]!,
-  $language: String!
-
+  $language: String!,
+  $previousPublishingData: String,
+  $edition: Int!,
+  $isbn: String,
+  $price: Float
   ) {
   addBookDetails(
-    name: $name, 
-    description: $description, 
-    publishingRights: $publishingRights, 
-    categories: $categories, 
-    language: $language,
+      name: $name, 
+      description: $description, 
+      publishingRights: $publishingRights, 
+      categories: $categories, 
+      language: $language,
+      previousPublishingData: $previousPublishingData,
+      edition: $edition,
+      isbn: $isbn,
+      price: $price
     ) {
     _id
     name

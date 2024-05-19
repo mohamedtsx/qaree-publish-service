@@ -8,6 +8,8 @@ import { FormInput, FormSelect, FormTextare, SubmitButton } from "../SmartForm";
 import { FormMultiSelect } from "../FormMultiSelect";
 import FormRadioGroup from "../FormRadioGroup";
 import { Button } from "../ui/button";
+import { addBookDetailsAction } from "@/app/actions";
+import { toast } from "sonner";
 
 const bookDetailsSchema = z.object({
 	name: z
@@ -52,7 +54,7 @@ const defaultValues = {
 	publishingRights: "",
 };
 
-type BookDetailsSchema = z.infer<typeof bookDetailsSchema>;
+export type BookDetailsSchema = z.infer<typeof bookDetailsSchema>;
 
 export const Step1 = ({
 	onDone,
@@ -65,8 +67,12 @@ export const Step1 = ({
 		defaultValues,
 	});
 
-	const saveAndContinue = (values: BookDetailsSchema) => {
-		// add book detailes action
+	const saveAndContinue = async (values: BookDetailsSchema) => {
+		const { success, message, data } = await addBookDetailsAction(values);
+		if (!success) {
+			toast.error(message);
+		}
+		toast.success(message);
 	};
 	const saveAsDraft = (values: BookDetailsSchema) => {
 		// add book detailes action
