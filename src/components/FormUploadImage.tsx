@@ -13,6 +13,8 @@ import { uploadCoverAction } from "@/app/actions";
 import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
+import { useSession } from "next-auth/react";
 
 interface Props<Form extends FieldValues, Name extends FieldPath<Form>> {
 	control?: Control<Form>;
@@ -38,6 +40,7 @@ export function FormUploadImage<
 
 	const [selectedFile, setSelectedFile] = useState<File>();
 	const [loading, setLoading] = useState(false);
+	const session = useSession();
 
 	const onSelectFile = useCallback(
 		async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,17 +53,37 @@ export function FormUploadImage<
 			const formData = new FormData();
 			formData.append("cover", file);
 
-			const { success, message } = await uploadCoverAction(formData, bookId);
-			if (!success) {
+			try {
+				const res = await fetch(UPLOAD_FULL_URL.cover(bookId), {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${session.data?.user.access_token}`,
+						accept: "application/json",
+						contentType: "multipart/form-data",
+					},
+					body: formData,
+				});
+
+				field.onChange(true);
+			} catch (error) {
+				const message =
+					error instanceof Error ? error.message : "Something went wrong!";
 				toast.error(message);
+				field.onChange(false);
 				setSelectedFile(undefined);
 			}
 
-			field.onChange(success);
+			// const { success, message } = await uploadCoverAction(formData, bookId);
+			// if (!success) {
+			// 	toast.error(message);
+			// 	setSelectedFile(undefined);
+			// }
+			// field.onChange(success);
+
 			setLoading(false);
 			field.onBlur();
 		},
-		[bookId, field],
+		[bookId, field, session.data?.user.access_token],
 	);
 
 	return (
