@@ -27,7 +27,7 @@ import { redirect } from "next/navigation";
 import { revalidateTag } from "next/cache";
 import { tags } from "@/lib/graphql/tags";
 import { FetcherError, getErrorMessage } from "@/lib/graphql/errors";
-import { BookDetailsSchema } from "@/components/publish/Step1";
+import type { BookDetailsSchema } from "@/components/publish/Step1";
 
 type ActionState = {
 	success: boolean;
