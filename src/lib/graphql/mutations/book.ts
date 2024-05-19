@@ -24,18 +24,6 @@ mutation addBookDetails(
       price: $price
     ) {
     _id
-    name
-    description
-    edition,
-    isbn,
-    author {
-        _id
-        name
-    },
-    price,
-    createdAt,
-    updatedAt,
-    status
   }
 }`);
 
