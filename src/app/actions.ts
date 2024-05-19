@@ -1,6 +1,6 @@
 "use server";
 
-import { getCurrentUser } from "@/lib/authOptions";
+import { authOptions, getCurrentUser } from "@/lib/authOptions";
 import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
@@ -26,6 +26,7 @@ import { revalidateTag } from "next/cache";
 import { tags } from "@/lib/graphql/tags";
 import { FetcherError, getErrorMessage } from "@/lib/graphql/errors";
 import type { BookDetailsSchema } from "@/components/publish/Step1";
+import { getServerSession } from "next-auth";
 
 type ActionState = {
 	success: boolean;
@@ -337,14 +338,14 @@ export const uploadCoverAction = async (
 	formData: FormData,
 	bookId: string,
 ): Promise<ActionState> => {
-	const user = await getCurrentUser();
+	const session = await getServerSession(authOptions);
 
 	// todo first do it second do it better
 	try {
 		await fetch(UPLOAD_FULL_URL.cover(bookId), {
 			method: "POST",
 			headers: {
-				Authorization: `Bearer ${user.access_token}`,
+				Authorization: `Bearer ${session?.user.access_token}`,
 				accept: "application/json",
 				contentType: "multipart/form-data",
 			},
@@ -369,30 +370,32 @@ export const uploadCoverAction = async (
 };
 
 export const uploadFileAction = async (formData: FormData, bookId: string) => {
-	const user = await getCurrentUser();
+	const session = await getServerSession(authOptions);
 
 	try {
-		const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
+		await fetch(UPLOAD_FULL_URL.file(bookId), {
 			method: "POST",
 			headers: {
-				Authorization: `Bearer ${user.access_token}`,
+				Authorization: `Bearer ${session?.user.access_token}`,
 				accept: "application/json",
 				contentType: "multipart/form-data",
 			},
 			body: formData,
 		});
 
-		if (!res.ok) {
-			throw Error(res.statusText);
-		}
 		return {
 			success: true,
 			message: "Book file added successfully.",
 		};
 	} catch (error) {
+		let message = "Something went wrong!";
+		if (error instanceof Error) {
+			message = error.message;
+		}
+
 		return {
 			success: false,
-			message: getErrorMessage(error),
+			message,
 		};
 	}
 };

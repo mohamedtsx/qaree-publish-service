@@ -12,7 +12,6 @@ import EbupIcon from "./EbupIcon";
 import { CheckCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { UPLOAD_FULL_URL } from "@/lib/graphql";
 import { useSession } from "next-auth/react";
 
 interface Props<Form extends FieldValues, Name extends FieldPath<Form>> {
@@ -52,30 +51,17 @@ export function FormUploadFile<
 			const formData = new FormData();
 			formData.append("file", file);
 
-			const token = session.data?.user.access_token;
-
-			const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					accept: "application/json",
-					contentType: "multipart/form-data",
-				},
-				body: formData,
-			});
-
-			if (!res.ok) {
-				toast.error(res.statusText);
+			const { success, message } = await uploadFileAction(formData, bookId);
+			if (!success) {
+				toast.error(message);
 				setSelectedFile(undefined);
-				field.onChange(false);
-			} else {
-				field.onChange(true);
 			}
 
+			field.onChange(success);
 			setLoading(false);
 			field.onBlur();
 		},
-		[bookId, field, session.data?.user.access_token],
+		[bookId, field],
 	);
 
 	return (
