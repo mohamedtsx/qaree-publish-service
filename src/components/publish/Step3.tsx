@@ -29,7 +29,7 @@ export const Step3 = ({
 	};
 
 	return (
-		<div>
+		<div className="p-4 space-y-8">
 			<div className="h-96 bg-muted" />
 			<div className="flex justify-end">
 				<Button

@@ -90,7 +90,7 @@ export const Step2 = ({
 
 	return (
 		<Form {...form}>
-			<form className="space-y-8 py-4">
+			<form className="p-4 space-y-8">
 				<div>
 					<CardGroup>
 						<div>

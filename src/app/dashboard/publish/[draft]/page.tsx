@@ -23,7 +23,7 @@ async function PublishDraftBook({ params: { draft = "" } }) {
 	const data = await getDraftBook(draft);
 
 	return (
-		<div>
+		<div className="pt-20">
 			<PublishForm type="draft" draftBook={data} />
 		</div>
 	);
