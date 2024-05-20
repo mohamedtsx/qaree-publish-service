@@ -74,7 +74,14 @@ export const PublishForm = (props: Props) => {
 						data={{ bookId }}
 					/>
 				)}
-				{currentStep === 3 && <Step3 onDone={() => {}} />}
+				{currentStep === 3 && (
+					<Step3
+						onDone={() => {}}
+						data={{
+							bookId,
+						}}
+					/>
+				)}
 			</div>
 		</div>
 	);

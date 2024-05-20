@@ -406,7 +406,6 @@ export const publishBookAction = async (bookId: string) => {
 		await fetcher({
 			query: publishBookMutation,
 			server: true,
-			protectid: true,
 			variables: { bookId },
 		});
 
