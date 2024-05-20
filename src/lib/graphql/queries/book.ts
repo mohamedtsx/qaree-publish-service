@@ -104,6 +104,7 @@ export const getDraftBookQuery = graphql(`
       categories {
         _id
         name_en
+        background
       }
       price
       language
