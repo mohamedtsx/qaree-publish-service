@@ -51,20 +51,19 @@ export const Step2 = ({
 	const saveAsDraft = async (values: BookContentSchema) => {
 		// if form is not dirty you could call onDone directly here
 		setDraftLoading(true);
-		toast.info(<pre>{JSON.stringify(values.sample, null, 2)}</pre>);
 
-		// const { sucess, message } = await addBookSampleAction({
-		// 	bookId: data.bookId,
-		// 	sample: values.sample,
-		// });
+		const { sucess, message } = await addBookSampleAction({
+			bookId: data.bookId,
+			sample: values.sample,
+		});
 
-		// if (!sucess) {
-		// 	setDraftLoading(false);
-		// 	return toast.error(message);
-		// }
+		if (!sucess) {
+			setDraftLoading(false);
+			return toast.error(message);
+		}
 
-		// setDraftLoading(false);
-		// toast.success("Draft book saved successfully");
+		setDraftLoading(false);
+		toast.success("Draft book saved successfully");
 		// form.reset(defaultValues);
 	};
 
@@ -147,6 +146,7 @@ export const Step2 = ({
 					name="sample"
 					label="Select Book Sample"
 					placeholder="Add New"
+					disabled={!form.getValues("fileUploaded")}
 					items={async () => getBookEPubContentAction(data.bookId)}
 				/>
 
