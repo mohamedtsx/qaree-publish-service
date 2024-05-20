@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { ResultOf } from "gql.tada";
 import { useEffect, useState } from "react";
 import { type BookDetailsSchema, Step1 } from "./Step1";
-import { Step2 } from "./Step2";
+import { type BookContentSchema, Step2 } from "./Step2";
 import { Step3 } from "./Step3";
 
 type DraftBook = ResultOf<typeof getDraftBookQuery>;
@@ -86,18 +86,26 @@ export const PublishForm = (props: Props) => {
 				{currentStep === 2 && (
 					<Step2
 						onDone={() => {
-							if (completedSteps + 1 > currentStep) {
+							if (completedSteps + 1 >= currentStep) {
 								setCompletedSteps(currentStep);
 							}
 							setCurrentStep(3);
 						}}
-						data={{ bookId }}
+						data={{
+							bookId,
+							defaultValues: isDraft
+								? getDefaultValue(props.draftBook, 2)
+								: undefined,
+							cover: isDraft
+								? (props.draftBook.getBook?.cover?.path as string)
+								: undefined,
+						}}
 					/>
 				)}
 				{currentStep === 3 && (
 					<Step3
 						onDone={() => {
-							if (completedSteps + 1 > currentStep) {
+							if (completedSteps + 1 >= currentStep) {
 								setCompletedSteps(currentStep);
 							}
 						}}
@@ -122,41 +130,39 @@ const getIncompleteStep = (info: DraftBook): CurrentStep => {
 	return 2;
 };
 
-/**
- * 
- type BookDetailsSchema = {
-    name: string;
-    description: string;
-    edition: number;
-    categories: string[];
-    language: string;
-    publishingRights: string;
-    isbn?: string | undefined;
-    price?: number | undefined;
-    previousPublishingData?: string | undefined;
-}
- */
+function getDefaultValue(info: DraftBook, step: 1): BookDetailsSchema;
+function getDefaultValue(info: DraftBook, step: 2): BookContentSchema;
+function getDefaultValue(info: DraftBook, step: 3): PreviewBeforePublish;
 
 function getDefaultValue(info: DraftBook, step: CurrentStep) {
+	const { getBook } = info;
 	if (step === 1) {
-		const { getBook } = info;
 		const values: BookDetailsSchema = {
 			categories: getBook?.categories?.map((el) => el?._id as string) ?? [],
 			description: getBook?.description as string,
 			edition: getBook?.edition ?? 1,
 			language: getBook?.language as string,
 			name: getBook?.name as string,
-			// publishingRights: getBook?.publishingRights ? "true" : "false",
-			publishingRights: "true",
-
+			publishingRights: getBook?.publishingRights ? "true" : "false",
 			isbn: getBook?.isbn as string,
 			previousPublishingData: getBook?.previousPublishingData ?? "",
 			price: getBook?.price ?? 0,
 		};
 
-		console.log(values);
-
 		return values;
+	}
+
+	if (step === 2) {
+		const value: BookContentSchema = {
+			coverUploaded: !!getBook?.cover,
+			fileUploaded: !!getBook?.file,
+			sample: (getBook?.sample as Array<string>) ?? [],
+		};
+		return value;
+	}
+
+	if (step === 3) {
+		return null;
 	}
 
 	// 1. BookDetailsSchema
