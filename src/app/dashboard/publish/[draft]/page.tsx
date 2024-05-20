@@ -20,12 +20,7 @@ const getDraftBook = async (bookId: string) => {
 };
 
 async function PublishDraftBook({ params: { draft = "" } }) {
-	// const data = await getDraftBook(draft);
-	const data = {
-		getBook: {
-			_id: "6608d90ab806641f2e94c43c",
-		},
-	};
+	const data = await getDraftBook(draft);
 
 	return (
 		<div>

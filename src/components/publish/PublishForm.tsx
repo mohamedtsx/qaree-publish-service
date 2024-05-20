@@ -49,7 +49,6 @@ export const PublishForm = (props: Props) => {
 
 	useEffect(() => {
 		if (props.type === "draft") {
-			// setCurrentStep(getCurrentStep(props.draftBook));
 			setBookId(props.draftBook.getBook?._id as string);
 		}
 	}, [props]);
@@ -88,13 +87,25 @@ export const PublishForm = (props: Props) => {
 };
 
 const getCurrentStep = (info: DraftBook): CurrentStep => {
+	// draft book in step2 or step3
+	// if cover & file & sample => step 3 else step 2
+	const { getBook } = info;
+	if (getBook?.cover && getBook.sample?.length && getBook.file?.path) {
+		return 3;
+	}
+
+	return 2;
+};
+
+const getDefaultValue = () => {
+	// 1. BookDetailsSchema
+	// 2. BookContentSchema
+	// 3. _
 	// using each form schema prcoess a zod parsing
 	// if the parsing sucess skip to the next step and so on
 	// until a parse field so this step is the current one so return its number
-
 	// we may need to return an object that include both current step & steps default values
 	// return 1 for now
-	return 3;
 };
 
 const StepsNavigator = ({ selectedStep }: { selectedStep: CurrentStep }) => {
