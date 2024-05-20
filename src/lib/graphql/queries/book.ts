@@ -17,7 +17,9 @@ export const getBookEPubContentQuery = graphql(`
         content {
           id
           title
+          level
         }
+
     }
   }
 `);
