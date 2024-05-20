@@ -3,7 +3,9 @@
 import { DeleteBookDialog } from "@/components/DeleteBookDialog";
 import { EditBookDialog } from "@/components/EditBookDialog";
 import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
+import { BookUp } from "lucide-react";
 import Link from "next/link";
 
 export type Book = {
@@ -81,13 +83,22 @@ export const columns: Array<ColumnDef<Book>> = [
 			const bookId = row.original._id;
 
 			return (
-				<div className="space-x-4">
+				<div className="grid grid-cols-3 gap-4 w-fit">
+					{row.original.status === "draft" ? (
+						<Link
+							href={`/dashboard/publish/${bookId}`}
+							className={buttonVariants({
+								size: "icon",
+								variant: "outline",
+							})}
+						>
+							<BookUp className="size-5" />
+						</Link>
+					) : (
+						<div />
+					)}
 					<EditBookDialog book={row.original} />
 					<DeleteBookDialog bookId={bookId} />
-					{/* TODO: convert these actions to dropdown menu*/}
-					{row.original.status === "draft" && (
-						<Link href={`/dashboard/publish/${bookId}`}>Publish</Link>
-					)}
 				</div>
 			);
 		},
