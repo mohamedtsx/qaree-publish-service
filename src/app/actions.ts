@@ -573,10 +573,12 @@ export const getBookEPubContentAction = async (
 			throw Error("Cannot get book content!");
 		}
 
-		const items = getBookEPubContent?.content?.map((el) => ({
-			label: el?.title as string,
-			value: el?.id as string,
-		}));
+		const items = getBookEPubContent?.content
+			?.filter((el) => el?.level === 0)
+			.map((el) => ({
+				label: el?.title as string,
+				value: el?.id as string,
+			}));
 
 		return items;
 	} catch (_error) {
