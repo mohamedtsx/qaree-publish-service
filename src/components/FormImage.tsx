@@ -12,11 +12,13 @@ interface FormImageProps<T extends FieldValues>
 			"form" | "name" | "id" | keyof ControllerRenderProps<T, Path<T>>
 		> {
 	label: string;
+	url?: string;
 }
 
 export function FormImage<T extends FieldValues>({
 	form,
 	name,
+	url,
 	label,
 }: FormImageProps<T>) {
 	const id = useId();
@@ -37,7 +39,16 @@ export function FormImage<T extends FieldValues>({
 							)}
 						>
 							{!value ? (
-								<ImageIcon className="h-12 w-12" />
+								url ? (
+									<Image
+										src={url}
+										alt="Book cover"
+										className="h-full w-full object-contain object-center"
+										fill
+									/>
+								) : (
+									<ImageIcon className="h-12 w-12" />
+								)
 							) : (
 								<Image
 									src={URL.createObjectURL(value as File)}
