@@ -43,7 +43,7 @@ const steps: Array<{
 
 export const PublishForm = (props: Props) => {
 	const [currentStep, setCurrentStep] = useState<CurrentStep>(
-		props.type === "draft" ? getCurrentStep(props.draftBook) : 1,
+		props.type === "draft" ? getIncompleteStep(props.draftBook) : 1,
 	);
 	const [bookId, setBookId] = useState<string>("");
 
@@ -86,7 +86,7 @@ export const PublishForm = (props: Props) => {
 	);
 };
 
-const getCurrentStep = (info: DraftBook): CurrentStep => {
+const getIncompleteStep = (info: DraftBook): CurrentStep => {
 	// draft book in step2 or step3
 	// if cover & file & sample => step 3 else step 2
 	const { getBook } = info;
