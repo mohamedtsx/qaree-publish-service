@@ -310,6 +310,8 @@ export const addBookDetailsAction = async (
 				...bookDetailes,
 				publishingRights:
 					bookDetailes.publishingRights === "true" ? true : false,
+				previousPublishingData:
+					bookDetailes.previousPublishingData?.toLocaleDateString(),
 			},
 			server: true,
 		});
