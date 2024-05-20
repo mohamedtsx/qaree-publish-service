@@ -63,6 +63,9 @@ export const authOptions: NextAuthOptions = {
 			},
 		}),
 	],
+	session: {
+		maxAge: 60 * 55,
+	},
 	callbacks: {
 		async jwt({ token, user, trigger, session }) {
 			if (trigger === "update") {
