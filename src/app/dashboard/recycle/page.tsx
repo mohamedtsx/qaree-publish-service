@@ -1,6 +1,6 @@
-import { getBooksFromRecycleBinQuery } from "@/lib/graphql/queries";
-import { fetcher } from "@/lib/graphql/fetcher";
 import { DataTable, type TableSetting } from "@/components/DataTable";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { getBooksFromRecycleBinQuery } from "@/lib/graphql/queries";
 import { tags } from "@/lib/graphql/tags";
 import { type RecycleBook, columns } from "./columns";
 

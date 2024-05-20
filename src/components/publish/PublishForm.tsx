@@ -3,11 +3,11 @@
 import type { getDraftBookQuery } from "@/lib/graphql/queries";
 import { cn } from "@/lib/utils";
 import type { ResultOf } from "gql.tada";
+import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { type BookDetailsSchema, Step1 } from "./Step1";
 import { type BookContentSchema, Step2 } from "./Step2";
 import { Step3 } from "./Step3";
-import { Check } from "lucide-react";
 
 type DraftBook = ResultOf<typeof getDraftBookQuery>;
 

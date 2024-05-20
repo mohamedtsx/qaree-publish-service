@@ -1,3 +1,8 @@
+import { uploadCoverAction } from "@/app/actions";
+import { UPLOAD_FULL_URL } from "@/lib/graphql";
+import { cn } from "@/lib/utils";
+import { ImageIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import type React from "react";
 import { useCallback, useId, useState } from "react";
@@ -8,13 +13,8 @@ import type {
 	UseFormReturn,
 } from "react-hook-form";
 import { useController, useFormContext } from "react-hook-form";
-import { Loader2 } from "./Loader2";
-import { uploadCoverAction } from "@/app/actions";
-import { ImageIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { UPLOAD_FULL_URL } from "@/lib/graphql";
-import { useSession } from "next-auth/react";
+import { Loader2 } from "./Loader2";
 
 interface Props<Form extends FieldValues, Name extends FieldPath<Form>> {
 	control?: Control<Form>;

@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
+import { DataTable, type TableSetting } from "@/components/DataTable";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { getMyBooksQuery } from "@/lib/graphql/queries";
-import { type Book, columns } from "./columns";
 import { tags } from "@/lib/graphql/tags";
-import { DataTable, type TableSetting } from "@/components/DataTable";
+import { type Book, columns } from "./columns";
 
 async function getData({ pageNumber, sizeNumber, filter, sort }: TableSetting) {
 	const { getBooks } = await fetcher({
