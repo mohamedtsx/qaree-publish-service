@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { type BookDetailsSchema, Step1 } from "./Step1";
 import { type BookContentSchema, Step2 } from "./Step2";
 import { Step3 } from "./Step3";
+import { Check } from "lucide-react";
 
 type DraftBook = ResultOf<typeof getDraftBookQuery>;
 
@@ -69,7 +70,7 @@ export const PublishForm = (props: Props) => {
 			<div className="max-w-7xl mx-auto">
 				{currentStep === 1 && (
 					<Step1
-						onDone={(bookId: string) => {
+						onDone={(bookId: string, values: BookDetailsSchema) => {
 							if (completedSteps + 1 > currentStep) {
 								setCompletedSteps(currentStep);
 							}
@@ -132,7 +133,6 @@ const getIncompleteStep = (info: DraftBook): CurrentStep => {
 
 function getDefaultValue(info: DraftBook, step: 1): BookDetailsSchema;
 function getDefaultValue(info: DraftBook, step: 2): BookContentSchema;
-function getDefaultValue(info: DraftBook, step: 3): PreviewBeforePublish;
 
 function getDefaultValue(info: DraftBook, step: CurrentStep) {
 	const { getBook } = info;
@@ -160,19 +160,6 @@ function getDefaultValue(info: DraftBook, step: CurrentStep) {
 		};
 		return value;
 	}
-
-	if (step === 3) {
-		return null;
-	}
-
-	// 1. BookDetailsSchema
-	// 2. BookContentSchema
-	// 3. _
-	// using each form schema prcoess a zod parsing
-	// if the parsing sucess skip to the next step and so on
-	// until a parse field so this step is the current one so return its number
-	// we may need to return an object that include both current step & steps default values
-	// return 1 for now
 }
 
 const StepsNavigator = ({
@@ -205,7 +192,22 @@ const StepsNavigator = ({
 							setCurrentStep(el.order);
 						}}
 					>
-						<div className="relative">
+						<div
+							className={cn(
+								"relative flex items-center justify-center p-2 sm:sr-only",
+							)}
+						>
+							<div>
+								{isCompleted ? <Check className="text-green-600" /> : el.order}
+							</div>
+							<div
+								className={cn(
+									"bg-green-600 absolute inset-x-0 bottom-0",
+									isCurrent && "h-1",
+								)}
+							/>
+						</div>
+						<div className="relative max-sm:sr-only">
 							<div className="p-4">
 								<div>{el.label}</div>
 								{isCompleted && <div>completed</div>}
