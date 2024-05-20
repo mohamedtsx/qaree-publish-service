@@ -86,10 +86,10 @@ export function FormUploadFile<
 				"relative ring-0 ring-primary has-[input:focus-visible]:ring-1 block",
 				className,
 			)}
-			title="Upload a file (max 2mg)"
+			title="Upload a file (max 50mg)"
 		>
 			<div className="flex items-center justify-center group  cursor-pointer rounded h-full border border-primary/20 hover:border-primary/50 transition  bg-muted text-muted-foreground">
-				{!selectedFile ? (
+				{!selectedFile && !field.value ? (
 					<EbupIcon />
 				) : loading ? (
 					<div className="animate-spin duration-3000">
@@ -99,7 +99,7 @@ export function FormUploadFile<
 					<div className="flex flex-col items-center justify-center">
 						<CheckCheck className="size-12" />
 						<p className="px-2 line-clamp-2 text-center">
-							{selectedFile?.name}
+							{selectedFile?.name ?? "File Uploaded"}
 						</p>
 					</div>
 				)}
