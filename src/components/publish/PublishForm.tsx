@@ -87,7 +87,7 @@ const getCurrentStep = (info: DraftBook): CurrentStep => {
 
 	// we may need to return an object that include both current step & steps default values
 	// return 1 for now
-	return 2;
+	return 3;
 };
 
 const StepsNavigator = ({ selectedStep }: { selectedStep: CurrentStep }) => {
