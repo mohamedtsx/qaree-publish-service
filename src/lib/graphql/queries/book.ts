@@ -110,6 +110,7 @@ export const getDraftBookQuery = graphql(`
       language
       publishingRights
       previousPublishingData
+      status
     }
   }
 `);
