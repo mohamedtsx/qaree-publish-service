@@ -54,22 +54,23 @@ export function FormUploadFile<
 
 			const token = session.data?.user.access_token;
 
-			const res = await fetch(UPLOAD_FULL_URL.file(bookId), {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					accept: "application/json",
-					contentType: "multipart/form-data",
-				},
-				body: formData,
-			});
-
-			if (!res.ok) {
-				toast.error(res.statusText);
+			try {
+				await fetch(UPLOAD_FULL_URL.file(bookId), {
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${token}`,
+						accept: "application/json",
+						contentType: "multipart/form-data",
+					},
+					body: formData,
+				});
+				field.onChange(true);
+			} catch (error) {
+				const message =
+					error instanceof Error ? error.message : "Something went wrong!";
+				toast.error(message);
 				setSelectedFile(undefined);
 				field.onChange(false);
-			} else {
-				field.onChange(true);
 			}
 
 			setLoading(false);
