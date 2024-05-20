@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { publishBookAction } from "@/app/actions";
 import { toast } from "sonner";
+import type { BookContentSchema } from "./Step2";
 
-// review the book and hit publish
+type PreviewBeforePublish = BookContentSchema & {
+	str: string;
+};
+
 export const Step3 = ({
 	onDone,
 	data,
@@ -12,7 +16,7 @@ export const Step3 = ({
 	data: {
 		bookId: string;
 		// keep it optional null for now
-		preview?: null;
+		preview?: PreviewBeforePublish;
 	};
 }) => {
 	const [loading, setLoading] = useState(false);
