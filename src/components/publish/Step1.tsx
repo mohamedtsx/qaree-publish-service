@@ -45,7 +45,7 @@ const bookDetailsSchema = z.object({
 	previousPublishingData: z.string().optional(),
 });
 
-const defaultValues = {
+export const defaultValues = {
 	categories: [],
 	description: "",
 	edition: 1,

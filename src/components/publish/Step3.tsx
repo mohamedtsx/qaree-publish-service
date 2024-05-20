@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { publishBookAction } from "@/app/actions";
 import { toast } from "sonner";
-import type { BookContentSchema } from "./Step2";
-
-type PreviewBeforePublish = BookContentSchema & {
-	str: string;
-};
+import { getDraftBookQuery } from "@/lib/graphql/queries";
+import { fetcher } from "@/lib/graphql/fetcher";
+import type { ResultOf } from "gql.tada";
+import { Spinner } from "../Spinner";
 
 export const Step3 = ({
 	onDone,
@@ -15,11 +14,12 @@ export const Step3 = ({
 	onDone: () => void;
 	data: {
 		bookId: string;
-		// keep it optional null for now
-		preview?: PreviewBeforePublish;
 	};
 }) => {
 	const [loading, setLoading] = useState(false);
+	const [preview, setPreview] = useState<ResultOf<typeof getDraftBookQuery>>();
+	const [previewLoading, setPreviewLoading] = useState(false);
+
 	const publish = async () => {
 		setLoading(true);
 		const { success, message } = await publishBookAction(data.bookId);
@@ -32,9 +32,41 @@ export const Step3 = ({
 		toast.success(message);
 	};
 
+	useEffect(() => {
+		if (data.bookId) {
+			setPreviewLoading(true);
+			try {
+				fetcher({
+					query: getDraftBookQuery,
+					variables: {
+						bookId: data.bookId,
+					},
+					server: false,
+				}).then((result) => {
+					setPreview(result);
+					setPreviewLoading(false);
+				});
+			} catch (error) {
+				let message = "Somethign went wrong!";
+				if (error instanceof Error) {
+					message = error.message;
+				}
+				setLoading(false);
+				toast.error(message);
+			}
+		}
+	}, [data.bookId]);
+
 	return (
 		<div className="p-4 space-y-8">
-			<div className="h-96 bg-muted" />
+			<div className="min-h-40 bg-muted">
+				{previewLoading && (
+					<Spinner className="size-8 mx-auto border-t-primary" />
+				)}
+
+				<pre>{JSON.stringify(preview, null, 2)}</pre>
+			</div>
+
 			<div className="flex justify-end">
 				<Button
 					isLoading={loading}
