@@ -4,10 +4,9 @@ import type { getDraftBookQuery } from "@/lib/graphql/queries";
 import { cn } from "@/lib/utils";
 import type { ResultOf } from "gql.tada";
 import { useEffect, useState } from "react";
-import { Step1 } from "./Step1";
+import { type BookDetailsSchema, Step1 } from "./Step1";
 import { Step2 } from "./Step2";
 import { Step3 } from "./Step3";
-import { Button } from "../ui/button";
 
 type DraftBook = ResultOf<typeof getDraftBookQuery>;
 
@@ -43,23 +42,25 @@ const steps: Array<{
 ];
 
 export const PublishForm = (props: Props) => {
+	const isDraft = props.type === "draft";
+
 	const [currentStep, setCurrentStep] = useState<CurrentStep>(
-		props.type === "draft" ? getIncompleteStep(props.draftBook) : 1,
+		isDraft ? getIncompleteStep(props.draftBook) : 1,
 	);
 	const [completedSteps, setCompletedSteps] = useState(
-		props.type === "draft" ? getIncompleteStep(props.draftBook) - 1 : 0,
+		isDraft ? getIncompleteStep(props.draftBook) - 1 : 0,
 	);
 
 	const [bookId, setBookId] = useState<string>("");
 
 	useEffect(() => {
-		if (props.type === "draft") {
+		if (isDraft) {
 			setBookId(props.draftBook.getBook?._id as string);
 		}
-	}, [props]);
+	}, [isDraft, props]);
 
 	return (
-		<div className="">
+		<div>
 			<StepsNavigator
 				currentStep={currentStep}
 				completedSteps={completedSteps}
@@ -74,6 +75,11 @@ export const PublishForm = (props: Props) => {
 							}
 							setCurrentStep(2);
 							setBookId(bookId);
+						}}
+						data={{
+							defaultValues: isDraft
+								? getDefaultValue(props.draftBook, 1)
+								: undefined,
 						}}
 					/>
 				)}
@@ -116,7 +122,43 @@ const getIncompleteStep = (info: DraftBook): CurrentStep => {
 	return 2;
 };
 
-const getDefaultValue = () => {
+/**
+ * 
+ type BookDetailsSchema = {
+    name: string;
+    description: string;
+    edition: number;
+    categories: string[];
+    language: string;
+    publishingRights: string;
+    isbn?: string | undefined;
+    price?: number | undefined;
+    previousPublishingData?: string | undefined;
+}
+ */
+
+function getDefaultValue(info: DraftBook, step: CurrentStep) {
+	if (step === 1) {
+		const { getBook } = info;
+		const values: BookDetailsSchema = {
+			categories: getBook?.categories?.map((el) => el?._id as string) ?? [],
+			description: getBook?.description as string,
+			edition: getBook?.edition ?? 1,
+			language: getBook?.language as string,
+			name: getBook?.name as string,
+			// publishingRights: getBook?.publishingRights ? "true" : "false",
+			publishingRights: "true",
+
+			isbn: getBook?.isbn as string,
+			previousPublishingData: getBook?.previousPublishingData ?? "",
+			price: getBook?.price ?? 0,
+		};
+
+		console.log(values);
+
+		return values;
+	}
+
 	// 1. BookDetailsSchema
 	// 2. BookContentSchema
 	// 3. _
@@ -125,7 +167,7 @@ const getDefaultValue = () => {
 	// until a parse field so this step is the current one so return its number
 	// we may need to return an object that include both current step & steps default values
 	// return 1 for now
-};
+}
 
 const StepsNavigator = ({
 	currentStep,

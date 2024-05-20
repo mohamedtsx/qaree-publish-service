@@ -54,7 +54,7 @@ export function FormUploadImage<
 			formData.append("cover", file);
 
 			try {
-				await fetch(UPLOAD_FULL_URL.cover(bookId), {
+				const res = await fetch(UPLOAD_FULL_URL.cover(bookId), {
 					method: "POST",
 					headers: {
 						Authorization: `Bearer ${session.data?.user.access_token}`,
@@ -63,6 +63,14 @@ export function FormUploadImage<
 					},
 					body: formData,
 				});
+
+				if (!res.ok) {
+					const data = (await res.json()) as {
+						message: string;
+					};
+
+					throw Error(data?.message);
+				}
 
 				field.onChange(true);
 			} catch (error) {

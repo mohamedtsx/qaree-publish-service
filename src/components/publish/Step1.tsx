@@ -80,13 +80,18 @@ export const Step1 = ({
 }: {
 	onDone: (bookId: string) => void;
 	data?: {
-		defaultValues: BookDetailsSchema;
+		defaultValues?: BookDetailsSchema;
 	};
 }) => {
 	const form = useForm<BookDetailsSchema>({
 		mode: "onSubmit",
 		resolver: zodResolver(bookDetailsSchema),
-		defaultValues: data?.defaultValues || defaultValues,
+		defaultValues: async () => {
+			if (data?.defaultValues) {
+				return data.defaultValues;
+			}
+			return defaultValues;
+		},
 	});
 
 	const [draftLoading, setDraftLoading] = useState(false);

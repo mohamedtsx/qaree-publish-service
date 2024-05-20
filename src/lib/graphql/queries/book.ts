@@ -100,11 +100,13 @@ export const getDraftBookQuery = graphql(`
       isbn
       edition
       categories {
+        _id
         name_en
-        background
       }
       price
       language
+      publishingRights
+      previousPublishingData
     }
   }
 `);
