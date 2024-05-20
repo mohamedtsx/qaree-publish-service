@@ -22,14 +22,14 @@ interface Props<Form extends FieldValues, Name extends FieldPath<Form>> {
 	name: Name;
 	bookId: string;
 	label?: string;
-	defaultValue?: string;
+	url?: string;
 	className?: string;
 }
 
 export function FormUploadImage<
 	Form extends FieldValues,
 	Name extends FieldPath<Form>,
->({ name, label, bookId, defaultValue, className }: Props<Form, Name>) {
+>({ name, label, bookId, url, className }: Props<Form, Name>) {
 	const id = useId();
 	const { control } = useFormContext<Form>();
 
@@ -103,17 +103,27 @@ export function FormUploadImage<
 			)}
 			title="Upload a file (max 2mg)"
 		>
-			<div className="flex  items-center justify-center group  cursor-pointer rounded h-full border border-primary/20 hover:border-primary/50 transition  bg-muted text-muted-foreground">
+			<div className="relative flex  items-center justify-center group  cursor-pointer rounded h-full border border-primary/20 hover:border-primary/50 transition  bg-muted text-muted-foreground">
 				{!selectedFile ? (
-					<div>
+					url ? (
+						<Image
+							src={url}
+							alt={label ?? ""}
+							className="size-full object-contain px-2 object-center"
+							fill
+							sizes="30vw"
+							priority
+						/>
+					) : (
 						<ImageIcon className="size-24 opacity-80 group-hover:opacity-100 transition" />
-					</div>
+					)
 				) : (
 					<Image
-						src={defaultValue || URL.createObjectURL(selectedFile)}
+						src={URL.createObjectURL(selectedFile)}
 						alt={label ?? ""}
 						className="size-full object-contain px-2 object-center"
 						fill
+						sizes="30vw"
 					/>
 				)}
 			</div>
