@@ -24,24 +24,27 @@ const getData = async () => {
 				merchanStatus: getMerchantStatus,
 			};
 		}
+		const { getSignupActionURL } = await fetcher({
+			query: getSignupActionURLQuery,
+			server: true,
+		});
+
+		return {
+			signUpUrl: getSignupActionURL?.actionURL as string,
+		};
 	} catch (error) {
 		if (process.env.NODE_ENV === "development") {
 			console.log(error);
 		}
 	}
-
-	const { getSignupActionURL } = await fetcher({
-		query: getSignupActionURLQuery,
-		server: true,
-	});
-
-	return {
-		signUpUrl: getSignupActionURL?.actionURL as string,
-	};
 };
 
 export default async function Royalties() {
-	const { merchanStatus, signUpUrl } = await getData();
+	const data = await getData();
+	if (!data?.merchanStatus && !data?.signUpUrl) {
+		return <div>There`re development error!</div>;
+	}
+	const { merchanStatus, signUpUrl } = data;
 
 	return (
 		<div className="p-4">
