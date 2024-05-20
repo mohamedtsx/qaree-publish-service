@@ -33,12 +33,7 @@ function SampleMultiSelect({ onClick }: { onClick?: () => void }) {
 
 	return (
 		<Popover>
-			<PopoverTrigger
-				asChild
-				className="justify-start"
-
-				// disabled={!loading && !publishState.sampleItems.length ? true : false}
-			>
+			<PopoverTrigger asChild className="justify-start">
 				<Button
 					variant="outline"
 					className="bg-transparent text-sm"
@@ -69,7 +64,7 @@ function SampleMultiSelect({ onClick }: { onClick?: () => void }) {
 										.map((option) => (
 											<Badge
 												variant="secondary"
-												key={option.value}
+												key={`${option.value}_${option.label}`}
 												className="rounded-sm px-1 font-normal"
 											>
 												{option.label}
