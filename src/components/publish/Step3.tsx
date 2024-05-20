@@ -7,15 +7,7 @@ import { fetcher } from "@/lib/graphql/fetcher";
 import type { ResultOf } from "gql.tada";
 import { Spinner } from "../Spinner";
 import Image from "next/image";
-import Link from "next/link";
-import {
-	cn,
-	formatCurrency,
-	formatDate,
-	formatEdition,
-	formatRate,
-} from "@/lib/utils";
-import { Separator } from "../ui/separator";
+import { cn, formatCurrency, formatDate, formatEdition } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 
 type Book = ResultOf<typeof getDraftBookQuery>;
@@ -30,7 +22,7 @@ export const Step3 = ({
 	};
 }) => {
 	const [loading, setLoading] = useState(false);
-	// const [book, setBook] = useState<ResultOf<typeof getDraftBookQuery>>();
+	const [book, setBook] = useState<ResultOf<typeof getDraftBookQuery>>();
 	const [bookLoading, setBookLoading] = useState(false);
 
 	const publish = async () => {
@@ -45,67 +37,37 @@ export const Step3 = ({
 		toast.success(message);
 	};
 
-	const book: Book = {
-		getBook: {
-			_id: "6608ca9c9bd556631e84b44c",
-			status: "draft",
-			sample: ["num_1", "num_2", "num_3"],
-			cover: {
-				path: "https://res.cloudinary.com/dgg86hhf3/image/upload/v1716225599/book/cover/an4qxffuasbofknbusdf.png",
-			},
-			file: {
-				name: "book/file/6608ca9c9bd556631e84b44c/yymud1vitjuqs4hs3sux.epub",
-				path: "https://res.cloudinary.com/dgg86hhf3/raw/upload/v1716141377/book/file/6608ca9c9bd556631e84b44c/yymud1vitjuqs4hs3sux.epub",
-			},
-			name: "one",
-			description: "one two three",
-			isbn: "",
-			edition: 1,
-			categories: [
-				{
-					_id: "65b375864cdfe73b3d5a1922",
-					name_en: "distributed systems",
-					background: "#186cb0",
-				},
-			],
-			price: 0,
-			language: "en",
-			publishingRights: true,
-			previousPublishingData: "1711852188076",
-		},
-	};
-
-	// useEffect(() => {
-	// 	if (data.bookId) {
-	// 		setPreviewLoading(true);
-	// 		try {
-	// 			fetcher({
-	// 				query: getDraftBookQuery,
-	// 				variables: {
-	// 					bookId: data.bookId,
-	// 				},
-	// 				server: false,
-	// 			}).then((result) => {
-	// 				setPreview(result);
-	// 				setPreviewLoading(false);
-	// 			});
-	// 		} catch (error) {
-	// 			let message = "Somethign went wrong!";
-	// 			if (error instanceof Error) {
-	// 				message = error.message;
-	// 			}
-	// 			setLoading(false);
-	// 			toast.error(message);
-	// 		}
-	// 	}
-	// }, [data.bookId]);
+	useEffect(() => {
+		if (data.bookId) {
+			setBookLoading(true);
+			try {
+				fetcher({
+					query: getDraftBookQuery,
+					variables: {
+						bookId: data.bookId,
+					},
+					server: false,
+				}).then((result) => {
+					setBook(result);
+					setBookLoading(false);
+				});
+			} catch (error) {
+				let message = "Somethign went wrong!";
+				if (error instanceof Error) {
+					message = error.message;
+				}
+				setLoading(false);
+				toast.error(message);
+			}
+		}
+	}, [data.bookId]);
 
 	return (
 		<div className="p-4 space-y-8">
 			<div className="min-h-40">
 				{bookLoading && <Spinner className="size-8 mx-auto border-t-primary" />}
 
-				{book ? <Preview book={book} /> : null}
+				{book?.getBook ? <Preview book={book} /> : null}
 			</div>
 
 			<div className="flex justify-end">
@@ -186,9 +148,9 @@ const Preview = ({ book }: { book: Book }) => {
 					</a>
 				</div>
 			</div>
-			<div>
-				<p className="px-4">{description}</p>
-				<div className="px-8 mt-4 flex gap-4 flex-wrap">
+			<div className="p-4">
+				<p className="max-w-5xl text-balance">{description}</p>
+				<div className="mt-4 flex gap-4 flex-wrap">
 					{categories?.map((el) => (
 						<Badge
 							key={`${el?._id}_${el?.name_en}`}

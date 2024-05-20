@@ -16,6 +16,9 @@ export const formatDate = (value: string) => {
 };
 
 export const formatRate = (value: number) => {
+	if (!value) {
+		return "_";
+	}
 	const formatter = new Intl.NumberFormat("en-US", {
 		minimumFractionDigits: 1,
 		maximumFractionDigits: 2,
@@ -26,6 +29,9 @@ export const formatRate = (value: number) => {
 };
 
 export const formatCurrency = (value: number) => {
+	if (!value) {
+		return "_";
+	}
 	const formatedValue = new Intl.NumberFormat("en-US", {
 		style: "currency",
 		currency: "EGP",
@@ -35,6 +41,9 @@ export const formatCurrency = (value: number) => {
 };
 
 export const formatEdition = (editionNumber: number) => {
+	if (!editionNumber) {
+		return "_";
+	}
 	const lastDigit = editionNumber % 10;
 	const suffix =
 		lastDigit === 1 && editionNumber !== 11

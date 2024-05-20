@@ -1,14 +1,9 @@
-import PublishBookForm from "@/components/PublishBookForm";
-import { PublishFormContextProvider } from "@/context";
-import React from "react";
+import { PublishForm } from "@/components/publish/PublishForm";
 
 function Publish() {
 	return (
-		<div className="container py-16">
-			<PublishFormContextProvider>
-				{/* <PublishBookForm /> */}
-				<div>Mentance...</div>
-			</PublishFormContextProvider>
+		<div className="pt-20">
+			<PublishForm type="new" />
 		</div>
 	);
 }

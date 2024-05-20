@@ -106,9 +106,7 @@ export const PublishForm = (props: Props) => {
 				{currentStep === 3 && (
 					<Step3
 						onDone={() => {
-							if (completedSteps + 1 >= currentStep) {
-								setCompletedSteps(currentStep);
-							}
+							setCompletedSteps(3);
 						}}
 						data={{
 							bookId,
