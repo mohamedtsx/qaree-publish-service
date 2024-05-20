@@ -13,6 +13,7 @@ import FormRadioGroup from "../FormRadioGroup";
 import { FormInput, FormSelect, FormTextare } from "../SmartForm";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
+import { FormDate } from "../FormDate";
 
 const bookDetailsSchema = z.object({
 	name: z
@@ -42,7 +43,7 @@ const bookDetailsSchema = z.object({
 		.number()
 		.min(0, { message: "Enter a valid book price." })
 		.optional(),
-	previousPublishingData: z.string().optional(),
+	previousPublishingData: z.date().optional(),
 });
 
 export const defaultValues = {
@@ -52,7 +53,7 @@ export const defaultValues = {
 	isbn: "",
 	language: "",
 	name: "",
-	previousPublishingData: "",
+	previousPublishingData: new Date(),
 	price: 0,
 	publishingRights: "",
 };
@@ -165,12 +166,14 @@ export const Step1 = ({
 						items={getAllCategories}
 					/>
 				</Group>
+				<Group>
+					<FormDate
+						form={form}
+						name="previousPublishingData"
+						label="Previous Publishing Date"
+					/>
+				</Group>
 
-				<FormTextare
-					form={form}
-					name="previousPublishingData"
-					label="Previous Publishing Data"
-				/>
 				<div className="p-4 rounded-md border border-input">
 					<FormRadioGroup
 						form={form}
@@ -186,6 +189,7 @@ export const Step1 = ({
 						]}
 					/>
 				</div>
+
 				<div className="flex items-center justify-end gap-4 pt-6">
 					<Button
 						type="button"

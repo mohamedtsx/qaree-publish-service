@@ -143,7 +143,9 @@ function getDefaultValue(info: DraftBook, step: CurrentStep) {
 			name: getBook?.name as string,
 			publishingRights: getBook?.publishingRights ? "true" : "false",
 			isbn: getBook?.isbn as string,
-			previousPublishingData: getBook?.previousPublishingData ?? "",
+			// TODO: what is the defalut value should be in case of update?
+			previousPublishingData:
+				new Date(Number(getBook?.previousPublishingData)) ?? new Date(),
 			price: getBook?.price ?? 0,
 		};
 
