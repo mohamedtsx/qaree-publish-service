@@ -27,7 +27,7 @@ const bookContentSchema = z
 		path: ["sample"],
 	});
 
-type BookContentSchema = z.infer<typeof bookContentSchema>;
+export type BookContentSchema = z.infer<typeof bookContentSchema>;
 
 const defaultValues = {
 	coverUploaded: false,
@@ -43,6 +43,7 @@ export const Step2 = ({
 	data: {
 		bookId: string;
 		defaultValues?: BookContentSchema;
+		cover?: string;
 	};
 }) => {
 	const [draftLoading, setDraftLoading] = useState(false);
@@ -107,6 +108,7 @@ export const Step2 = ({
 
 						<FormUploadImage
 							form={form}
+							url={data?.cover}
 							name="coverUploaded"
 							bookId={data.bookId}
 							className="aspect-[6/9] w-full max-w-64 max-sm:mx-auto sm:max-w-48"
