@@ -47,13 +47,21 @@ interface FormElementProps<T extends FieldValues, Name extends FieldPath<T>>
 	extends SharedProps<T> {
 	label?: string;
 	placeholder?: string;
+	disabled?: boolean;
 	items: SelectItems | AsyncItemsFunction;
 }
 
 export function FormMultiSelect<
 	T extends FieldValues,
 	Name extends FieldPath<T>,
->({ form: _, name, items, label, placeholder }: FormElementProps<T, Name>) {
+>({
+	form: _,
+	name,
+	items,
+	label,
+	placeholder,
+	disabled,
+}: FormElementProps<T, Name>) {
 	const form = useFormContext<T>();
 	const [loading, setLoading] = useState(false);
 	const [items2, setItems2] = useState<SelectItems>([]);
@@ -62,17 +70,17 @@ export function FormMultiSelect<
 		const foo = async () => {
 			if (typeof items === "function") {
 				setLoading(true);
-				const value = await items();
-				setItems2(value);
-				if (items2.length > 0 || !value.length) {
-					setLoading(false);
-				}
+				const data = await items();
+				setItems2(data);
+				setLoading(false);
 			} else {
 				setItems2(items);
 			}
 		};
-		foo();
-	}, [items, items2]);
+		if (!disabled) {
+			foo();
+		}
+	}, [items, disabled]);
 
 	return (
 		<FormField
@@ -92,6 +100,7 @@ export function FormMultiSelect<
 											variant="outline"
 											className="bg-transparent text-sm w-full"
 											ref={ref}
+											disabled={disabled}
 										>
 											<Plus className="mr-2 h-4 w-4" />
 											{placeholder}
