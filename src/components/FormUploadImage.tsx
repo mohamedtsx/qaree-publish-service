@@ -54,7 +54,7 @@ export function FormUploadImage<
 			formData.append("cover", file);
 
 			try {
-				const res = await fetch(UPLOAD_FULL_URL.cover(bookId), {
+				await fetch(UPLOAD_FULL_URL.cover(bookId), {
 					method: "POST",
 					headers: {
 						Authorization: `Bearer ${session.data?.user.access_token}`,
