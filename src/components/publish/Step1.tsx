@@ -63,6 +63,9 @@ export type BookDetailsSchema = z.infer<typeof bookDetailsSchema>;
 const getAllCategories = async (): Promise<SelectItems> => {
 	const { getAllCategories } = await fetcher({
 		query: getAllCategoriesQuery,
+		variables: {
+			limit: 40,
+		},
 		server: false,
 		protectid: false,
 	});

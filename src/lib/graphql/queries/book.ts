@@ -1,8 +1,8 @@
 import { graphql } from "gql.tada";
 
 export const getAllCategoriesQuery = graphql(`
-  query getAllCategories {
-    getAllCategories {
+  query getAllCategories($limit: Int, $page: Int) {
+    getAllCategories(limit: $limit, page: $page) {
       categories {
         _id,
         name_en,
