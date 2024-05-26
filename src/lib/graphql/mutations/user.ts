@@ -88,3 +88,20 @@ export const loginWithGoogleMutation = graphql(`
       }
   }
 `);
+
+export const deleteAccountMutation = graphql(`
+  mutation deleteAccount {
+    deleteAccount {
+      success
+      message
+    }
+  }
+`);
+
+export const updateUserMutation = graphql(`
+  mutation updateUser($name: String!, $bio: String!, $oldPassword: String!, $newPassword: String!) {
+    updateUser(name: $name, bio: $bio ,oldPassword: $oldPassword, newPassword: $newPassword) {
+      _id
+    }
+  }
+`);
