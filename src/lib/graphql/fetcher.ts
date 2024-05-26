@@ -41,7 +41,8 @@ export async function fetcher<
 }: TypeOptions<T>): Promise<ResultOf<T>> {
 	let res: Response;
 
-	const session = await getServerSession(authOptions);
+	const session =
+		!protectid && !server ? null : await getServerSession(authOptions);
 	if (!session && protectid) {
 		redirect(authOptions.pages?.signIn || "/signin");
 	}

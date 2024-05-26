@@ -4,7 +4,7 @@ import type { getDraftBookQuery } from "@/lib/graphql/queries";
 import { cn } from "@/lib/utils";
 import type { ResultOf } from "gql.tada";
 import { Check } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { type BookDetailsSchema, Step1 } from "./Step1";
 import { type BookContentSchema, Step2 } from "./Step2";
 import { Step3 } from "./Step3";
@@ -70,16 +70,22 @@ export const PublishForm = (props: Props) => {
 			<div className="max-w-7xl mx-auto">
 				{currentStep === 1 && (
 					<Step1
-						onDone={(bookId: string) => {
-							if (completedSteps + 1 > currentStep) {
-								setCompletedSteps(currentStep);
-							}
-							setCurrentStep(2);
-							setBookId(bookId);
-						}}
+						onDone={useCallback(
+							(bookId: string) => {
+								if (completedSteps + 1 > currentStep) {
+									setCompletedSteps(currentStep);
+								}
+								setCurrentStep(2);
+								setBookId(bookId);
+							},
+							[completedSteps, currentStep],
+						)}
 						data={{
 							defaultValues: isDraft
-								? getDefaultValue(props.draftBook, 1)
+								? useMemo(
+										() => getDefaultValue(props.draftBook, 1),
+										[props.draftBook],
+								  )
 								: undefined,
 						}}
 					/>
