@@ -22,7 +22,7 @@ const getData = async () => {
 };
 
 export default async function Account() {
-	const { name, avatar, bio, createdAt, email, updatedAt } = await getData();
+	const { name, avatar, bio } = await getData();
 
 	return (
 		<div className="space-y-12 max-w-6xl mx-auto py-20 ">

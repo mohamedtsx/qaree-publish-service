@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 function Layout({ children }: { children: ReactNode }) {
 	return (
 		<div className="h-svh flex">
-			<SideNav />
+			{/* <SideNav /> */}
 
 			<div className="flex-1 flex flex-col">
-				<Header />
+				{/* <Header /> */}
 				<div className="flex-1 p-4 pb-20 overflow-y-auto no-scrollbar">
 					{children}
 				</div>

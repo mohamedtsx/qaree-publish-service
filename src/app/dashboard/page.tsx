@@ -13,7 +13,7 @@ const getData = async () => {
 };
 
 export default async function Dashboard() {
-	const { name, email, avatar } = await getData();
+	const { name } = await getData();
 
 	return (
 		<div className="container py-14">

@@ -28,9 +28,7 @@ const getData = async () => {
 };
 
 async function UserNav() {
-	const user = await getData();
-
-	const { name, email, avatar } = user;
+	const { name, email, avatar } = await getData();
 
 	return (
 		<DropdownMenu>

@@ -23,7 +23,6 @@ function DeleteAccountAlert() {
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(false);
 	const router = useRouter();
-	const { update } = useSession();
 
 	const onSubmit = async () => {
 		setLoading(true);

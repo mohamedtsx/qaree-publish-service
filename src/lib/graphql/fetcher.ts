@@ -4,7 +4,7 @@ import type { ResultOf, TadaDocumentNode, VariablesOf } from "gql.tada";
 import { FetcherError, createCustomError } from "./errors";
 import type { ApiResponse } from "./types";
 
-import { getServerSession } from "next-auth";
+import { Session, getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { BACKEND_URL } from ".";
 import { authOptions } from "../authOptions";
@@ -41,15 +41,16 @@ export async function fetcher<
 }: TypeOptions<T>): Promise<ResultOf<T>> {
 	let res: Response;
 	let processRedirect = false;
+
+	const session = await getServerSession(authOptions);
+	if (!session && protectid) {
+		processRedirect = true;
+		//@ts-ignore this will case type error when redirect
+		return;
+	}
+
 	try {
 		if (server) {
-			const session = await getServerSession(authOptions);
-			if (!session && protectid) {
-				processRedirect = true;
-				//@ts-ignore this will case type error when redirect
-				return;
-			}
-
 			res = await fetch(BACKEND_URL, {
 				method: "POST",
 				headers: {
