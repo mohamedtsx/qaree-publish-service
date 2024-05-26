@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { z } from "zod";
 
-import { uploadAdminAvatar } from "@/app/actions";
+import { uploadUserAvatar } from "@/app/actions";
 import { SubmitButton } from "@/components/SmartForm";
 import { Form } from "@/components/ui/form";
 
@@ -48,7 +48,7 @@ export function UpdateAvatar({
 		const formData = new FormData();
 		formData.append("avatar", avatar);
 
-		const { success, message } = await uploadAdminAvatar(formData);
+		const { success, message } = await uploadUserAvatar(formData);
 		if (!success) {
 			return toast.error(message);
 		}

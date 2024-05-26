@@ -75,3 +75,19 @@ export const getMerchantStatusQuery = graphql(`
     }
   }
 `);
+
+export const getAccountInfo = graphql(`
+  query userInfo {
+    userInfo {
+      _id
+      name,
+      bio
+      email,
+      avatar {
+        path
+      }
+      updatedAt
+      createdAt
+    }
+  }
+`);

@@ -17,6 +17,7 @@ import {
 	resendValidatingOTPMutation,
 	resetPasswordMutation,
 	signUpMutation,
+	updateAccountMutation,
 	validateResetPasswordOTPMutation,
 	verifyAccountMutation,
 } from "@/lib/graphql/mutations";
@@ -24,7 +25,11 @@ import { addBookDetailsMutation } from "@/lib/graphql/mutations";
 import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 import { tags } from "@/lib/graphql/tags";
 import type { RegisterData, SelectItems } from "@/lib/graphql/types";
-import { type EditBookType, registerFormSchema } from "@/schema";
+import {
+	type EditBookType,
+	type UpdateAccountSchema,
+	registerFormSchema,
+} from "@/schema";
 import type { ResultOf } from "gql.tada";
 import { getServerSession } from "next-auth";
 import { revalidateTag } from "next/cache";
@@ -615,7 +620,7 @@ export const deleteAccountAction = async (): Promise<ActionState> => {
 	}
 };
 
-export const uploadAdminAvatar = async (
+export const uploadUserAvatar = async (
 	formData: FormData,
 ): Promise<ActionState> => {
 	const session = await getServerSession(authOptions);
@@ -646,6 +651,31 @@ export const uploadAdminAvatar = async (
 	} catch (error) {
 		const message = getErrorMessage(error);
 
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const updateAccountAction = async (
+	variables: UpdateAccountSchema,
+): Promise<ActionState> => {
+	try {
+		await fetcher({
+			query: updateAccountMutation,
+			variables,
+			server: true,
+		});
+
+		revalidateTag(tags.user);
+
+		return {
+			success: true,
+			message: "Your account data has been updated",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
 		return {
 			success: false,
 			message,
