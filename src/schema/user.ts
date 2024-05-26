@@ -40,7 +40,8 @@ export const resetPasswordFormSchema = z
 export const updateAccountSchema = z.object({
 	name: z
 		.string({ required_error: errors.name })
-		.min(3, { message: errors.name }),
+		.min(3, { message: errors.name })
+		.optional(),
 	bio: z
 		.string()
 		.min(1, {
@@ -49,13 +50,10 @@ export const updateAccountSchema = z.object({
 		.min(10, {
 			message: "Enter 10 characters at least",
 		})
-		.nullable(),
-	oldPassword: z.string().min(1, {
-		message: errors.oldPassword,
-	}),
-	newPassword: z.string({ required_error: errors.newPassword }).min(8, {
-		message: invalid.newPassword,
-	}),
+		.nullable()
+		.optional(),
+	oldPassword: z.string().optional(),
+	newPassword: z.string().optional(),
 });
 
 export type UpdateAccountSchema = z.infer<typeof updateAccountSchema>;

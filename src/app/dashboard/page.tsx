@@ -1,11 +1,19 @@
-import { getCurrentUser } from "@/lib/authOptions";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { getAccountInfo } from "@/lib/graphql/queries";
+import { tags } from "@/lib/graphql/tags";
+
+const getData = async () => {
+	const { userInfo } = await fetcher({
+		query: getAccountInfo,
+		server: true,
+		tags: [tags.user],
+	});
+
+	return userInfo as NonNullable<typeof userInfo>;
+};
 
 export default async function Dashboard() {
-	const user = await getCurrentUser();
-
-	if (!user) return;
-
-	const { name } = user;
+	const { name, email, avatar } = await getData();
 
 	return (
 		<div className="container py-14">

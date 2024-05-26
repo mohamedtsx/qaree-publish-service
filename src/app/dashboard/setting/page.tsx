@@ -22,31 +22,40 @@ const getData = async () => {
 };
 
 export default async function Account() {
-	const { name, avatar, bio } = await getData();
+	const { name, avatar, bio, createdAt, email, updatedAt } = await getData();
 
 	return (
-		<div className="space-y-8">
+		<div className="space-y-12 max-w-6xl mx-auto py-20 ">
 			<header>
-				<h1 className="text-2xl sm:text-3xl font-medium mb-2">Admin Profile</h1>
+				<h2
+					className="text-2xl sm:text-3xl font-medium mb-2 capitalize"
+					dir="auto"
+				>
+					{name}
+				</h2>
 				<p className="max-sm:text-sm max-w-5xl text-balance text-muted-foreground">
-					Welcome to your Admin Profile dashboard. Here, you wield full control
-					over your digital identity. Customize your avatar to reflect your
-					unique personality and update essential account details such as your
-					username and password.
+					{bio ? (
+						bio
+					) : (
+						<>
+							Welcome to your Publish Profile. Here, you wield full control over
+							your digital identity. Customize your avatar to reflect your
+							unique personality and update essential account details such as
+							your bio, username and password.
+						</>
+					)}
 				</p>
 			</header>
 			<Separator />
-			<div className="grid 2xl:grid-cols-[1fr_0.5fr] gap-4">
+			<div className="space-y-8">
 				<UserUpdateAccount oldName={name as string} bio={bio} />
-				<div className="flex flex-col gap-4">
-					<UpdateAvatar
-						avatar={{
-							path: avatar?.path ?? "",
-							name: name ?? "Qaree",
-						}}
-					/>
-					<DeleteAccount />
-				</div>
+				<UpdateAvatar
+					avatar={{
+						path: avatar?.path ?? "",
+						name: name ?? "Qaree",
+					}}
+				/>
+				<DeleteAccount />
 			</div>
 		</div>
 	);

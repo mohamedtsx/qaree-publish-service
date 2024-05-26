@@ -13,7 +13,7 @@ import { type UpdateAccountSchema, updateAccountSchema } from "@/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { FormInput, SubmitButton } from "./SmartForm";
+import { FormInput, FormTextare, SubmitButton } from "./SmartForm";
 import { Form } from "./ui/form";
 
 export function UserUpdateAccount({
@@ -58,6 +58,12 @@ export function UserUpdateAccount({
 
 					<CardContent className="space-y-5">
 						<FormInput form={form} name="name" label="Name" />
+						<FormTextare
+							form={form}
+							name="bio"
+							label="Bio"
+							placeholder="Tell us about yourself"
+						/>
 						<FormInput
 							form={form}
 							name="oldPassword"

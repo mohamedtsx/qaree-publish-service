@@ -1,5 +1,5 @@
 export type SVGIcons = Record<string, React.FC<React.SVGProps<SVGSVGElement>>>;
-import { Trash2 } from "lucide-react";
+import { Trash2, Settings } from "lucide-react";
 
 export const Icons = {
 	moon: () => (
@@ -223,6 +223,7 @@ export const Icons = {
 		</svg>
 	),
 	trash2: (props) => <Trash2 {...props} />,
+	settings: (props) => <Settings {...props} />,
 } satisfies SVGIcons;
 
 export type IconKey = keyof typeof Icons;
