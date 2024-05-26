@@ -7,6 +7,7 @@ import { FetcherError, getErrorMessage } from "@/lib/graphql/errors";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	addBookSampleMutation,
+	deleteAccountMutation,
 	editBookMutation,
 	forgetPasswordMutation,
 	moveBookFromRecycleBinMutation,
@@ -585,5 +586,31 @@ export const getBookEPubContentAction = async (
 		return items;
 	} catch (_error) {
 		return [];
+	}
+};
+
+export const deleteAccountAction = async (): Promise<ActionState> => {
+	try {
+		const { deleteAccount } = await fetcher({
+			query: deleteAccountMutation,
+			server: true,
+		});
+
+		if (!deleteAccount?.success) {
+			throw Error(deleteAccount?.message || "Something went wrong!");
+		}
+
+		revalidateTag(tags.user);
+
+		return {
+			success: true,
+			message: deleteAccount.message || "Account successfully deleted",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
+		return {
+			success: false,
+			message,
+		};
 	}
 };
