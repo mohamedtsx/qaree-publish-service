@@ -4,7 +4,7 @@ import type { ResultOf, TadaDocumentNode, VariablesOf } from "gql.tada";
 import { FetcherError, createCustomError } from "./errors";
 import type { ApiResponse } from "./types";
 
-import { Session, getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { BACKEND_URL } from ".";
 import { authOptions } from "../authOptions";
@@ -40,13 +40,10 @@ export async function fetcher<
 	tags,
 }: TypeOptions<T>): Promise<ResultOf<T>> {
 	let res: Response;
-	let processRedirect = false;
 
 	const session = await getServerSession(authOptions);
 	if (!session && protectid) {
-		processRedirect = true;
-		//@ts-ignore this will case type error when redirect
-		return;
+		redirect(authOptions.pages?.signIn || "/signin");
 	}
 
 	try {
@@ -98,10 +95,6 @@ export async function fetcher<
 				  ? error
 				  : "Unknown error",
 		);
-	}
-
-	if (processRedirect) {
-		redirect(authOptions.pages?.signIn || "/signin");
 	}
 
 	const resData = (await res.json()) as ApiResponse<ResultOf<T>>;
