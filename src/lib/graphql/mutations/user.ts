@@ -99,7 +99,7 @@ export const deleteAccountMutation = graphql(`
 `);
 
 export const updateAccountMutation = graphql(`
-  mutation updateUser($name: String!, $bio: String!, $oldPassword: String!, $newPassword: String!) {
+  mutation updateUser($name: String, $bio: String, $oldPassword: String, $newPassword: String) {
     updateUser(name: $name, bio: $bio ,oldPassword: $oldPassword, newPassword: $newPassword) {
       _id
     }
