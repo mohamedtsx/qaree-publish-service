@@ -614,3 +614,41 @@ export const deleteAccountAction = async (): Promise<ActionState> => {
 		};
 	}
 };
+
+export const uploadAdminAvatar = async (
+	formData: FormData,
+): Promise<ActionState> => {
+	const session = await getServerSession(authOptions);
+
+	try {
+		if (!session?.user) {
+			throw Error("You must be signed in to perform this action");
+		}
+
+		const token = session.user.access_token;
+
+		await fetch(UPLOAD_FULL_URL.avatar, {
+			method: "POST",
+			headers: {
+				accept: "application/json",
+				contentType: "multipart/form-data",
+				Authorization: `Bearer ${token}`,
+			},
+			body: formData,
+		});
+
+		revalidateTag(tags.user);
+
+		return {
+			success: true,
+			message: " Your avatar has been updated.",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
+
+		return {
+			success: false,
+			message,
+		};
+	}
+};
