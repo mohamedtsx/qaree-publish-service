@@ -7,6 +7,7 @@ import { FetcherError, getErrorMessage } from "@/lib/graphql/errors";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
 	addBookSampleMutation,
+	deleteAccountMutation,
 	editBookMutation,
 	forgetPasswordMutation,
 	moveBookFromRecycleBinMutation,
@@ -16,6 +17,7 @@ import {
 	resendValidatingOTPMutation,
 	resetPasswordMutation,
 	signUpMutation,
+	updateAccountMutation,
 	validateResetPasswordOTPMutation,
 	verifyAccountMutation,
 } from "@/lib/graphql/mutations";
@@ -23,7 +25,11 @@ import { addBookDetailsMutation } from "@/lib/graphql/mutations";
 import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 import { tags } from "@/lib/graphql/tags";
 import type { RegisterData, SelectItems } from "@/lib/graphql/types";
-import { type EditBookType, registerFormSchema } from "@/schema";
+import {
+	type EditBookType,
+	type UpdateAccountSchema,
+	registerFormSchema,
+} from "@/schema";
 import type { ResultOf } from "gql.tada";
 import { getServerSession } from "next-auth";
 import { revalidateTag } from "next/cache";
@@ -585,5 +591,94 @@ export const getBookEPubContentAction = async (
 		return items;
 	} catch (_error) {
 		return [];
+	}
+};
+
+export const deleteAccountAction = async (): Promise<ActionState> => {
+	try {
+		const { deleteAccount } = await fetcher({
+			query: deleteAccountMutation,
+			server: true,
+		});
+
+		if (!deleteAccount?.success) {
+			throw Error(deleteAccount?.message || "Something went wrong!");
+		}
+
+		revalidateTag(tags.user);
+
+		return {
+			success: true,
+			message: deleteAccount.message || "Account successfully deleted",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const uploadUserAvatar = async (
+	formData: FormData,
+): Promise<ActionState> => {
+	const session = await getServerSession(authOptions);
+
+	try {
+		if (!session?.user) {
+			throw Error("You must be signed in to perform this action");
+		}
+
+		const token = session.user.access_token;
+
+		await fetch(UPLOAD_FULL_URL.avatar, {
+			method: "POST",
+			headers: {
+				accept: "application/json",
+				contentType: "multipart/form-data",
+				Authorization: `Bearer ${token}`,
+			},
+			body: formData,
+		});
+
+		revalidateTag(tags.user);
+
+		return {
+			success: true,
+			message: " Your avatar has been updated.",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
+
+		return {
+			success: false,
+			message,
+		};
+	}
+};
+
+export const updateAccountAction = async (
+	variables: UpdateAccountSchema,
+): Promise<ActionState> => {
+	try {
+		await fetcher({
+			query: updateAccountMutation,
+			variables,
+			server: true,
+		});
+
+		revalidateTag(tags.user);
+
+		return {
+			success: true,
+			message: "Your account data has been updated",
+		};
+	} catch (error) {
+		const message = getErrorMessage(error);
+		return {
+			success: false,
+			message,
+		};
 	}
 };

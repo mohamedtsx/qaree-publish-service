@@ -11,14 +11,24 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { getCurrentUser } from "@/lib/authOptions";
-import { signOut } from "next-auth/react";
+import { fetcher } from "@/lib/graphql/fetcher";
+import { getAccountInfo } from "@/lib/graphql/queries";
+import { tags } from "@/lib/graphql/tags";
+import Link from "next/link";
 import { Button } from "./ui/button";
 
-async function UserNav() {
-	const user = await getCurrentUser();
+const getData = async () => {
+	const { userInfo } = await fetcher({
+		query: getAccountInfo,
+		server: true,
+		tags: [tags.user],
+	});
 
-	const { name, email, avatar } = user;
+	return userInfo as NonNullable<typeof userInfo>;
+};
+
+async function UserNav() {
+	const { name, email, avatar } = await getData();
 
 	return (
 		<DropdownMenu>
@@ -26,7 +36,9 @@ async function UserNav() {
 				<Button variant="ghost" className="relative size-8 rounded-full">
 					<Avatar className="size-8">
 						<AvatarImage src={avatar?.path || ""} alt={`@${name}`} />
-						<AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
+						<AvatarFallback>
+							{name ? name[0].toUpperCase() : "Q"}
+						</AvatarFallback>
 					</Avatar>
 				</Button>
 			</DropdownMenuTrigger>
@@ -42,14 +54,11 @@ async function UserNav() {
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem>
-						Profile
-						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-					</DropdownMenuItem>
-
-					<DropdownMenuItem>
-						Account Settings
-						<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+					<DropdownMenuItem asChild>
+						<Link href={"/dashboard/setting"}>
+							Account Settings
+							<DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+						</Link>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />

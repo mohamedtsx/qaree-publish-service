@@ -40,14 +40,13 @@ export async function fetcher<
 	tags,
 }: TypeOptions<T>): Promise<ResultOf<T>> {
 	let res: Response;
-	let processRedirect = false;
+
+	const session = server ? await getServerSession(authOptions) : null;
+
 	try {
 		if (server) {
-			const session = await getServerSession(authOptions);
 			if (!session && protectid) {
-				processRedirect = true;
-				//@ts-ignore this will case type error when redirect
-				return;
+				throw Error("Authentication Error");
 			}
 
 			res = await fetch(BACKEND_URL, {
@@ -97,10 +96,6 @@ export async function fetcher<
 				  ? error
 				  : "Unknown error",
 		);
-	}
-
-	if (processRedirect) {
-		redirect(authOptions.pages?.signIn || "/signin");
 	}
 
 	const resData = (await res.json()) as ApiResponse<ResultOf<T>>;

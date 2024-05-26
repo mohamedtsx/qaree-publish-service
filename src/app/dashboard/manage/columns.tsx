@@ -83,7 +83,7 @@ export const columns: Array<ColumnDef<Book>> = [
 			const bookId = row.original._id;
 
 			return (
-				<div className="grid grid-cols-3 gap-4 w-fit">
+				<div className="grid grid-cols-3 gap-4 w-fit min-w-32">
 					{row.original.status === "draft" ? (
 						<Link
 							href={`/dashboard/publish/${bookId}`}

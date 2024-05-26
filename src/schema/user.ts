@@ -15,6 +15,18 @@ export const loginFormSchema = z.object({
 	password: z.string().min(3),
 });
 
+const errors = {
+	name: "Enter your name",
+	oldPassword: "Enter the old password",
+	newPassword: "Enter the new password",
+	avatar: "Upload avatar image",
+};
+
+const invalid = {
+	name: "Invalid name",
+	newPassword: "New password is invalid",
+};
+
 export const resetPasswordFormSchema = z
 	.object({
 		password: z.string().min(8),
@@ -24,6 +36,27 @@ export const resetPasswordFormSchema = z
 		message: "The passwords did not match",
 		path: ["confirm_password"],
 	});
+
+export const updateAccountSchema = z.object({
+	name: z
+		.string({ required_error: errors.name })
+		.min(3, { message: errors.name })
+		.optional(),
+	bio: z
+		.string()
+		.min(1, {
+			message: "Enter the bio",
+		})
+		.min(10, {
+			message: "Enter 10 characters at least",
+		})
+		.nullable()
+		.optional(),
+	oldPassword: z.string().optional(),
+	newPassword: z.string().optional(),
+});
+
+export type UpdateAccountSchema = z.infer<typeof updateAccountSchema>;
 
 export type ResetPasswordSchemaType = z.infer<typeof resetPasswordFormSchema>;
 export type RegisterSchemaType = z.infer<typeof registerFormSchema>;

@@ -36,6 +36,11 @@ export const navItems: NavItemType[] = [
 		icon: "trash2",
 	},
 	{
+		label: "Account Setting",
+		href: "/dashboard/setting",
+		icon: "settings",
+	},
+	{
 		label: "Help",
 		href: "/dashboard/help",
 		icon: "help",
