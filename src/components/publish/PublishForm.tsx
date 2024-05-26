@@ -29,15 +29,15 @@ const steps: Array<{
 	order: CurrentStep;
 }> = [
 	{
-		label: "Step Label One",
+		label: "Add Book Details",
 		order: 1,
 	},
 	{
-		label: "Step Label Two",
+		label: "Upload Content",
 		order: 2,
 	},
 	{
-		label: "Step Label Three",
+		label: "Publish",
 		order: 3,
 	},
 ];
