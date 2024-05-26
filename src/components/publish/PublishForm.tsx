@@ -60,6 +60,51 @@ export const PublishForm = (props: Props) => {
 		}
 	}, [isDraft, props]);
 
+	const onOneDone = useCallback(
+		(bookId: string) => {
+			if (completedSteps + 1 > currentStep) {
+				setCompletedSteps(currentStep);
+			}
+			setCurrentStep(2);
+			setBookId(bookId);
+		},
+		[completedSteps, currentStep],
+	);
+
+	const onTwoDone = useCallback(() => {
+		if (completedSteps + 1 >= currentStep) {
+			setCompletedSteps(currentStep);
+		}
+		setCurrentStep(3);
+	}, [completedSteps, currentStep]);
+
+	const onThreeDone = useCallback(() => {
+		setCompletedSteps(3);
+	}, []);
+
+	const oneDefaultValues = useMemo(
+		() => (isDraft ? getDefaultValue(props.draftBook, 1) : undefined),
+		[isDraft, props],
+	);
+
+	const twoData = useMemo(
+		() => ({
+			bookId,
+			defaultValues: isDraft ? getDefaultValue(props.draftBook, 2) : undefined,
+			cover: isDraft
+				? (props.draftBook.getBook?.cover?.path as string)
+				: undefined,
+		}),
+		[bookId, props, isDraft],
+	);
+
+	const threeData = useMemo(
+		() => ({
+			bookId,
+		}),
+		[bookId],
+	);
+
 	return (
 		<div>
 			<StepsNavigator
@@ -70,55 +115,14 @@ export const PublishForm = (props: Props) => {
 			<div className="max-w-7xl mx-auto">
 				{currentStep === 1 && (
 					<Step1
-						onDone={useCallback(
-							(bookId: string) => {
-								if (completedSteps + 1 > currentStep) {
-									setCompletedSteps(currentStep);
-								}
-								setCurrentStep(2);
-								setBookId(bookId);
-							},
-							[completedSteps, currentStep],
-						)}
+						onDone={onOneDone}
 						data={{
-							defaultValues: isDraft
-								? useMemo(
-										() => getDefaultValue(props.draftBook, 1),
-										[props.draftBook],
-								  )
-								: undefined,
+							defaultValues: oneDefaultValues,
 						}}
 					/>
 				)}
-				{currentStep === 2 && (
-					<Step2
-						onDone={() => {
-							if (completedSteps + 1 >= currentStep) {
-								setCompletedSteps(currentStep);
-							}
-							setCurrentStep(3);
-						}}
-						data={{
-							bookId,
-							defaultValues: isDraft
-								? getDefaultValue(props.draftBook, 2)
-								: undefined,
-							cover: isDraft
-								? (props.draftBook.getBook?.cover?.path as string)
-								: undefined,
-						}}
-					/>
-				)}
-				{currentStep === 3 && (
-					<Step3
-						onDone={() => {
-							setCompletedSteps(3);
-						}}
-						data={{
-							bookId,
-						}}
-					/>
-				)}
+				{currentStep === 2 && <Step2 onDone={onTwoDone} data={twoData} />}
+				{currentStep === 3 && <Step3 onDone={onThreeDone} data={threeData} />}
 			</div>
 		</div>
 	);

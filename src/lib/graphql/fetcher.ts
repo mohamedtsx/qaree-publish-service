@@ -41,14 +41,14 @@ export async function fetcher<
 }: TypeOptions<T>): Promise<ResultOf<T>> {
 	let res: Response;
 
-	const session =
-		!protectid && !server ? null : await getServerSession(authOptions);
-	if (!session && protectid) {
-		redirect(authOptions.pages?.signIn || "/signin");
-	}
+	const session = server ? await getServerSession(authOptions) : null;
 
 	try {
 		if (server) {
+			if (!session && protectid) {
+				throw Error("Authentication Error");
+			}
+
 			res = await fetch(BACKEND_URL, {
 				method: "POST",
 				headers: {
