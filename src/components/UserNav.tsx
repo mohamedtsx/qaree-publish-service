@@ -11,11 +11,11 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Button } from "./ui/button";
-import { getAccountInfo } from "@/lib/graphql/queries";
 import { fetcher } from "@/lib/graphql/fetcher";
+import { getAccountInfo } from "@/lib/graphql/queries";
 import { tags } from "@/lib/graphql/tags";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 const getData = async () => {
 	const { userInfo } = await fetcher({

@@ -1,11 +1,11 @@
 import { DeleteAccount } from "@/components/DeleteAccount";
 import { UpdateAvatar } from "@/components/UpdateAvatar";
+import { UserUpdateAccount } from "@/components/UserUpdateForm";
 import { Separator } from "@/components/ui/separator";
-import { tags } from "@/lib/graphql/tags";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { getAccountInfo } from "@/lib/graphql/queries";
+import { tags } from "@/lib/graphql/tags";
 import type { Metadata } from "next";
-import { UserUpdateAccount } from "@/components/UserUpdateForm";
 
 export const metadata: Metadata = {
 	title: "Setting",

@@ -1,5 +1,5 @@
 export type SVGIcons = Record<string, React.FC<React.SVGProps<SVGSVGElement>>>;
-import { Trash2, Settings } from "lucide-react";
+import { Settings, Trash2 } from "lucide-react";
 
 export const Icons = {
 	moon: () => (
