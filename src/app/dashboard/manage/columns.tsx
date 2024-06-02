@@ -5,8 +5,9 @@ import { EditBookDialog } from "@/components/EditBookDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { BookUp } from "lucide-react";
+import { BookUp, ImageIcon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export type Book = {
 	_id: string;
@@ -32,6 +33,29 @@ export type Book = {
 };
 
 export const columns: Array<ColumnDef<Book>> = [
+	{
+		accessorKey: "cover",
+		header: "Cover",
+		cell({ row }) {
+			const data = row.original.cover;
+
+			return (
+				<div className="w-24 aspect-[6/9] bg-muted flex justify-center items-center m-2 max-md:hidden">
+					{data ? (
+						<Image
+							src={data.path}
+							className="w-full"
+							width={60}
+							height={90}
+							alt={row.original.name}
+						/>
+					) : (
+						<ImageIcon className="size-12 text-muted-foreground" />
+					)}
+				</div>
+			);
+		},
+	},
 	{
 		accessorKey: "name",
 		header: "Name",
