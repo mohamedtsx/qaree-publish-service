@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 function Layout({ children }: { children: ReactNode }) {
 	return (
-		<div className="h-svh flex">
+		<div className="h-screen flex">
 			<SideNav />
 
 			<div className="flex-1 flex flex-col">
