@@ -19,8 +19,8 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="no-scrollbar" suppressHydrationWarning>
-			<body className={cn("flex h-full antialiased", inter.className)}>
+		<html lang="en" className="h-full no-scrollbar" suppressHydrationWarning>
+			<body className={cn("flex  h-full antialiased", inter.className)}>
 				<Providers>
 					<div className="flex-1">{children}</div>
 				</Providers>
