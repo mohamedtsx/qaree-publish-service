@@ -1,3 +1,4 @@
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -11,13 +12,19 @@ import {
 import { fetcher } from "@/lib/graphql/fetcher";
 import { getBookQuery } from "@/lib/graphql/queries";
 import type { DeepNonNullable } from "@/lib/graphql/types";
+import { siteConfig } from "@/lib/site";
 import {
 	formatCurrency,
 	formatDate,
 	formatEdition,
 	formatRate,
 } from "@/lib/utils";
-import { Calendar, ImageIcon } from "lucide-react";
+import {
+	ArrowRightIcon,
+	Calendar,
+	ImageIcon,
+	TriangleAlertIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -41,98 +48,166 @@ const getBook = async (bookId: string) => {
 };
 
 export default async function BookPage({ params: { id } }: Props) {
-	const book = await getBook(id);
+	// const book = await getBook(id);
+	const book = {
+		_id: "6608c9539bd556631e84b3dc",
+		sample: ["num_1"],
+		cover: {
+			path: "https://res.cloudinary.com/dgg86hhf3/image/upload/v1716194664/book/cover/vobzmvm5pqkuyignduzf.png",
+		},
+		file: {
+			path: "https://res.cloudinary.com/dgg86hhf3/raw/upload/v1716191811/book/file/6608c9539bd556631e84b3dc/zucil8urlorxdutsyoo4.epub",
+		},
+		status: "rejected",
+		createdAt: "1711851859077",
+		updatedAt: "1716572131223",
+		publishionDate: null,
+		previousPublishingData: "1711851859076",
+		rejectionReasons: "Sorry, you are not the owner of this book",
+		name: "one v2",
+		description: "one two three",
+		isbn: "",
+		edition: 1,
+		publishingRights: true,
+		categories: [{ name_en: "distributed systems", background: "#186cb0" }],
+		avgRate: 0,
+		price: 0,
+		language: "en",
+	};
 
 	const {
 		cover: { path: cover_path },
-		// createdAt,
 		file: { path: file_path },
 		name,
-		// previousPublishingData,
-		rejectionReasons, // nullable
+		previousPublishingData,
+		rejectionReasons,
 		description,
 		categories,
-		// edition,
-		// isbn,
-		// language,
-		// price,
-		// publishingRights,
+		edition,
+		isbn,
+		language,
+		price,
+		publishingRights,
 		status,
-		// updatedAt,
+		updatedAt,
 		publishionDate,
-		// avgRate,
+		avgRate,
 		sample,
 	} = book;
 
+	console.log(book);
+
 	return (
-		<div className="flex max-md:mx-auto max-md:flex-col gap-4 items-start">
-			<div className="w-full md:max-w-lg space-y-5">
-				<div className="sm:p-4 rounded-md bg-muted  flex items-center justify-center aspect-[6/9]">
-					{cover_path ? (
-						<Image
-							src={cover_path}
-							alt={name ?? "book"}
-							width={584}
-							height={932}
-							className="max-sm:rounded-md"
-						/>
-					) : (
-						<ImageIcon className="sm:size-24 text-muted-foreground" />
-					)}
-				</div>
-				<Card>
-					<CardHeader>
-						<CardTitle>About The Book</CardTitle>
-					</CardHeader>
-					<CardContent className="text-muted-foreground text-balance max-w-prose">
-						{description}
-					</CardContent>
-					<CardFooter className="flex gap-2 flex-wrap">
-						{categories?.map((el) => (
-							<Badge
-								key={el?.name_en}
-								style={{
-									backgroundColor: el?.background,
-								}}
+		<div className="bg-muted h-full">
+			<div className="flex items-center justify-between py-2 px-1">
+				<h2 className="capitalize text-2xl">{name}</h2>
+				<Badge variant={"notion_incomplete"}>{status}</Badge>
+			</div>
+
+			<Alert variant="destructive">
+				<div className="flex items-start gap-4">
+					<TriangleAlertIcon className="size-5" />
+					<div className="flex-1 text-base">
+						<AlertTitle>Book Rejected</AlertTitle>
+						<AlertDescription className="text-base ">
+							We're sorry, but your book "{name}" has been rejected. The content
+							did not meet our publishing guidelines.{" "}
+							<details className="inline-block peer">
+								<summary className="list-none hover:underline   cursor-pointer">
+									View rejection reason
+								</summary>
+							</details>
+							<p className="hidden peer-open:block mt-4 border-t border-destructive pt-4 ">
+								{rejectionReasons}
+							</p>
+						</AlertDescription>
+
+						<div className="mt-4 flex items-center gap-2">
+							<Link
+								href={siteConfig.links.whatsapp_support}
+								className="text-sm font-medium text-destructive hover:underline"
+								prefetch={false}
+								target="_blank"
 							>
-								{el?.name_en}
-							</Badge>
-						))}
-					</CardFooter>
-				</Card>
-			</div>
-			<div className="space-y-5 w-full">
-				<div className="max-sm:hidden text-muted-foreground flex items-center gap-2">
-					<span>{formatDate(publishionDate)}</span>
-					<Calendar />
+								Contact support
+							</Link>
+							<ArrowRightIcon className="h-4 w-4" />
+						</div>
+					</div>
 				</div>
-			</div>
-			<Card>
-				<CardHeader>
-					<CardTitle>Book Information</CardTitle>
-					<CardDescription>
-						description -may be some hidden info as it is not provided yet-
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<KeyValueGroup book={book} />
-				</CardContent>
-				<CardFooter>
-					<Link
-						href={file_path}
-						target="_blank"
-						className={buttonVariants({
-							variant: "outline",
-							className: "w-full",
-							size: "lg",
-						})}
-					>
-						View Book File
-					</Link>
-				</CardFooter>
-			</Card>
+			</Alert>
 		</div>
 	);
+
+	// return (
+	// 	<div className="flex max-md:mx-auto max-md:flex-col gap-4 items-start">
+	// 		<div className="w-full md:max-w-lg space-y-5">
+	// 			<div className="sm:p-4 rounded-md bg-muted  flex items-center justify-center aspect-[6/9]">
+	// 				{cover_path ? (
+	// 					<Image
+	// 						src={cover_path}
+	// 						alt={name ?? "book"}
+	// 						width={584}
+	// 						height={932}
+	// 						className="max-sm:rounded-md"
+	// 					/>
+	// 				) : (
+	// 					<ImageIcon className="sm:size-24 text-muted-foreground" />
+	// 				)}
+	// 			</div>
+	// 			<Card>
+	// 				<CardHeader>
+	// 					<CardTitle>About The Book</CardTitle>
+	// 				</CardHeader>
+	// 				<CardContent className="text-muted-foreground text-balance max-w-prose">
+	// 					{description}
+	// 				</CardContent>
+	// 				<CardFooter className="flex gap-2 flex-wrap">
+	// 					{categories?.map((el) => (
+	// 						<Badge
+	// 							key={el?.name_en}
+	// 							style={{
+	// 								backgroundColor: el?.background,
+	// 							}}
+	// 						>
+	// 							{el?.name_en}
+	// 						</Badge>
+	// 					))}
+	// 				</CardFooter>
+	// 			</Card>
+	// 		</div>
+	// 		<div className="space-y-5 w-full">
+	// 			<div className="max-sm:hidden text-muted-foreground flex items-center gap-2">
+	// 				<span>{formatDate(publishionDate)}</span>
+	// 				<Calendar />
+	// 			</div>
+	// 		</div>
+	// 		<Card>
+	// 			<CardHeader>
+	// 				<CardTitle>Book Information</CardTitle>
+	// 				<CardDescription>
+	// 					description -may be some hidden info as it is not provided yet-
+	// 				</CardDescription>
+	// 			</CardHeader>
+	// 			<CardContent>
+	// 				<KeyValueGroup book={book} />
+	// 			</CardContent>
+	// 			<CardFooter>
+	// 				<Link
+	// 					href={file_path}
+	// 					target="_blank"
+	// 					className={buttonVariants({
+	// 						variant: "outline",
+	// 						className: "w-full",
+	// 						size: "lg",
+	// 					})}
+	// 				>
+	// 					View Book File
+	// 				</Link>
+	// 			</CardFooter>
+	// 		</Card>
+	// 	</div>
+	// );
 }
 
 const KeyValueGroup = ({
