@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants, Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -95,51 +95,55 @@ export default async function BookPage({ params: { id } }: Props) {
 		sample,
 	} = book;
 
-	console.log(book);
-
 	return (
-		<div className="bg-muted h-full">
-			<div className="flex items-center justify-between py-2 px-1">
-				<h2 className="capitalize text-2xl">{name}</h2>
-				<Badge variant={"notion_incomplete"}>{status}</Badge>
-			</div>
-
-			{status === "rejected" && (
-				<Alert variant="destructive">
-					<div className="flex items-start gap-4">
-						<TriangleAlertIcon className="size-5" />
-						<div className="flex-1 text-base">
-							<AlertTitle>Book Rejected</AlertTitle>
-							<AlertDescription className="text-base ">
-								We're sorry, but your book "{name}" has been rejected. The
-								content did not meet our publishing guidelines.{" "}
-								<details className="inline-block peer">
-									<summary className="list-none hover:underline   cursor-pointer">
-										View rejection reason
-									</summary>
-								</details>
-								<p className="hidden peer-open:block mt-4 border-t border-destructive pt-4 ">
-									{rejectionReasons}
-								</p>
-							</AlertDescription>
-
-							<div className="mt-4 flex items-center gap-2">
-								<Link
-									href={siteConfig.links.whatsapp_support}
-									className="text-sm font-medium text-destructive hover:underline"
-									prefetch={false}
-									target="_blank"
-								>
-									Contact support
-								</Link>
-								<ArrowRightIcon className="h-4 w-4" />
-							</div>
-						</div>
-					</div>
-				</Alert>
-			)}
+		<div className="h-full bg-muted flex items-center justify-center">
+			<Button size={"lg"}>View Book</Button>
 		</div>
 	);
+
+	// return (
+	// 	<div className="bg-muted h-full">
+	// 		<div className="flex items-center justify-between py-2 px-1">
+	// 			<h2 className="capitalize text-2xl">{name}</h2>
+	// 			<Badge variant={"notion_incomplete"}>{status}</Badge>
+	// 		</div>
+
+	// 		{status === "rejected" && (
+	// 			<Alert variant="destructive">
+	// 				<div className="flex items-start gap-4">
+	// 					<TriangleAlertIcon className="size-5" />
+	// 					<div className="flex-1 text-base">
+	// 						<AlertTitle>Book Rejected</AlertTitle>
+	// 						<AlertDescription className="text-base ">
+	// 							We're sorry, but your book "{name}" has been rejected. The
+	// 							content did not meet our publishing guidelines.{" "}
+	// 							<details className="inline-block peer">
+	// 								<summary className="list-none hover:underline   cursor-pointer">
+	// 									View rejection reason
+	// 								</summary>
+	// 							</details>
+	// 							<p className="hidden peer-open:block mt-4 border-t border-destructive pt-4 ">
+	// 								{rejectionReasons}
+	// 							</p>
+	// 						</AlertDescription>
+
+	// 						<div className="mt-4 flex items-center gap-2">
+	// 							<Link
+	// 								href={siteConfig.links.whatsapp_support}
+	// 								className="text-sm font-medium text-destructive hover:underline"
+	// 								prefetch={false}
+	// 								target="_blank"
+	// 							>
+	// 								Contact support
+	// 							</Link>
+	// 							<ArrowRightIcon className="h-4 w-4" />
+	// 						</div>
+	// 					</div>
+	// 				</div>
+	// 			</Alert>
+	// 		)}
+	// 	</div>
+	// );
 
 	// return (
 	// 	<div className="flex max-md:mx-auto max-md:flex-col gap-4 items-start">
