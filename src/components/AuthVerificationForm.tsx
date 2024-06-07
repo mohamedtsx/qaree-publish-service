@@ -3,7 +3,6 @@
 import { resendValidatingOTPAction, verifyAccountAction } from "@/app/actions";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { verifyAccountMutation } from "@/lib/graphql/mutations";
-import type { LoginData } from "@/lib/graphql/types";
 import {
 	type VerifyAccountSchemaType,
 	verifyAccountFormSchema,
@@ -23,7 +22,14 @@ import {
 } from "./ui/card";
 import { Form } from "./ui/form";
 
-function AuthVerificationForm({ userData }: { userData: LoginData }) {
+function AuthVerificationForm({
+	userData,
+}: {
+	userData: {
+		email: string;
+		password: string;
+	};
+}) {
 	const { email } = userData;
 	const router = useRouter();
 
