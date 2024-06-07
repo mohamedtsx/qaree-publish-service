@@ -114,3 +114,36 @@ export const getDraftBookQuery = graphql(`
     }
   }
 `);
+
+export const getBookQuery = graphql(`
+  query getBook($bookId: String!) {
+    getBook(bookId: $bookId) {
+      _id
+      sample
+      cover {
+        path
+      }
+      file {
+        path
+      }
+      status
+      createdAt
+      updatedAt
+      publishionDate
+      previousPublishingData
+      rejectionReasons
+      name
+      description
+      isbn
+      edition
+      publishingRights
+      categories {
+        name_en
+        background
+      }
+      avgRate
+      price
+      language
+    }
+  }
+`);
