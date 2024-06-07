@@ -1,8 +1,6 @@
 "use client";
 
 import { resendValidatingOTPAction, verifyAccountAction } from "@/app/actions";
-import { fetcher } from "@/lib/graphql/fetcher";
-import { verifyAccountMutation } from "@/lib/graphql/mutations";
 import {
 	type VerifyAccountSchemaType,
 	verifyAccountFormSchema,
