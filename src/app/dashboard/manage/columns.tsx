@@ -5,7 +5,7 @@ import { EditBookDialog } from "@/components/EditBookDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { BookUp, ImageIcon } from "lucide-react";
+import { BookOpen, BookUp, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -105,22 +105,29 @@ export const columns: Array<ColumnDef<Book>> = [
 		header: "Actions",
 		cell({ row }) {
 			const bookId = row.original._id;
+			const isDraft = row.original.status === "draft";
+
+			const redirectUrl = isDraft
+				? `/dashboard/publish/${bookId}`
+				: `/dashboard/manage/${bookId}`;
+			const tip = isDraft ? "Complete publishing steps" : "View book details";
 
 			return (
-				<div className="grid grid-cols-3 gap-4 w-fit min-w-32">
-					{row.original.status === "draft" ? (
-						<Link
-							href={`/dashboard/publish/${bookId}`}
-							className={buttonVariants({
-								size: "icon",
-								variant: "outline",
-							})}
-						>
+				<div className="flex items-center justify-center gap-4">
+					<Link
+						href={redirectUrl}
+						className={buttonVariants({
+							size: "icon",
+							variant: "outline",
+						})}
+						title={tip}
+					>
+						{isDraft ? (
 							<BookUp className="size-5" />
-						</Link>
-					) : (
-						<div />
-					)}
+						) : (
+							<BookOpen className="size-5" />
+						)}
+					</Link>
 					<EditBookDialog book={row.original} />
 					<DeleteBookDialog bookId={bookId} />
 				</div>
