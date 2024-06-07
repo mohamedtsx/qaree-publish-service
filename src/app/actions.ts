@@ -40,9 +40,11 @@ type ActionState = {
 	message: string;
 };
 
-export const registerAction = async (
-	userData: RegisterData,
-): Promise<ActionState> => {
+export const registerAction = async (userData: {
+	name: string;
+	email: string;
+	password: string;
+}): Promise<ActionState> => {
 	const result = registerFormSchema.safeParse(userData);
 
 	if (!result.success) {
