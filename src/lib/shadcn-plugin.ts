@@ -20,6 +20,7 @@ export const shadcnPlugin = plugin(
 				"--accent-foreground": "240 5.9% 10%",
 				"--destructive": "0 84.2% 60.2%",
 				"--destructive-foreground": "0 0% 98%",
+				"--green": "142.1 76.2% 36.3%",
 				"--border": "240 5.9% 90%",
 				"--input": "240 5.9% 90%",
 				"--ring": "240 5.9% 10%",
@@ -43,6 +44,7 @@ export const shadcnPlugin = plugin(
 				"--accent-foreground": "0 0% 98%",
 				"--destructive": "0 62.8% 30.6%",
 				"--destructive-foreground": "0 0% 98%",
+				"--green": "142.1 76.2% 36.3%",
 				"--border": "240 3.7% 15.9%",
 				"--input": "240 3.7% 15.9%",
 				"--ring": "240 4.9% 83.9%",
@@ -84,6 +86,7 @@ export const shadcnPlugin = plugin(
 					secondary: {
 						DEFAULT: "hsl(var(--secondary))",
 						foreground: "hsl(var(--secondary-foreground))",
+						green: "hsl(var(--green))",
 					},
 					destructive: {
 						DEFAULT: "hsl(var(--destructive))",
