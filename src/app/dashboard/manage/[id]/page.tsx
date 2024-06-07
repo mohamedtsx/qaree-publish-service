@@ -37,14 +37,6 @@ const getBook = async (bookId: string) => {
 		tags: [bookId],
 	});
 
-	let x: DeepNonNullable<{
-		a: string | null;
-		b: {
-			c: string | null;
-		} | null;
-	} | null>;
-	let y: typeof x.b.c; // => string
-
 	return getBook as DeepNonNullable<typeof getBook>;
 };
 
@@ -52,23 +44,33 @@ export default async function BookPage({ params: { id } }: Props) {
 	const book = await getBook(id);
 
 	const {
-		cover,
-		createdAt,
-		file,
+		cover: { path: cover_path },
+		// createdAt,
+		file: { path: file_path },
 		name,
-		previousPublishingData,
-		rejectionReasons,
+		// previousPublishingData,
+		rejectionReasons, // nullable
 		description,
 		categories,
+		// edition,
+		// isbn,
+		// language,
+		// price,
+		// publishingRights,
+		status,
+		// updatedAt,
+		publishionDate,
+		// avgRate,
+		sample,
 	} = book;
 
 	return (
 		<div className="flex max-md:mx-auto max-md:flex-col gap-4 items-start">
 			<div className="w-full md:max-w-lg space-y-5">
 				<div className="sm:p-4 rounded-md bg-muted  flex items-center justify-center aspect-[6/9]">
-					{cover?.path ? (
+					{cover_path ? (
 						<Image
-							src={cover.path}
+							src={cover_path}
 							alt={name ?? "book"}
 							width={584}
 							height={932}
@@ -90,7 +92,7 @@ export default async function BookPage({ params: { id } }: Props) {
 							<Badge
 								key={el?.name_en}
 								style={{
-									backgroundColor: el?.background as string,
+									backgroundColor: el?.background,
 								}}
 							>
 								{el?.name_en}
@@ -101,7 +103,7 @@ export default async function BookPage({ params: { id } }: Props) {
 			</div>
 			<div className="space-y-5 w-full">
 				<div className="max-sm:hidden text-muted-foreground flex items-center gap-2">
-					<span>{formatDate(createdAt as string)}</span>
+					<span>{formatDate(publishionDate)}</span>
 					<Calendar />
 				</div>
 			</div>
@@ -117,7 +119,7 @@ export default async function BookPage({ params: { id } }: Props) {
 				</CardContent>
 				<CardFooter>
 					<Link
-						href={file?.path as string}
+						href={file_path}
 						target="_blank"
 						className={buttonVariants({
 							variant: "outline",
