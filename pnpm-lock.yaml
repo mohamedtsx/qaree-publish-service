@@ -101,6 +101,9 @@ importers:
       pnm:
         specifier: ^0.0.0
         version: 0.0.0
+      pnpm:
+        specifier: ^9.2.0
+        version: 9.2.0
       react:
         specifier: ^18
         version: 18.2.0
@@ -142,7 +145,7 @@ importers:
         specifier: ^18
         version: 18.2.21
       autoprefixer:
-        specifier: ^10.0.1
+        specifier: ^10.4.18
         version: 10.4.18(postcss@8.4.35)
       eslint:
         specifier: ^8
@@ -2342,6 +2345,11 @@ packages:
 
   pnm@0.0.0:
     resolution: {integrity: sha512-bquR+GZwxi1iaPzKB/XESGoeA381BxCnsw3XgrfYqVeSbP25+VO19t0JeIRcW6LwjHZEw2LJ7IwqgMaiPDTCYQ==}
+
+  pnpm@9.2.0:
+    resolution: {integrity: sha512-mKgP0RwucJZ0d2IwQQZDKz3cZ9z1S1qMAck/aKLNXgXmghhJUioG+3YoTUGiZg1eM08u47vykYO/LnObHa+ncQ==}
+    engines: {node: '>=18.12'}
+    hasBin: true
 
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
@@ -5263,6 +5271,8 @@ snapshots:
       nice-napi: 1.0.2
 
   pnm@0.0.0: {}
+
+  pnpm@9.2.0: {}
 
   possible-typed-array-names@1.0.0: {}
 
