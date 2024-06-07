@@ -24,7 +24,7 @@ import {
 import { addBookDetailsMutation } from "@/lib/graphql/mutations";
 import { getBookEPubContentQuery } from "@/lib/graphql/queries";
 import { tags } from "@/lib/graphql/tags";
-import type { RegisterData, SelectItems } from "@/lib/graphql/types";
+import type { SelectItems } from "@/lib/graphql/types";
 import {
 	type EditBookType,
 	type UpdateAccountSchema,
