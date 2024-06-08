@@ -65,33 +65,7 @@ export default async function BookPage({
 	params: { bookId },
 	searchParams: { contentId },
 }: Props) {
-	// const book = await getBook(id);
-
-	const book = {
-		_id: "6608c9539bd556631e84b3dc",
-		sample: ["num_1"],
-		cover: {
-			path: "https://res.cloudinary.com/dgg86hhf3/image/upload/v1716194664/book/cover/vobzmvm5pqkuyignduzf.png",
-		},
-		file: {
-			path: "https://res.cloudinary.com/dgg86hhf3/raw/upload/v1716191811/book/file/6608c9539bd556631e84b3dc/zucil8urlorxdutsyoo4.epub",
-		},
-		status: "rejected",
-		createdAt: "1711851859077",
-		updatedAt: "1716572131223",
-		publishionDate: null,
-		previousPublishingData: "1711851859076",
-		rejectionReasons: "Sorry, you are not the owner of this book",
-		name: "one v2",
-		description: "one two three",
-		isbn: "",
-		edition: 1,
-		publishingRights: true,
-		categories: [{ name_en: "distributed systems", background: "#186cb0" }],
-		avgRate: 0,
-		price: 0,
-		language: "en",
-	};
+	const book = await getBook(id);
 
 	const {
 		cover: { path: cover_path },
