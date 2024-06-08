@@ -65,7 +65,7 @@ export default async function BookPage({
 	params: { bookId },
 	searchParams: { contentId },
 }: Props) {
-	const book = await getBook(id);
+	const book = await getBook(bookId);
 
 	const {
 		cover: { path: cover_path },
@@ -128,7 +128,6 @@ export default async function BookPage({
 					</div>
 				</div>
 				<div>
-					{/* @ts-expect-error TODO: remove me */}
 					<KeyValueGroup book={book} />
 					<p className="max-w-prose max-sm:sr-only mt-5 pl-2">{description}</p>
 				</div>
