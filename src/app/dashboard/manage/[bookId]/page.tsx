@@ -115,7 +115,7 @@ export default async function BookPage({
 		<div className="h-full space-y-5">
 			<div className=" flex items-center justify-center">
 				<BookViewer bookId={bookId} contentId={contentId} />
-				<Button size={"lg"}>View Book</Button>
+				{/* <Button size={"lg"}>View Book</Button> */}
 			</div>
 		</div>
 	);

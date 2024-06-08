@@ -9,7 +9,7 @@ import {
 	type ReactNode,
 } from "react";
 
-interface ViewerLayoutProps {
+interface ViewerContainerProps {
 	children: ReactNode;
 	content: Array<{
 		id: string;
@@ -17,7 +17,10 @@ interface ViewerLayoutProps {
 	}>;
 }
 
-export function BookViewerLayout({ children, content }: ViewerLayoutProps) {
+export function BookViewerContainer({
+	children,
+	content,
+}: ViewerContainerProps) {
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 

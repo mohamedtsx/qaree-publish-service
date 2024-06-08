@@ -1,7 +1,7 @@
 import { getCurrentUser } from "@/lib/authOptions";
 import { BACKEND_BASE_URL } from "@/lib/graphql";
 import { Button } from "./ui/button";
-import { BookViewerLayout } from "./BookViewerLayout";
+import { BookViewerContainer } from "./BookViewerContainer";
 import { getHtmlContentQuery } from "@/lib/graphql/queries";
 import { fetcher } from "@/lib/graphql/fetcher";
 
@@ -60,12 +60,12 @@ export async function BookViewer({ bookId, contentId }: Props) {
 	const htmlText = await getBookChapter(bookId, contentId ?? htmlContent[0].id);
 
 	return (
-		<BookViewerLayout content={htmlContent}>
+		<BookViewerContainer content={htmlContent}>
 			<div
 				className="text-wrap bg-muted"
 				// biome-ignore lint: using dangerouslySetInnerHTML
 				dangerouslySetInnerHTML={{ __html: htmlText }}
 			/>
-		</BookViewerLayout>
+		</BookViewerContainer>
 	);
 }
