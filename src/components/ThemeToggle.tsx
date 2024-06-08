@@ -17,9 +17,14 @@ function ThemeToggle() {
 			onClick={() => {
 				setTheme(toggledTheme);
 			}}
+			className="size-8"
 			aria-labelledby="theme-toggle-button"
 		>
-			{currentTheme === "light" ? <Sun /> : <Moon />}
+			{currentTheme === "light" ? (
+				<Sun className="size-5" />
+			) : (
+				<Moon className="size-5" />
+			)}
 		</Button>
 	);
 }

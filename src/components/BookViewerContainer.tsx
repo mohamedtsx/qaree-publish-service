@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import {
 	Suspense,
 	useEffect,
@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { Spinner } from "./Spinner";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 interface ViewerContainerProps {
 	children: ReactNode;
@@ -32,13 +34,10 @@ export function BookViewerContainer({
 }: ViewerContainerProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const pathname = usePathname();
 
 	const [isPending, startTransition] = useTransition();
 	const [open, setOpen] = useState(false);
-
-	const canGoTo = (somewehre: "prev" | "next"): boolean => {
-		return false;
-	};
 
 	const goNext = () => {
 		startTransition(() => {
@@ -72,50 +71,80 @@ export function BookViewerContainer({
 		});
 	};
 
-	const getTitle = () => {
-		const contentId = searchParams.get("contentId") ?? content[0].id;
-		const element = content.find((el) => el.id === contentId);
-		return element?.title;
-	};
+	const contentId = searchParams.get("contentId") ?? content[0].id;
+	const current = content.find((el) => el.id === contentId);
+
+	const canGoPrev = current?.id !== content[0].id;
+	const canGoNext = current?.id !== content[content.length - 1].id;
 
 	return (
-		<div className="flex items-center justify-center  size-full">
-			<div className="relative pt-16 w-full max-w-5xl border rounded-xl overflow-hidden h-[80vh]">
-				<nav className="absolute border-b inset-x-0 top-0 h-16 py-2 flex justify-between px-4 ">
-					<div className="flex-1 flex items-center gap-4">
-						<Button
-							size={"icon"}
-							variant={"outline"}
-							onClick={() => {
-								setOpen(!open);
-							}}
-						>
-							{open ? <PanelLeftClose /> : <PanelLeft />}
-						</Button>
-						<h3>{getTitle()}</h3>
-					</div>
-					<div className="flex gap-6 items-center">
-						<Button size={"icon"} variant={"outline"} onClick={goPrev}>
-							<ChevronLeft />
-						</Button>
-						<Button size={"icon"} variant={"outline"} onClick={goNext}>
-							<ChevronRight />
-						</Button>
-					</div>
-				</nav>
-				<div className="flex">
-					<aside
-						className={cn(
-							"w-0 h-ful overflow-hiddenl transition-all",
-							open && "w-96",
-						)}
+		<div className="border rounded-xl overflow-hidden">
+			<nav className="bg-background border-b h-16 py-2 flex justify-between px-4 ">
+				<div className="flex-1 flex items-center gap-4">
+					<Button
+						size={"icon"}
+						variant={"outline"}
+						onClick={() => {
+							setOpen(!open);
+						}}
 					>
-						aside show book conetnt
-					</aside>
-					<div className="size-full flex items-center justify-center">
-						{isPending ? <Spinner /> : children}
+						{open ? <PanelLeftClose /> : <PanelLeft />}
+					</Button>
+					<h3>{current?.title}</h3>
+				</div>
+				<div className="flex gap-6 items-center">
+					<Button
+						size={"icon"}
+						variant={"outline"}
+						onClick={goPrev}
+						disabled={!canGoPrev}
+					>
+						<ChevronLeft />
+					</Button>
+					<Button
+						size={"icon"}
+						variant={"outline"}
+						onClick={goNext}
+						disabled={!canGoNext}
+					>
+						<ChevronRight />
+					</Button>
+				</div>
+			</nav>
+			<div className="flex">
+				<div
+					className={cn(
+						"w-0 transition-all py-4 h-[80vh] overflow-auto no-scrollbar ",
+						open && "w-72 border-r",
+					)}
+				>
+					<div className="flex flex-col px-2">
+						{content.map((el) => {
+							return (
+								<Link
+									key={el.id}
+									href={`${pathname}?contentId=${el.id}`}
+									className={cn(
+										"p-2 hover:bg-muted rounded transition text-ellipsis text-nowrap overflow-hidden",
+										el.id === current?.id && "bg-muted",
+									)}
+									onClick={() => goSomewhere(el.id)}
+								>
+									{el.title}
+								</Link>
+							);
+						})}
 					</div>
 				</div>
+				<ScrollArea className="w-full h-[80vh] px-4">
+					{isPending ? (
+						<div className="h-[80vh] flex items-center justify-center">
+							<Spinner className="border-t-primary" />
+						</div>
+					) : (
+						children
+					)}
+				</ScrollArea>
 			</div>
 		</div>
 	);

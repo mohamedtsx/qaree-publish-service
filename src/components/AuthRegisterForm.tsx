@@ -73,7 +73,7 @@ function AuthRegisterForm() {
 							</CardDescription>
 						</CardHeader>
 						<CardContent className="grid gap-4">
-							<Button
+							{/* <Button
 								type="button"
 								variant="outline"
 								onClick={() => {
@@ -92,7 +92,7 @@ function AuthRegisterForm() {
 										Or continue with
 									</span>
 								</div>
-							</div>
+							</div> */}
 							<FormInput
 								form={form}
 								name="name"

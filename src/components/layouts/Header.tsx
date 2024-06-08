@@ -13,12 +13,9 @@ function Header() {
 					<div className="lg:hidden">
 						<MobileMenu />
 					</div>
-					<SearchForm />
+					{/* <SearchForm /> */}
 				</div>
 				<div className="flex items-center gap-4">
-					<div className="max-lg:hidden">
-						<ThemeToggle />
-					</div>
 					<Suspense fallback={<div className="size-8 rounded-full bg-muted" />}>
 						<UserNav />
 					</Suspense>

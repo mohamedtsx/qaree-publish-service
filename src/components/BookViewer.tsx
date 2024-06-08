@@ -86,10 +86,9 @@ export async function BookViewer({ bookId, contentId }: Props) {
 	return (
 		<Dialog>
 			<DialogTrigger>click me</DialogTrigger>
-			<DialogContent2 className="max-w-5xl">
+			<DialogContent2 className="max-w-5xl p-0">
 				<BookViewerContainer content={htmlContent}>
 					<div
-						className=" bg-muted px-4"
 						// biome-ignore lint: using dangerouslySetInnerHTML
 						dangerouslySetInnerHTML={{ __html: htmlText }}
 					/>

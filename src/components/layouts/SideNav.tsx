@@ -3,6 +3,7 @@ import React from "react";
 
 import { type IconKey, Icons } from "../Icons";
 import { Button } from "../ui/button";
+import ThemeToggle from "../ThemeToggle";
 
 interface NavItemType {
 	label: string;
@@ -59,10 +60,13 @@ function SideNav() {
 						<Icons.book className="h-6 w-6" />
 						<span className="">Publish Service</span>
 					</Link>
-					<Button className="ml-auto h-8 w-8" size="icon" variant="outline">
+					{/* <Button className="ml-auto h-8 w-8" size="icon" variant="outline">
 						<Icons.bell className="h-4 w-4" />
 						<span className="sr-only">Toggle notifications</span>
-					</Button>
+					</Button> */}
+					<div className="max-lg:hidden">
+						<ThemeToggle />
+					</div>
 				</div>
 				<div className="flex-1 py-2">
 					<nav className="grid items-start px-4 text-sm font-medium">
