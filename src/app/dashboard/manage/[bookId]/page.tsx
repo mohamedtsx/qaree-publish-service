@@ -1,24 +1,9 @@
-import { getBookEPubContentAction } from "@/app/actions";
 import { BookViewer } from "@/components/BookViewer";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { authOptions } from "@/lib/authOptions";
-import { BACKEND_BASE_URL } from "@/lib/graphql";
+import { buttonVariants } from "@/components/ui/button";
 import { fetcher } from "@/lib/graphql/fetcher";
-import {
-	getBookEPubContentQuery,
-	getBookQuery,
-	getHtmlContentQuery,
-} from "@/lib/graphql/queries";
+import { getBookQuery } from "@/lib/graphql/queries";
 import type { DeepNonNullable } from "@/lib/graphql/types";
 import { siteConfig } from "@/lib/site";
 import {
@@ -30,12 +15,10 @@ import {
 } from "@/lib/utils";
 import {
 	ArrowRightIcon,
-	Calendar,
 	Download,
 	ImageIcon,
 	TriangleAlertIcon,
 } from "lucide-react";
-import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -82,7 +65,11 @@ export default async function BookPage({
 		<div className="space-y-5 sm:space-y-12">
 			<div className="flex items-center justify-between py-2">
 				<h2 className="capitalize text-2xl">{name}</h2>
-				<Badge variant={"notion_incomplete"}>{status}</Badge>
+				<Badge
+					variant={status === "rejected" ? "notion_incomplete" : "notion_done"}
+				>
+					{status}
+				</Badge>
 			</div>
 
 			<div className="flex gap-5 max-sm:flex-col *:w-full">
