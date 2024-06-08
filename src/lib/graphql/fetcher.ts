@@ -62,10 +62,8 @@ export async function fetcher<
 					variables,
 				}),
 				next: {
-					// TODO: REMOVE ZERO REVALIDATION
-					revalidate: 0,
-					// revalidate,
-					// tags,
+					revalidate,
+					tags,
 				},
 			});
 		} else {

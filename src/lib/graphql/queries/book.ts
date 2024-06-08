@@ -27,6 +27,10 @@ export const getBookEPubContentQuery = graphql(`
 export const getHtmlContentQuery = graphql(`
   query getBookEPubContent($bookId: String!){
     getBookEPubContent(bookId: $bookId) {
+      content {
+        id
+        title
+      }
       allHTML {
         id
         title

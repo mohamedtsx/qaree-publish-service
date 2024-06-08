@@ -18,7 +18,22 @@ const getHtmlContent = async (bookId: string) => {
 		throw Error("Cannot get book content!");
 	}
 
-	return getBookEPubContent.allHTML as Array<{
+	const items = getBookEPubContent.allHTML.map((el, index) => {
+		return {
+			...el,
+			title: getBookEPubContent?.content
+				? getBookEPubContent.content[index]?.title ?? "unkown"
+				: "unkown",
+		};
+	});
+
+	// return getBookEPubContent.allHTML as Array<{
+	// 	id: string;
+	// 	title: string;
+	// }>;
+
+	// TODO: use html contnt titles after bing nonnullable
+	return items as Array<{
 		id: string;
 		title: string;
 	}>;
@@ -33,6 +48,7 @@ const getBookChapter = async (bookId: string, chapter: string) => {
 			Authorization: `Bearer ${user.access_token}`,
 			accept: "text/html",
 		},
+		cache: "force-cache",
 	});
 
 	if (!res.ok) {
