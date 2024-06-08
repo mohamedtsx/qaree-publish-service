@@ -4,6 +4,8 @@ import { BookViewerContainer } from "./BookViewerContainer";
 import { getHtmlContentQuery } from "@/lib/graphql/queries";
 import { fetcher } from "@/lib/graphql/fetcher";
 import { Dialog, DialogContent2, DialogTrigger } from "./ui/dialog";
+import { Button } from "./ui/button";
+import { Eye } from "lucide-react";
 
 const getHtmlContent = async (bookId: string) => {
 	const { getBookEPubContent } = await fetcher({
@@ -77,7 +79,12 @@ export async function BookViewer({ bookId, contentId }: Props) {
 
 	return (
 		<Dialog>
-			<DialogTrigger>click me</DialogTrigger>
+			<DialogTrigger asChild>
+				<Button variant={"outline"} className="flex gap-2">
+					<Eye className="size-5" />
+					<span>View Book</span>
+				</Button>
+			</DialogTrigger>
 			<DialogContent2 className="max-w-5xl p-0">
 				<BookViewerContainer content={htmlContent}>
 					<div
