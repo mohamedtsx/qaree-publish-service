@@ -24,6 +24,17 @@ export const getBookEPubContentQuery = graphql(`
   }
 `);
 
+export const getHtmlContentQuery = graphql(`
+  query getBookEPubContent($bookId: String!){
+    getBookEPubContent(bookId: $bookId) {
+      allHTML {
+        id
+        title
+      }
+    }
+  }
+`);
+
 export const getMyBooksQuery = graphql(`
   query getBooks($page: Int, $limit: Int, $filterBy: String, $sortBy: String, $keyword: String){
     getBooks(page: $page, limit: $limit, filterBy: $filterBy, sortBy: $sortBy, keyword: $keyword) {

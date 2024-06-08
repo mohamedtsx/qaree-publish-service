@@ -1,3 +1,5 @@
+import { getBookEPubContentAction } from "@/app/actions";
+import { BookViewer } from "@/components/BookViewer";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants, Button } from "@/components/ui/button";
@@ -9,8 +11,14 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { authOptions } from "@/lib/authOptions";
+import { BACKEND_BASE_URL } from "@/lib/graphql";
 import { fetcher } from "@/lib/graphql/fetcher";
-import { getBookQuery } from "@/lib/graphql/queries";
+import {
+	getBookEPubContentQuery,
+	getBookQuery,
+	getHtmlContentQuery,
+} from "@/lib/graphql/queries";
 import type { DeepNonNullable } from "@/lib/graphql/types";
 import { siteConfig } from "@/lib/site";
 import {
@@ -25,12 +33,16 @@ import {
 	ImageIcon,
 	TriangleAlertIcon,
 } from "lucide-react";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
 	params: {
-		id: string;
+		bookId: string;
+	};
+	searchParams: {
+		contentId: string;
 	};
 };
 
@@ -38,7 +50,7 @@ const getBook = async (bookId: string) => {
 	const { getBook } = await fetcher({
 		query: getBookQuery,
 		variables: {
-			bookId: bookId,
+			bookId,
 		},
 		server: true,
 		tags: [bookId],
@@ -47,8 +59,12 @@ const getBook = async (bookId: string) => {
 	return getBook as DeepNonNullable<typeof getBook>;
 };
 
-export default async function BookPage({ params: { id } }: Props) {
+export default async function BookPage({
+	params: { bookId },
+	searchParams: { contentId },
+}: Props) {
 	// const book = await getBook(id);
+
 	const book = {
 		_id: "6608c9539bd556631e84b3dc",
 		sample: ["num_1"],
@@ -96,8 +112,11 @@ export default async function BookPage({ params: { id } }: Props) {
 	} = book;
 
 	return (
-		<div className="h-full bg-muted flex items-center justify-center">
-			<Button size={"lg"}>View Book</Button>
+		<div className="h-full space-y-5">
+			<div className=" flex items-center justify-center">
+				<BookViewer bookId={bookId} contentId={contentId} />
+				<Button size={"lg"}>View Book</Button>
+			</div>
 		</div>
 	);
 
