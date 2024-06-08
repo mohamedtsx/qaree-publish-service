@@ -15,6 +15,8 @@ import {
 	PanelLeft,
 	PanelLeftClose,
 } from "lucide-react";
+import { Spinner } from "./Spinner";
+import { cn } from "@/lib/utils";
 
 interface ViewerContainerProps {
 	children: ReactNode;
@@ -29,8 +31,10 @@ export function BookViewerContainer({
 	content,
 }: ViewerContainerProps) {
 	const router = useRouter();
-	const [isPending, startTransition] = useTransition();
 	const searchParams = useSearchParams();
+
+	const [isPending, startTransition] = useTransition();
+	const [open, setOpen] = useState(false);
 
 	const canGoTo = (somewehre: "prev" | "next"): boolean => {
 		return false;
@@ -75,18 +79,22 @@ export function BookViewerContainer({
 	};
 
 	return (
-		<div className="flex items-center justify-center">
-			<div>
-				<nav className="flex justify-between items-center p-2">
-					<div className="flex gap-6">
-						<div className="flex-1 flex items-center">
-							<Button size={"icon"} variant={"outline"}>
-								<PanelLeft />
-								{/* <PanelLeftClose /> */}
-							</Button>
-							<h3>{getTitle()}</h3>
-							{/* <h3>hello world</h3> */}
-						</div>
+		<div className="flex items-center justify-center  size-full">
+			<div className="relative pt-16 w-full max-w-5xl border rounded-xl overflow-hidden h-[80vh]">
+				<nav className="absolute border-b inset-x-0 top-0 h-16 py-2 flex justify-between px-4 ">
+					<div className="flex-1 flex items-center gap-4">
+						<Button
+							size={"icon"}
+							variant={"outline"}
+							onClick={() => {
+								setOpen(!open);
+							}}
+						>
+							{open ? <PanelLeftClose /> : <PanelLeft />}
+						</Button>
+						<h3>{getTitle()}</h3>
+					</div>
+					<div className="flex gap-6 items-center">
 						<Button size={"icon"} variant={"outline"} onClick={goPrev}>
 							<ChevronLeft />
 						</Button>
@@ -95,9 +103,18 @@ export function BookViewerContainer({
 						</Button>
 					</div>
 				</nav>
-				<div>
-					<aside>aside show book conetnt</aside>
-					{isPending ? <>Loading...</> : children}
+				<div className="flex">
+					<aside
+						className={cn(
+							"w-0 h-ful overflow-hiddenl transition-all",
+							open && "w-96",
+						)}
+					>
+						aside show book conetnt
+					</aside>
+					<div className="size-full flex items-center justify-center">
+						{isPending ? <Spinner /> : children}
+					</div>
 				</div>
 			</div>
 		</div>

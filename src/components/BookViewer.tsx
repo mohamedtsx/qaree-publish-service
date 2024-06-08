@@ -78,7 +78,7 @@ export async function BookViewer({ bookId, contentId }: Props) {
 	return (
 		<BookViewerContainer content={htmlContent}>
 			<div
-				className="text-wrap bg-muted"
+				className=" bg-muted px-4"
 				// biome-ignore lint: using dangerouslySetInnerHTML
 				dangerouslySetInnerHTML={{ __html: htmlText }}
 			/>
