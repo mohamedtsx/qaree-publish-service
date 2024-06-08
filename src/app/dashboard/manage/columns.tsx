@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
 import { BookOpen, BookUp, ImageIcon } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
 export type Book = {
 	_id: string;

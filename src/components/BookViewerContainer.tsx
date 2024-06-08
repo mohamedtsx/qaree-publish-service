@@ -1,23 +1,23 @@
 "use client";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import {
-	Suspense,
-	useEffect,
-	useState,
-	useTransition,
-	type ReactNode,
-} from "react";
-import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 import {
 	ChevronLeft,
 	ChevronRight,
 	PanelLeft,
 	PanelLeftClose,
 } from "lucide-react";
-import { Spinner } from "./Spinner";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+	type ReactNode,
+	Suspense,
+	useEffect,
+	useState,
+	useTransition,
+} from "react";
+import { Spinner } from "./Spinner";
+import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 interface ViewerContainerProps {

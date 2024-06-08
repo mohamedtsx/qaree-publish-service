@@ -2,8 +2,8 @@ import Link from "next/link";
 import React from "react";
 
 import { type IconKey, Icons } from "../Icons";
-import { Button } from "../ui/button";
 import ThemeToggle from "../ThemeToggle";
+import { Button } from "../ui/button";
 
 interface NavItemType {
 	label: string;

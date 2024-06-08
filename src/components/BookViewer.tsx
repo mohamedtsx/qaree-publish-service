@@ -1,11 +1,11 @@
 import { getCurrentUser } from "@/lib/authOptions";
 import { BACKEND_BASE_URL } from "@/lib/graphql";
-import { BookViewerContainer } from "./BookViewerContainer";
-import { getHtmlContentQuery } from "@/lib/graphql/queries";
 import { fetcher } from "@/lib/graphql/fetcher";
-import { Dialog, DialogContent2, DialogTrigger } from "./ui/dialog";
-import { Button } from "./ui/button";
+import { getHtmlContentQuery } from "@/lib/graphql/queries";
 import { Eye } from "lucide-react";
+import { BookViewerContainer } from "./BookViewerContainer";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent2, DialogTrigger } from "./ui/dialog";
 
 const getHtmlContent = async (bookId: string) => {
 	const { getBookEPubContent } = await fetcher({

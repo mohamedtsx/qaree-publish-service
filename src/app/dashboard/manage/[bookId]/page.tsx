@@ -1,8 +1,8 @@
 import { getBookEPubContentAction } from "@/app/actions";
 import { BookViewer } from "@/components/BookViewer";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants, Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -167,7 +167,7 @@ export default async function BookPage({
 						<div className="flex-1 text-base">
 							<AlertTitle>Book Rejected</AlertTitle>
 							<AlertDescription className="text-base ">
-								We're sorry, but your book "{name}" has been rejected. The
+								We`re sorry, but your book `{name}` has been rejected. The
 								content did not meet our publishing guidelines.{" "}
 								<details className="inline-block peer">
 									<summary className="list-none hover:underline   cursor-pointer">
