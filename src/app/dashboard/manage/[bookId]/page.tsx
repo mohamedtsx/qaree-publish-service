@@ -30,6 +30,7 @@ import {
 import {
 	ArrowRightIcon,
 	Calendar,
+	Download,
 	ImageIcon,
 	TriangleAlertIcon,
 } from "lucide-react";
@@ -152,6 +153,16 @@ export default async function BookPage({
 					</div>
 				</Alert>
 			)}
+
+			<div className="flex sm:justify-end py-2 mt-14">
+				<div className="flex max-sm:flex-col gap-2 sm:gap-4 sm:w-fit w-full">
+					<BookViewer bookId={bookId} contentId={contentId} />
+					<Button variant={"outline"} className="w-full gap-2">
+						<Download className="size-5" />
+						<span>Download</span>
+					</Button>
+				</div>
+			</div>
 		</div>
 	);
 

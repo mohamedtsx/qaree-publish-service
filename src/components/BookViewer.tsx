@@ -80,7 +80,7 @@ export async function BookViewer({ bookId, contentId }: Props) {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button variant={"outline"} className="flex gap-2">
+				<Button variant={"outline"} className="gap-2 w-full">
 					<Eye className="size-5" />
 					<span>View Book</span>
 				</Button>
