@@ -22,6 +22,7 @@ import {
 import type { DeepNonNullable } from "@/lib/graphql/types";
 import { siteConfig } from "@/lib/site";
 import {
+	cn,
 	formatCurrency,
 	formatDate,
 	formatEdition,
@@ -96,27 +97,67 @@ export default async function BookPage({
 		cover: { path: cover_path },
 		file: { path: file_path },
 		name,
-		previousPublishingData,
-		rejectionReasons,
+		rejectionReasons, // nullable
 		description,
 		categories,
-		edition,
-		isbn,
-		language,
-		price,
-		publishingRights,
 		status,
-		updatedAt,
-		publishionDate,
-		avgRate,
 		sample,
 	} = book;
 
 	return (
-		<div className="bg-muted h-full">
-			<div className="flex items-center justify-between py-2 px-1">
+		<div className="space-y-5 sm:space-y-12">
+			<div className="flex items-center justify-between py-2">
 				<h2 className="capitalize text-2xl">{name}</h2>
 				<Badge variant={"notion_incomplete"}>{status}</Badge>
+			</div>
+
+			<div className="flex gap-5 max-sm:flex-col *:w-full">
+				<div className="space-y-5 md:max-w-lg">
+					<div className="space-y-5">
+						<div className="sm:p-4 rounded-md bg-muted  flex items-center justify-center aspect-[6/9]">
+							{cover_path ? (
+								<Image
+									src={cover_path}
+									alt={name ?? "book"}
+									width={584}
+									height={932}
+									className="max-sm:rounded-md"
+								/>
+							) : (
+								<ImageIcon className="sm:size-24 text-muted-foreground" />
+							)}
+						</div>
+					</div>
+					<p className="max-w-prose sm:sr-only">{description}</p>
+
+					<div>
+						<h3 className="font-medium text-lg">Selected Sample</h3>
+						<ul className="flex flex-col list-inside list-disc px-4">
+							{sample.map((el) => {
+								return <li key={el}>{el}</li>;
+							})}
+						</ul>
+					</div>
+					<div>
+						<h3 className="font-medium text-lg mb-2 ">Categories</h3>
+						<div className="flex gap-2 p-2 flex-wrap">
+							{categories.map((el) => (
+								<Badge
+									key={el.name_en}
+									style={{ backgroundColor: el.background }}
+									className="flex-1 justify-center"
+								>
+									{el.name_en}
+								</Badge>
+							))}
+						</div>
+					</div>
+				</div>
+				<div>
+					{/* @ts-expect-error TODO: remove me */}
+					<KeyValueGroup book={book} />
+					<p className="max-w-prose max-sm:sr-only mt-5 pl-2">{description}</p>
+				</div>
 			</div>
 
 			{status === "rejected" && (
@@ -157,10 +198,19 @@ export default async function BookPage({
 			<div className="flex sm:justify-end py-2 mt-14">
 				<div className="flex max-sm:flex-col gap-2 sm:gap-4 sm:w-fit w-full">
 					<BookViewer bookId={bookId} contentId={contentId} />
-					<Button variant={"outline"} className="w-full gap-2">
+					<a
+						href={file_path}
+						download
+						className={cn(
+							buttonVariants({
+								variant: "outline",
+								className: "w-full gap-2",
+							}),
+						)}
+					>
 						<Download className="size-5" />
 						<span>Download</span>
-					</Button>
+					</a>
 				</div>
 			</div>
 		</div>
@@ -168,20 +218,20 @@ export default async function BookPage({
 
 	// return (
 	// 	<div className="flex max-md:mx-auto max-md:flex-col gap-4 items-start">
-	// 		<div className="w-full md:max-w-lg space-y-5">
-	// 			<div className="sm:p-4 rounded-md bg-muted  flex items-center justify-center aspect-[6/9]">
-	// 				{cover_path ? (
-	// 					<Image
-	// 						src={cover_path}
-	// 						alt={name ?? "book"}
-	// 						width={584}
-	// 						height={932}
-	// 						className="max-sm:rounded-md"
-	// 					/>
-	// 				) : (
-	// 					<ImageIcon className="sm:size-24 text-muted-foreground" />
-	// 				)}
-	// 			</div>
+	// <div className="w-full md:max-w-lg space-y-5">
+	// 	<div className="sm:p-4 rounded-md bg-muted  flex items-center justify-center aspect-[6/9]">
+	// 		{cover_path ? (
+	// 			<Image
+	// 				src={cover_path}
+	// 				alt={name ?? "book"}
+	// 				width={584}
+	// 				height={932}
+	// 				className="max-sm:rounded-md"
+	// 			/>
+	// 		) : (
+	// 			<ImageIcon className="sm:size-24 text-muted-foreground" />
+	// 		)}
+	// 	</div>
 	// 			<Card>
 	// 				<CardHeader>
 	// 					<CardTitle>About The Book</CardTitle>

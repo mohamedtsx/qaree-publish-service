@@ -124,6 +124,7 @@ export function BookViewerContainer({
 								<Link
 									key={el.id}
 									href={`${pathname}?contentId=${el.id}`}
+									scroll={false}
 									className={cn(
 										"p-2 hover:bg-muted rounded transition text-ellipsis text-nowrap overflow-hidden",
 										el.id === current?.id && "bg-muted",

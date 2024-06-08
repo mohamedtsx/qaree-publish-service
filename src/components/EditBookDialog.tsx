@@ -114,8 +114,8 @@ export function EditBookDialog({ book }: { book: Book }) {
 									form={form}
 									name="language"
 									items={[
-										{ label: "English", value: "1" },
-										{ label: "Arabic", value: "2" },
+										{ label: "English", value: "en" },
+										{ label: "Arabic", value: "ar" },
 									]}
 									label="Language"
 								/>
