@@ -25,7 +25,7 @@ export default async function Account() {
 	const { name, avatar, bio } = await getData();
 
 	return (
-		<div className="space-y-12 max-w-6xl mx-auto py-20 ">
+		<div className="space-y-12 max-w-7xl mx-auto ">
 			<header>
 				<h2
 					className="text-2xl sm:text-3xl font-medium mb-2 capitalize"

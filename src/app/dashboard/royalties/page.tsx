@@ -47,7 +47,7 @@ export default async function Royalties() {
 	const { merchanStatus, signUpUrl } = data;
 
 	return (
-		<div className="p-4">
+		<div>
 			<Card>
 				<CardHeader>
 					<Image

@@ -43,8 +43,8 @@ export default async function Page({
 	});
 
 	return (
-		<div className="container">
-			<h1 className="my-6 py-4 text-4xl">Books Manager</h1>
+		<div>
+			<h1 className="mb-6 text-xl sm:text-4xl">Books Manager</h1>
 			<DataTable
 				columns={columns}
 				data={books as Array<Book>}

@@ -16,7 +16,7 @@ export default async function Dashboard() {
 	const { name } = await getData();
 
 	return (
-		<div className="container py-14">
+		<div className="">
 			<h1 className="text-4xl">
 				Welcome, <span>{name}</span>
 			</h1>
