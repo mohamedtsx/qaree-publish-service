@@ -22,16 +22,19 @@ import {
 	CardHeader,
 	CardTitle,
 } from "./ui/card";
+import { useTransition } from "react";
 
 function AuthLoginForm() {
 	const form = useForm<LoginSchemaType>({
 		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
 			email: "",
+			password: "",
 		},
 	});
 
 	const router = useRouter();
+	const [isPending, startTransition] = useTransition();
 
 	const onSubmit = async (values: LoginSchemaType) => {
 		const { email, password } = values;
@@ -54,7 +57,9 @@ function AuthLoginForm() {
 			return toast.error(res.error);
 		}
 
-		router.push("/dashboard");
+		startTransition(() => {
+			router.push("/dashboard");
+		});
 	};
 
 	return (
@@ -115,7 +120,7 @@ function AuthLoginForm() {
 						</div>
 					</CardContent>
 					<CardFooter className="flex flex-col">
-						<SubmitButton>Login</SubmitButton>
+						<SubmitButton pending={isPending}>Login</SubmitButton>
 						<p className="text-sm text-muted-foreground w-full mt-5">
 							Don`t have account?{" "}
 							<Link href={"/signup"} className="hover:underline">

@@ -19,6 +19,7 @@ import {
 	CardTitle,
 } from "./ui/card";
 import { Form } from "./ui/form";
+import { useTransition } from "react";
 
 function AuthVerificationForm({
 	userData,
@@ -30,6 +31,7 @@ function AuthVerificationForm({
 }) {
 	const { email } = userData;
 	const router = useRouter();
+	const [isPending, startTransition] = useTransition();
 
 	const form = useForm<VerifyAccountSchemaType>({
 		resolver: zodResolver(verifyAccountFormSchema),
@@ -54,7 +56,9 @@ function AuthVerificationForm({
 				...userData,
 			});
 
-			router.push("/dashboard");
+			startTransition(() => {
+				router.push("/dashboard");
+			});
 		} catch (error) {
 			if (error instanceof Error) {
 				return toast.error(error.message);

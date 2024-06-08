@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { FormInput, SubmitButton } from "./SmartForm";
@@ -29,6 +29,7 @@ function AuthResetPasswordForm({
 }) {
 	const email = useSearchParams().get("email");
 	const router = useRouter();
+	const [isPending, startTransition] = useTransition();
 
 	const onSubmit = async (values: ResetPasswordSchemaType) => {
 		if (!values.password) {
@@ -56,7 +57,9 @@ function AuthResetPasswordForm({
 			return toast.error(`${res.error} Please try to login`);
 		}
 
-		router.push("/dashboard");
+		startTransition(() => {
+			router.push("/dashboard");
+		});
 	};
 
 	const form = useForm<ResetPasswordSchemaType>({
@@ -92,7 +95,7 @@ function AuthResetPasswordForm({
 							type="password"
 						/>
 
-						<SubmitButton />
+						<SubmitButton pending={isPending} />
 					</CardContent>
 				</form>
 			</Form>

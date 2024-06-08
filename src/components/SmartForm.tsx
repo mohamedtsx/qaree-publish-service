@@ -186,10 +186,12 @@ export function FormSelect<T extends FieldValues>({
 export const SubmitButton = <T extends FieldValues>({
 	children,
 	className,
+	pending,
 }: {
 	children?: React.ReactNode;
 	className?: string;
 	props?: React.ComponentPropsWithRef<typeof Button>;
+	pending?: boolean;
 }) => {
 	const formState = useFormState<T>();
 	return (
@@ -197,7 +199,10 @@ export const SubmitButton = <T extends FieldValues>({
 			type="submit"
 			className={cn("w-full", className)}
 			isLoading={
-				formState.isSubmitting || formState.isLoading || formState.isValidating
+				formState.isSubmitting ||
+				formState.isLoading ||
+				formState.isValidating ||
+				pending
 			}
 		>
 			{children ? children : "Submit"}
