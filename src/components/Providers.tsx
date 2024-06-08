@@ -2,10 +2,19 @@
 
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { SessionProvider } from "next-auth/react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 function Providers({ children }: { children: ReactNode }) {
-	// todo fix hydrating error when hard refresh with light mode
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) {
+		return null;
+	}
+
 	return (
 		<ThemeProvider
 			attribute="class"
