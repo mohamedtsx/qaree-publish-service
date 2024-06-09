@@ -14,6 +14,13 @@ export const userInfoQuery = graphql(`
   }
 `);
 
+export const getMerchantIdQuery = graphql(`
+query userInfo {
+   userInfo {
+    merchantId
+  }
+}`);
+
 export const refreshTokenQuery = graphql(`
   query refreshToken {
     refreshToken {

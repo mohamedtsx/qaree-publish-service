@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { fetcher } from "@/lib/graphql/fetcher";
 import {
+	getMerchantIdQuery,
 	getMerchantStatusQuery,
 	getSignupActionURLQuery,
 } from "@/lib/graphql/queries";
@@ -10,20 +11,24 @@ import Image from "next/image";
 
 const getData = async () => {
 	try {
-		const { getMerchantStatus } = await fetcher({
-			query: getMerchantStatusQuery,
+		const { userInfo } = await fetcher({
+			query: getMerchantIdQuery,
 			server: true,
+			revalidate: 0,
 		});
 
-		if (!getMerchantStatus) {
+		if (!userInfo) {
 			throw Error("Error: GetMerchantStatus");
 		}
 
-		if (getMerchantStatus?.paymentsReceivable) {
+		console.log(userInfo);
+
+		if (userInfo?.merchantId) {
 			return {
-				merchanStatus: getMerchantStatus,
+				merchantId: userInfo.merchantId as string,
 			};
 		}
+
 		const { getSignupActionURL } = await fetcher({
 			query: getSignupActionURLQuery,
 			server: true,
@@ -41,10 +46,10 @@ const getData = async () => {
 
 export default async function Royalties() {
 	const data = await getData();
-	if (!data?.merchanStatus && !data?.signUpUrl) {
+	if (!data?.merchantId && !data?.signUpUrl) {
 		return <div>There`re development error!</div>;
 	}
-	const { merchanStatus, signUpUrl } = data;
+	const { merchantId, signUpUrl } = data;
 
 	return (
 		<div>
@@ -58,7 +63,7 @@ export default async function Royalties() {
 					/>
 				</CardHeader>
 				<CardContent>
-					{merchanStatus ? (
+					{merchantId ? (
 						<div className="space-y-2">
 							<div className="flex items-center gap-2">
 								<span className="font-semibold">Status: </span>
@@ -66,7 +71,7 @@ export default async function Royalties() {
 							</div>
 							<div className="">
 								<span className="font-semibold">Merchan Id:</span>{" "}
-								<text>{merchanStatus.merchantId}</text>
+								<text>{merchantId}</text>
 							</div>
 						</div>
 					) : (
@@ -77,7 +82,7 @@ export default async function Royalties() {
 								<li>Another list item to fill the space</li>
 								<li>Don`t forget to update this data with real one</li>
 							</ul>
-							<ConnectWithPayPal url={signUpUrl} />
+							<ConnectWithPayPal url={signUpUrl as string} />
 						</div>
 					)}
 				</CardContent>
