@@ -21,12 +21,28 @@ const getData = async () => {
 			throw Error("Error: GetMerchantStatus");
 		}
 
-		console.log(userInfo);
-
 		if (userInfo?.merchantId) {
 			return {
 				merchantId: userInfo.merchantId as string,
 			};
+		}
+
+		try {
+			const { getMerchantStatus } = await fetcher({
+				query: getMerchantStatusQuery,
+				server: true,
+				revalidate: 0,
+			});
+
+			if (getMerchantStatus?.merchantId) {
+				return {
+					merchantId: userInfo.merchantId as string,
+				};
+			}
+		} catch (error) {
+			if (process.env.NODE_ENV === "development") {
+				console.log(error);
+			}
 		}
 
 		const { getSignupActionURL } = await fetcher({
@@ -46,9 +62,11 @@ const getData = async () => {
 
 export default async function Royalties() {
 	const data = await getData();
+
 	if (!data?.merchantId && !data?.signUpUrl) {
-		return <div>There`re development error!</div>;
+		return <div>Try to refresh the page</div>;
 	}
+
 	const { merchantId, signUpUrl } = data;
 
 	return (
