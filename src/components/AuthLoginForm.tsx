@@ -10,71 +10,69 @@ import { FormInput, SubmitButton } from "./SmartForm";
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Icons } from "./Icons";
-import { Button } from "./ui/button";
 
 import Link from "next/link";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "./ui/card";
 import { useTransition } from "react";
 
 function AuthLoginForm() {
-	const form = useForm<LoginSchemaType>({
-		resolver: zodResolver(loginFormSchema),
-		defaultValues: {
-			email: "",
-			password: "",
-		},
-	});
+  const form = useForm<LoginSchemaType>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-	const router = useRouter();
-	const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-	const onSubmit = async (values: LoginSchemaType) => {
-		const { email, password } = values;
+  const onSubmit = async (values: LoginSchemaType) => {
+    const { email, password } = values;
 
-		if (!email || !password) {
-			if (!email) {
-				toast.error("Please enter your email address.");
-			} else {
-				toast.error("Please enter password.");
-			}
-			return;
-		}
+    if (!email || !password) {
+      if (!email) {
+        toast.error("Please enter your email address.");
+      } else {
+        toast.error("Please enter password.");
+      }
+      return;
+    }
 
-		const res = await signIn("credentials", {
-			redirect: false,
-			...values,
-		});
+    const res = await signIn("credentials", {
+      redirect: false,
+      ...values,
+    });
 
-		if (res?.error) {
-			return toast.error(res.error);
-		}
+    if (res?.error) {
+      return toast.error(res.error);
+    }
 
-		startTransition(() => {
-			router.push("/dashboard");
-		});
-	};
+    startTransition(() => {
+      router.push("/dashboard");
+    });
+  };
 
-	return (
-		<Card className="w-full max-w-lg">
-			<CardHeader className="space-y-2">
-				<CardTitle className="text-2xl">Sign In</CardTitle>
-				<CardDescription>
-					Welcome back! Sign in to your Qaree account.
-				</CardDescription>
-			</CardHeader>
+  return (
+    <Card className="w-full max-w-lg">
+      <CardHeader className="space-y-2">
+        <CardTitle className="text-2xl">Sign In</CardTitle>
+        <CardDescription>
+          Welcome back! Sign in to your Qaree account.
+        </CardDescription>
+      </CardHeader>
 
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
-					<CardContent className="grid gap-4">
-						{/* <Button
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
+          <CardContent className="grid gap-4">
+            {/* <Button
 							type="button"
 							variant="outline"
 							onClick={() => {
@@ -84,7 +82,7 @@ function AuthLoginForm() {
 							<Icons.google className="mr-2 h-4 w-4" />
 							Google
 						</Button> */}
-						{/* <div className="relative">
+            {/* <div className="relative">
 							<div className="absolute inset-0 flex items-center">
 								<span className="w-full border-t" />
 							</div>
@@ -94,44 +92,44 @@ function AuthLoginForm() {
 								</span>
 							</div>
 						</div> */}
-						<FormInput
-							form={form}
-							name="email"
-							label="Email"
-							type="email"
-							placeholder="Enter your email address"
-						/>
-						<div>
-							<FormInput
-								form={form}
-								name="password"
-								type="password"
-								label="Password"
-								placeholder="Enter password"
-							/>
-							<div className="mt-2 flex justify-end">
-								<Link
-									className="text-sm hover:underline text-muted-foreground"
-									href={"/signin/reset-password"}
-								>
-									Forgot password?
-								</Link>
-							</div>
-						</div>
-					</CardContent>
-					<CardFooter className="flex flex-col">
-						<SubmitButton pending={isPending}>Login</SubmitButton>
-						<p className="text-sm text-muted-foreground w-full mt-5">
-							Don`t have account?{" "}
-							<Link href={"/signup"} className="hover:underline">
-								Sign up
-							</Link>
-						</p>
-					</CardFooter>
-				</form>
-			</Form>
-		</Card>
-	);
+            <FormInput
+              form={form}
+              name="email"
+              label="Email"
+              type="email"
+              placeholder="Enter your email address"
+            />
+            <div>
+              <FormInput
+                form={form}
+                name="password"
+                type="password"
+                label="Password"
+                placeholder="Enter password"
+              />
+              <div className="mt-2 flex justify-end">
+                <Link
+                  className="text-sm hover:underline text-muted-foreground"
+                  href={"/signin/reset-password"}
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col">
+            <SubmitButton pending={isPending}>Login</SubmitButton>
+            <p className="text-sm text-muted-foreground w-full mt-5">
+              Don`t have account?{" "}
+              <Link href={"/signup"} className="hover:underline">
+                Sign up
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Form>
+    </Card>
+  );
 }
 
 export default AuthLoginForm;
