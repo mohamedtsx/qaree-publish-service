@@ -390,6 +390,15 @@ export type introspection = {
             "args": []
           },
           {
+            "name": "merchantId",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
             "name": "updatedAt",
             "type": {
               "kind": "SCALAR",
