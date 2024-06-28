@@ -51,7 +51,7 @@ export default async function Page({
         <div className="flex items-center text-muted-foreground flex-col gap-2">
           <Trash className="size-24 " strokeWidth={1} />
           <p className="text-center max-w-xs sm:px-4">
-            All clear! There's nothing in your recycle bin.
+            All clear! There`s nothing in your recycle bin.
           </p>
         </div>
       </div>
