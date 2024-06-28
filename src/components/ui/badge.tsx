@@ -20,7 +20,7 @@ const badgeVariants = cva(
         notion_incomplete:
           "whitespace-nowrap overflow-hidden overflow-ellipsis before:size-2 before:rounded-full before:bg-destructive before:inline-flex before:shrink-0 before:mr-1.5  min-w-0 max-w-full h-7 rounded-xl text-sm pl-2 pr-4 leading-tight m-0 capitalize bg-destructive/40 border-destructive text-destructive-foreground",
         notion_inprogress:
-          "whitespace-nowrap overflow-hidden overflow-ellipsis before:size-2 before:rounded-full before:bg-destructive before:inline-flex before:shrink-0 before:mr-1.5  min-w-0 max-w-full h-7 rounded-xl text-sm pl-2 pr-4 leading-tight m-0 capitalize bg-destructive/40 border-destructive text-destructive-foreground",
+          "whitespace-nowrap overflow-hidden overflow-ellipsis before:size-2 before:rounded-full before:bg-blue-700 before:inline-flex before:shrink-0 before:mr-1.5  min-w-0 max-w-full h-7 rounded-xl text-sm pl-2 pr-4 leading-tight m-0 capitalize bg-blue-700/40 border-blue-700 text-white font-medium",
       },
     },
     defaultVariants: {
