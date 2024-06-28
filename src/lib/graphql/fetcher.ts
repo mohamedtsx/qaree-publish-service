@@ -19,88 +19,89 @@ import { authOptions } from "../authOptions";
  */
 
 interface TypeOptions<T> {
-	headers?: HeadersInit;
-	query: T;
-	variables?: VariablesOf<T>;
-	server?: boolean;
-	protectid?: boolean;
-	revalidate?: number;
-	tags?: Array<string>;
+  headers?: HeadersInit;
+  query: T;
+  variables?: VariablesOf<T>;
+  server?: boolean;
+  protectid?: boolean;
+  revalidate?: number;
+  tags?: Array<string>;
 }
 
 export async function fetcher<
-	T extends TadaDocumentNode<ResultOf<T>, VariablesOf<T>>,
+  T extends TadaDocumentNode<ResultOf<T>, VariablesOf<T>>
 >({
-	headers,
-	query,
-	variables,
-	server = false,
-	protectid = true,
-	revalidate = 3600,
-	tags,
+  headers,
+  query,
+  variables,
+  server = false,
+  protectid = true,
+  revalidate = 3600,
+  tags,
 }: TypeOptions<T>): Promise<ResultOf<T>> {
-	let res: Response;
+  let res: Response;
 
-	const session = server ? await getServerSession(authOptions) : null;
+  const session = server ? await getServerSession(authOptions) : null;
 
-	try {
-		if (server) {
-			if (!session && protectid) {
-				throw Error("Authentication Error");
-			}
+  try {
+    if (server) {
+      if (!session && protectid) {
+        throw Error("Authentication Error");
+      }
 
-			res = await fetch(BACKEND_URL, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					accept: "application/json",
-					Authorization: `Bearer ${session?.user.access_token}`,
-					...headers,
-				},
-				body: JSON.stringify({
-					query: print(query),
-					variables,
-				}),
-				next: {
-					revalidate,
-					tags,
-				},
-			});
-		} else {
-			res = await fetch("/api", {
-				method: "POST",
-				body: JSON.stringify({
-					body: JSON.stringify({
-						query: print(query),
-						variables,
-					}),
-					protectid,
-					...headers,
-				}),
-			});
-		}
-	} catch (error) {
-		if (error instanceof SyntaxError) {
-			// The backend returned an invalid JSON <!doctype...>
-			throw createCustomError(
-				"Error occurred while getting data from the server",
-			);
-		}
+      res = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+          Authorization: `Bearer ${session?.user.access_token}`,
+          ...headers,
+        },
+        body: JSON.stringify({
+          query: print(query),
+          variables,
+        }),
+        next: {
+          // TODO: update revalidate
+          revalidate: 0,
+          tags,
+        },
+      });
+    } else {
+      res = await fetch("/api", {
+        method: "POST",
+        body: JSON.stringify({
+          body: JSON.stringify({
+            query: print(query),
+            variables,
+          }),
+          protectid,
+          ...headers,
+        }),
+      });
+    }
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      // The backend returned an invalid JSON <!doctype...>
+      throw createCustomError(
+        "Error occurred while getting data from the server"
+      );
+    }
 
-		throw Error(
-			error instanceof Error
-				? error.message
-				: typeof error === "string"
-				  ? error
-				  : "Unknown error",
-		);
-	}
+    throw Error(
+      error instanceof Error
+        ? error.message
+        : typeof error === "string"
+        ? error
+        : "Unknown error"
+    );
+  }
 
-	const resData = (await res.json()) as ApiResponse<ResultOf<T>>;
+  const resData = (await res.json()) as ApiResponse<ResultOf<T>>;
 
-	if ("errors" in resData) {
-		throw new FetcherError(resData.errors[0].message);
-	}
+  if ("errors" in resData) {
+    throw new FetcherError(resData.errors[0].message);
+  }
 
-	return resData.data;
+  return resData.data;
 }
