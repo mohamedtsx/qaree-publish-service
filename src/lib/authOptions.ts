@@ -26,23 +26,29 @@ export const authOptions: NextAuthOptions = {
 
         if (!email || !password) return null;
 
-        const { signin } = await fetcher({
-          query: signInMutation,
-          variables: {
-            email,
-            password,
-          },
-          server: true,
-          protectid: false,
-        });
+        try {
+          const { signin } = await fetcher({
+            query: signInMutation,
+            variables: {
+              email,
+              password,
+            },
+            server: true,
+            protectid: false,
+          });
+          if (!signin?.access_token) return null;
 
-        if (!signin?.access_token) return null;
+          const user = {
+            access_token: signin.access_token,
+          };
 
-        const user = {
-          access_token: signin.access_token,
-        };
-
-        return user;
+          return user;
+        } catch (error) {
+          if (error instanceof Error) {
+            throw Error(error.message);
+          }
+          throw Error("Unkown Error");
+        }
       },
     }),
   ],

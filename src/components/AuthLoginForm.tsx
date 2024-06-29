@@ -51,8 +51,8 @@ function AuthLoginForm() {
       ...values,
     });
 
-    if (res?.error) {
-      return toast.error(res.error);
+    if (!res?.ok) {
+      return toast.error(res?.error);
     }
 
     startTransition(() => {
